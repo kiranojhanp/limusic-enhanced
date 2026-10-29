@@ -859,6 +859,7 @@
 			"previous_song": "Previous song",
 			"seek_backward": "Seek back 10 seconds (30 with Shift)",
 			"seek_forward": "Seek forward 10 seconds (30 with Shift)",
+			"like_song": "Like or unlike the current song",
 			"shuffle_queue": "Shuffle queue",
 			"toggle_repeat": "Toggle repeat",
 			"mute_unmute": "Mute or unmute",

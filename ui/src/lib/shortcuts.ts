@@ -1,7 +1,7 @@
-// App-wide keyboard shortcuts. One window listener: the unmodified keys (space, ;, arrows) bail out
-// on a typing target first, everything else is gated on Ctrl/Cmd, so a key typed into a field costs
-// a couple of cheap checks and falls straight through. Zoom keeps its own listener (zoom.ts) because
-// it also owns the ctrl+wheel gesture.
+// App-wide keyboard shortcuts. One window listener: the unmodified keys (space, ;, arrows, L) bail
+// out on a typing target first, everything else is gated on Ctrl/Cmd, so a key typed into a field
+// costs a couple of cheap checks and falls straight through. Zoom keeps its own listener (zoom.ts)
+// because it also owns the ctrl+wheel gesture.
 import { browser } from '$app/environment';
 import * as api from './api';
 import {
@@ -12,6 +12,7 @@ import {
 	refreshView,
 	skipBy,
 	toggleMute,
+	toggleNowPlayingRating,
 	ui
 } from './player.svelte';
 
@@ -95,6 +96,12 @@ export function initShortcuts(mini = false) {
 				if (!playback.duration) return;
 				const step = e.shiftKey ? 30 : 10;
 				skipBy(e.key === 'ArrowLeft' ? -step : step);
+				e.preventDefault();
+				return;
+			}
+			// Like / unlike the playing song, the way most players bind L.
+			if (!ownsArrows && !e.shiftKey && keyOf(e) === 'l') {
+				toggleNowPlayingRating();
 				e.preventDefault();
 				return;
 			}
