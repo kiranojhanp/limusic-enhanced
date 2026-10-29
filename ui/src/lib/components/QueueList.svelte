@@ -5,7 +5,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import { MediaQuery } from 'svelte/reactivity';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
-	import { ArrowTurnBackwardIcon, InfinityIcon } from '@hugeicons/core-free-icons';
+	import { ArrowTurnBackwardIcon, InfinityIcon, PlayListAddIcon } from '@hugeicons/core-free-icons';
 	import TrackRow from '$lib/components/TrackRow.svelte';
 	import NowPlayingPill from '$lib/components/NowPlayingPill.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -22,7 +22,7 @@
 	import { blockWindows, fullWindow, type RowWindow } from '$lib/rows';
 	import { rowScroller } from '$lib/rows.svelte';
 	import { dragScroll, QUEUE_ROW_MIME } from '$lib/dnd';
-	import { playback, prefs, setAutoplay, openAddToPlaylist } from '$lib/player.svelte';
+	import { playback, prefs, setAutoplay, openAddToPlaylist, openNewPlaylist } from '$lib/player.svelte';
 	import { lt } from '$lib/lt.svelte';
 	import { appearance } from '$lib/theme.svelte';
 	import { currentLocale, t } from '$lib/i18n.svelte';
@@ -67,6 +67,13 @@
 	const view = $derived(queueView(playback.queue));
 	// The tail of the queue, for the one drop position no row can mark from its own top edge.
 	const lastIndex = $derived((view.autoplay.at(-1) ?? view.rows.at(-1))?.i ?? -1);
+
+	// "Save queue": the playing track and everything after it. What came before is already in
+	// History; folding it back in would turn a playlist into a log of the session.
+	function saveQueue() {
+		const songs = playback.queue.items.slice(Math.max(0, playback.queue.currentIndex));
+		if (songs.length) openNewPlaylist(songs);
+	}
 
 	// Playing a playlist queues the whole playlist, so this list can be handed five figures of rows
 	// the moment it opens, at roughly 165 KB of web-process memory each (`rows.ts`). Past a couple
@@ -324,6 +331,19 @@
 				<p class="truncate text-xs text-muted-foreground tabular-nums">{leftLabel}</p>
 			{/if}
 		</div>
+		<Button
+			variant="ghost"
+			size="icon-sm"
+			class="shrink-0 text-muted-foreground hover:text-foreground"
+			onclick={saveQueue}
+			aria-label={t('player.save_queue')}
+			title={t('player.save_queue')}
+			onkeydown={(event) => {
+				if (event.key === ' ') event.stopPropagation();
+			}}
+		>
+			<HugeiconsIcon icon={PlayListAddIcon} class="h-4 w-4" />
+		</Button>
 		{#if canEdit}
 			<!-- Right where its tracks are drawn, rather than three levels into Settings. -->
 			<label
