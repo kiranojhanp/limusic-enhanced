@@ -155,7 +155,7 @@ cat > target/release/bundle/latest.json <<EOF
 }
 EOF
 
-echo "==> Publishing GitHub release $TAG…"
+echo "==> Publishing GitHub release $TAG"
 # --latest=false: the Linux workflow flips it once the AppImage is on the release. See the header.
 PRE=(); [ "$RC" = 0 ] || PRE=(--prerelease)
 gh release create "$TAG" \
