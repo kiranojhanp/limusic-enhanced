@@ -112,6 +112,12 @@ fn is_ao_init_failed(e: &libmpv2::Error) -> bool {
 
 /// The player. Wraps `Arc<Mpv>` (Send+Sync); an event loop runs on a dedicated OS thread per deck
 /// and pumps [`PlayerEvent`]s into a channel taken once via [`Player::take_events`].
+/// How long [`Player::load`] waits for a paused track to unload before issuing the next
+/// `loadfile`. A few ms normally; this cap only matters when the machine is busy enough that
+/// mpv's core thread cannot run for tens of milliseconds. Bounded so a wedged mpv cannot hang a
+/// track change forever.
+const PAUSED_UNLOAD_WAIT: Duration = Duration::from_millis(1_000);
+
 pub struct Player {
     decks: Arc<Decks>,
     events: Option<UnboundedReceiver<PlayerEvent>>,
@@ -487,11 +493,19 @@ impl Player {
         // ever turns out too short.
         if self.mpv().get_property::<bool>("pause").unwrap_or(false) {
             self.mpv().command("stop", &[])?;
-            for _ in 0..50 {
-                if self.mpv().get_property::<String>("path").is_err() {
+            // A few ms in practice, but a busy CI runner (or a loaded desktop) can take longer
+            // than the old 50 ms cap and then this returned with the old file still loaded
+            // (#306 regression: `load_over_a_paused_track_unloads_it_first` flaked on master).
+            let deadline = std::time::Instant::now() + PAUSED_UNLOAD_WAIT;
+            while self.mpv().get_property::<String>("path").is_ok() {
+                if std::time::Instant::now() >= deadline {
+                    tracing::warn!(
+                        ?PAUSED_UNLOAD_WAIT,
+                        "mpv did not unload the paused track before the next loadfile"
+                    );
                     break;
                 }
-                std::thread::sleep(Duration::from_millis(1));
+                std::thread::sleep(Duration::from_millis(2));
             }
         }
         self.apply_headers(headers)?;
