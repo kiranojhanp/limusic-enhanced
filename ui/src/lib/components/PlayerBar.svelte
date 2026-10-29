@@ -419,6 +419,9 @@
 				onwheel={wheelVolume}
 				aria-label={t('player.volume')}
 			/>
+			<span class="w-8 shrink-0 text-right text-xs tabular-nums text-muted-foreground" aria-hidden="true">
+				{playback.volume}%
+			</span>
 		</div>
 		<!-- One cluster, so they sit tighter to each other than to the volume slider. -->
 		<div class="flex items-center gap-0.5">

@@ -1,10 +1,20 @@
-// App-wide keyboard shortcuts. One window listener: the unmodified keys (space, ;) bail out on a
-// typing target first, everything else is gated on Ctrl/Cmd, so a key typed into a field costs a
-// couple of cheap checks and falls straight through. Zoom keeps its own listener (zoom.ts) because
-// it also owns the ctrl+wheel gesture.
+// App-wide keyboard shortcuts. One window listener: the unmodified keys (space, ;, arrows, L) bail
+// out on a typing target first, everything else is gated on Ctrl/Cmd, so a key typed into a field
+// costs a couple of cheap checks and falls straight through. Zoom keeps its own listener (zoom.ts)
+// because it also owns the ctrl+wheel gesture.
 import { browser } from '$app/environment';
 import * as api from './api';
-import { cycleRepeat, np, nudgeVolume, playback, refreshView, toggleMute, ui } from './player.svelte';
+import {
+	cycleRepeat,
+	np,
+	nudgeVolume,
+	playback,
+	refreshView,
+	skipBy,
+	toggleMute,
+	toggleNowPlayingRating,
+	ui
+} from './player.svelte';
 
 export const IS_MAC = browser && navigator.platform.startsWith('Mac');
 
@@ -54,6 +64,12 @@ export const typing = (t: EventTarget | null) =>
 const KEEPS_FOCUS =
 	'[role=dialog],[role=alertdialog],[role=menu],[role=listbox],[data-selected],[data-track-selection]';
 
+/** Controls whose own arrow-key handling must win over seeking: dialogs, menus, tabs and the
+ *  slider/radio groups that use arrows to move. `typing` covers native inputs, this covers the
+ *  ARIA-role widgets built on divs. */
+const OWNS_ARROWS =
+	'[role=dialog],[role=alertdialog],[role=menu],[role=listbox],[role=tablist],[role=radiogroup],[role=slider]';
+
 /** `mini` = the mini-player window: same transport keys, minus the ones that toggle a piece of
  *  chrome that window doesn't render (palette, shortcut list, now-playing view). */
 export function initShortcuts(mini = false) {
@@ -69,10 +85,30 @@ export function initShortcuts(mini = false) {
 			return;
 		}
 		if (!e.ctrlKey && !e.metaKey) {
+			// Typing wins over every bare key below, and Alt is AltGr on Windows (it types a
+			// character) as well as the global-hotkey modifier.
+			if (typing(e.target) || e.altKey) return;
+			// Arrows seek; Shift makes the step longer. Left alone inside a dialog, menu, tab list
+			// or slider, where they move the focused control instead.
+			const ownsArrows =
+				e.target instanceof Element && e.target.closest(OWNS_ARROWS) !== null;
+			if (!ownsArrows && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+				if (!playback.duration) return;
+				const step = e.shiftKey ? 30 : 10;
+				skipBy(e.key === 'ArrowLeft' ? -step : step);
+				e.preventDefault();
+				return;
+			}
+			// Like / unlike the playing song, the way most players bind L.
+			if (!ownsArrows && !e.shiftKey && keyOf(e) === 'l') {
+				toggleNowPlayingRating();
+				e.preventDefault();
+				return;
+			}
 			// Space also activates a focused button and scrolls the page, so it is swallowed either
 			// way once we know it isn't being typed.
 			if (e.key !== ' ' && e.key !== ';') return;
-			if (typing(e.target) || e.altKey || e.shiftKey) return;
+			if (e.shiftKey) return;
 			api.togglePause();
 			e.preventDefault();
 			return;
