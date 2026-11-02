@@ -87,7 +87,8 @@
 		"remove_account_desc": "{name} இந்தப் பட்டியலிலிருந்து மட்டுமே அகற்றப்படும். Google கணக்கிற்கு எந்தப் பாதிப்பும் இல்லை, எப்போது வேண்டுமானாலும் மீண்டும் உள்நுழையலாம்.",
 		"saved_accounts_hint": "மாற விரும்பும் சேமிக்கப்பட்ட கணக்கைத் தேர்ந்தெடுக்கவும்.",
 		"history": "வரலாறு",
-		"no_channels": "தேர்ந்தெடுக்கும்படியான சேனல்கள் எதையும் YouTube வழங்கவில்லை."
+		"no_channels": "தேர்ந்தெடுக்கும்படியான சேனல்கள் எதையும் YouTube வழங்கவில்லை.",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "இயக்கு",
@@ -915,5 +916,45 @@
 		"offline_title": "இணைய இணைப்பு இல்லை",
 		"offline_body": "Limusic-ஆல் YouTube Music-ஐ அணுக முடியவில்லை. உங்கள் இணைய இணைப்பைச் சரிபார்த்துவிட்டு மீண்டும் முயற்சிக்கவும்.",
 		"generic_title": "ஏதோ தவறு நடந்துவிட்டது"
+	},
+	"radio": {
+		"title": "Radio",
+		"subtitle": "Live stations from around the world. Pick one and it plays.",
+		"search_placeholder": "Search stations",
+		"country": "Country",
+		"language": "Language",
+		"all_countries": "All countries",
+		"all_languages": "All languages",
+		"all_genres": "All genres",
+		"play_station": "Play {name}",
+		"live": "LIVE",
+		"source": "Radio",
+		"favorite": "Add {name} to favorites",
+		"unfavorite": "Remove {name} from favorites",
+		"remove_station": "Remove {name}",
+		"tabs": {
+			"browse": "Browse",
+			"favorites": "Favorites",
+			"custom": "My stations"
+		},
+		"empty": "No stations match those filters.",
+		"empty_hint": "Try a different name, or clear a country or genre.",
+		"favorites_empty": "No favorites yet.",
+		"favorites_empty_hint": "Tap the heart on a station to keep it here.",
+		"custom_empty": "No stations of your own yet.",
+		"custom_empty_hint": "Add a stream URL to play something the directory does not list.",
+		"add_station": {
+			"button": "Add station",
+			"title": "Add a station",
+			"desc": "Paste the direct stream URL of a radio station. It is checked before it is saved.",
+			"name": "Name",
+			"name_placeholder": "Leave blank to use the stream's own name",
+			"url": "Stream URL",
+			"url_placeholder": "https://example.com/stream.mp3",
+			"check": "Check",
+			"check_ok": "Stream looks playable.",
+			"add": "Add",
+			"added": "Added {name}."
+		}
 	}
 }

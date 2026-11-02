@@ -13,16 +13,20 @@
 		Cancel01Icon,
 		Loading03Icon,
 		Radio02Icon,
-		SearchList01Icon
+		Search01Icon,
+		FavouriteIcon,
+		MusicNote01Icon
 	} from '@hugeicons/core-free-icons';
-	import * as Select from '#lib/components/ui/select/index.js';
+	import AppSelect from '#lib/components/AppSelect.svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import RadioStationCard from '#lib/components/RadioStationCard.svelte';
 	import AddStationDialog from '#lib/components/AddStationDialog.svelte';
 	import MediaCardSkeleton from '#lib/components/MediaCardSkeleton.svelte';
+	import * as Tabs from '#lib/components/ui/tabs/index.js';
 	import ErrorState from '#lib/components/ErrorState.svelte';
 	import * as api from '#lib/api.js';
 	import type { RadioFacets, RadioQuery, RadioStation } from '#lib/api.js';
+	import { flagOf } from '#lib/flags.js';
 	import { openPlayer, playback, toast } from '#lib/player.svelte.js';
 	import { t } from '#lib/i18n.svelte.js';
 
@@ -67,11 +71,6 @@
 	const favoriteIds = $derived(new Set(favorites.map((s) => s.stationuuid)));
 	/** What the grid shows: the directory, or one of the saved lists. */
 	const visible = $derived(view === 'browse' ? stations : view === 'favorites' ? favorites : custom);
-	const tabs = $derived([
-		{ id: 'browse' as const, count: null },
-		{ id: 'favorites' as const, count: favorites.length },
-		{ id: 'custom' as const, count: custom.length }
-	]);
 	const emptyCopy = $derived(
 		view === 'favorites'
 			? { title: t('radio.favorites_empty'), hint: t('radio.favorites_empty_hint') }
@@ -235,254 +234,213 @@
 	}
 
 	const chip =
-		'cursor-pointer rounded-full border px-3 py-1 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
+		'shrink-0 cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring bg-foreground/5 text-foreground/75 hover:bg-foreground/10 hover:text-foreground';
 </script>
 
 <div class="p-6">
-	<header class="mb-6 flex flex-wrap items-center gap-4">
-		<div
-			class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary"
-		>
-			<HugeiconsIcon icon={Radio02Icon} class="h-8 w-8" />
-		</div>
-		<div class="min-w-0 flex-1">
-			<h1 class="font-heading text-2xl font-bold tracking-tight">{t('radio.title')}</h1>
-			<p class="mt-0.5 text-sm text-muted-foreground">{t('radio.subtitle')}</p>
-		</div>
-	</header>
-
-	<!-- Browse the directory, or the two lists saved on this machine. The counts are loaded with
-	     the page, not per tab, because the lists are small and a tab switch should be instant. -->
-	<div class="mb-5 flex flex-wrap items-center gap-2">
-		<div class="inline-flex rounded-full border bg-background/60 p-0.5" role="tablist">
-			{#each tabs as tab (tab.id)}
-				<button
-					type="button"
-					role="tab"
-					aria-selected={view === tab.id}
-					class="cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring {view ===
-					tab.id
-						? 'bg-primary text-primary-foreground'
-						: 'text-muted-foreground hover:text-foreground'}"
-					onclick={() => (view = tab.id)}
-				>
-					{t(`radio.tabs.${tab.id}`)}
-					{#if tab.count !== null}
-						<span class="ml-1 tabular-nums opacity-70">{tab.count}</span>
-					{/if}
-				</button>
-			{/each}
-		</div>
-
+	<div class="mb-6 flex items-center justify-between">
+		<h1 class="font-heading text-2xl font-bold">{t('radio.title')}</h1>
 		{#if view === 'custom'}
-			<Button size="sm" onclick={() => (addOpen = true)}>
-				<HugeiconsIcon icon={Add01Icon} class="h-4 w-4" />
-				{t('radio.add_station.button')}
-			</Button>
+			<div class="flex items-center gap-2">
+				<Button size="sm" class="gap-2" onclick={() => (addOpen = true)}>
+					<HugeiconsIcon icon={Add01Icon} class="h-4 w-4" />
+					{t('radio.add_station.button')}
+				</Button>
+			</div>
 		{/if}
 	</div>
 
-	{#if view === 'browse'}
-		<!-- Filters. The search is debounced; the selects and genre chips apply at once. -->
-		<div class="mb-5 flex flex-col gap-3">
-			<div class="flex flex-wrap items-center gap-2">
-				<div
-					class="flex min-w-0 flex-1 items-center gap-2 rounded-full border bg-background/80 py-1.5 pl-3 pr-2 shadow-sm backdrop-blur focus-within:border-accent sm:max-w-xs"
-				>
-					<HugeiconsIcon
-						icon={SearchList01Icon}
-						strokeWidth={2.5}
-						class="h-4 w-4 shrink-0 text-muted-foreground"
-					/>
-					<input
-						bind:value={name}
-						oninput={onSearchInput}
-						onkeydown={(e) => {
-							if (e.key === 'Escape') clearSearch();
-						}}
-						placeholder={t('radio.search_placeholder')}
-						aria-label={t('radio.search_placeholder')}
-						class="w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-					/>
-					<button
-						class="w-4 shrink-0 cursor-pointer text-muted-foreground transition hover:text-foreground"
-						class:invisible={!name}
-						onclick={clearSearch}
-						aria-label={t('a11y.clear_search')}
-						tabindex={name ? 0 : -1}
-					>
-						<HugeiconsIcon icon={Cancel01Icon} strokeWidth={2.5} class="h-4 w-4" />
-					</button>
+	<!-- Browse the directory, or the two lists saved on this machine. The counts are loaded with
+	     the page, not per tab, because the lists are small and a tab switch should be instant. -->
+	<Tabs.Root bind:value={view} onValueChange={(v) => (view = v as 'browse' | 'favorites' | 'custom')}>
+		<Tabs.List class="mb-4">
+			<Tabs.Trigger value="browse">
+				<HugeiconsIcon icon={Radio02Icon} class="h-4 w-4" /> {t('radio.tabs.browse')}
+			</Tabs.Trigger>
+			<Tabs.Trigger value="favorites">
+				<HugeiconsIcon icon={FavouriteIcon} class="h-4 w-4" /> {t('radio.tabs.favorites')}
+				{#if favorites.length}<span class="ml-1 tabular-nums opacity-70">{favorites.length}</span>{/if}
+			</Tabs.Trigger>
+			<Tabs.Trigger value="custom">
+				<HugeiconsIcon icon={MusicNote01Icon} class="h-4 w-4" /> {t('radio.tabs.custom')}
+				{#if custom.length}<span class="ml-1 tabular-nums opacity-70">{custom.length}</span>{/if}
+			</Tabs.Trigger>
+		</Tabs.List>
+
+		{#if view === 'browse'}
+			<!-- Filters. The search is debounced; the selects and genre chips apply at once. -->
+			<div class="mb-3 flex flex-col gap-3">
+				<div class="flex flex-wrap items-center gap-2">
+					<div class="relative max-w-2xl flex-1">
+						<HugeiconsIcon
+							icon={Search01Icon}
+							class="pointer-events-none absolute left-4 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-muted-foreground"
+						/>
+						<input
+							bind:value={name}
+							oninput={onSearchInput}
+							onkeydown={(e) => {
+								if (e.key === 'Escape') clearSearch();
+							}}
+							placeholder={t('radio.search_placeholder')}
+							aria-label={t('radio.search_placeholder')}
+							class="h-12 w-full rounded-full bg-card/80 pl-12 pr-12 text-base shadow-sm outline-none placeholder:text-muted-foreground focus-within:ring-1 focus-within:ring-ring/20"
+						/>
+						{#if name}
+							<button
+								class="absolute right-2.5 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground"
+								aria-label={t('a11y.clear_search')}
+								title={t('a11y.clear_search')}
+								onclick={clearSearch}
+							>
+								<HugeiconsIcon icon={Cancel01Icon} class="h-4 w-4" />
+							</button>
+						{/if}
+					</div>
+
+					{#if facets?.countries?.length}
+						<AppSelect
+							class="w-44 shrink-0"
+							items={[
+								{ value: 'all', label: t('common.all') },
+								...facets.countries.map((c) => ({
+									value: c.name,
+									label: c.name,
+									flag: flagOf(c.iso_3166_1)
+								}))
+							]}
+							bind:value={country}
+							placeholder={t('radio.country')}
+							ariaLabel={t('radio.country')}
+							onchange={reload}
+						/>
+					{/if}
+
+					{#if facets?.languages?.length}
+						<AppSelect
+							class="w-44 shrink-0"
+							items={[
+								{ value: 'all', label: t('common.all') },
+								...facets.languages.map((l) => ({ value: l.name, label: l.name }))
+							]}
+							bind:value={language}
+							placeholder={t('radio.language')}
+							ariaLabel={t('radio.language')}
+							onchange={reload}
+						/>
+					{/if}
 				</div>
 
-				{#if facets?.countries?.length}
-					<Select.Root
-						type="single"
-						value={country}
-						onValueChange={(v) => {
-							country = v;
-							reload();
-						}}
-					>
-						<Select.Trigger class="w-44 shrink-0" aria-label={t('radio.country')}>
-							<span class="min-w-0 flex-1 truncate text-left">
-								{country === 'all' ? t('radio.all_countries') : country}
-							</span>
-						</Select.Trigger>
-						<Select.Content class="max-w-64">
-							<Select.Item value="all" label={t('radio.all_countries')}>
-								{t('radio.all_countries')}
-							</Select.Item>
-							{#each facets.countries as c (c.name)}
-								<Select.Item value={c.name} label={c.name}>
-									<span class="truncate">{c.name}</span>
-									<span class="text-xs text-muted-foreground">{c.stationcount}</span>
-								</Select.Item>
-							{/each}
-						</Select.Content>
-					</Select.Root>
-				{/if}
-
-				{#if facets?.languages?.length}
-					<Select.Root
-						type="single"
-						value={language}
-						onValueChange={(v) => {
-							language = v;
-							reload();
-						}}
-					>
-						<Select.Trigger class="w-44 shrink-0" aria-label={t('radio.language')}>
-							<span class="min-w-0 flex-1 truncate text-left">
-								{language === 'all' ? t('radio.all_languages') : language}
-							</span>
-						</Select.Trigger>
-						<Select.Content class="max-w-64">
-							<Select.Item value="all" label={t('radio.all_languages')}>
-								{t('radio.all_languages')}
-							</Select.Item>
-							{#each facets.languages as l (l.name)}
-								<Select.Item value={l.name} label={l.name}>
-									<span class="truncate">{l.name}</span>
-									<span class="text-xs text-muted-foreground">{l.stationcount}</span>
-								</Select.Item>
-							{/each}
-						</Select.Content>
-					</Select.Root>
-				{/if}
-			</div>
-
-			{#if facets?.tags?.length}
-				<div class="flex flex-wrap gap-1.5">
-					<button
-						class="{chip} {tag === 'all'
-							? 'border-primary/40 bg-primary/10 text-primary'
-							: 'border-border bg-background/60 text-muted-foreground hover:bg-accent/10 hover:text-foreground'}"
-						onclick={() => {
-							tag = 'all';
-							reload();
-						}}
-					>
-						{t('radio.all_genres')}
-					</button>
-					{#each facets.tags.slice(0, TAG_CHIPS) as g (g.name)}
+				{#if facets?.tags?.length}
+					<div class="flex flex-wrap gap-1.5">
 						<button
-							class="{chip} {tag === g.name
-								? 'border-primary/40 bg-primary/10 capitalize text-primary'
-								: 'border-border bg-background/60 capitalize text-muted-foreground hover:bg-accent/10 hover:text-foreground'}"
+							class="{chip} {tag === 'all'
+								? 'bg-primary text-primary-foreground'
+								: ''}"
 							onclick={() => {
-								tag = g.name;
+								tag = 'all';
 								reload();
 							}}
 						>
-							{g.name}
+							{t('radio.all_genres')}
 						</button>
+						{#each facets.tags.slice(0, TAG_CHIPS) as g (g.name)}
+							<button
+								class="{chip} {tag === g.name ? 'bg-primary text-primary-foreground capitalize' : 'capitalize'}"
+								onclick={() => {
+									tag = g.name;
+									reload();
+								}}
+							>
+								{g.name}
+							</button>
+						{/each}
+					</div>
+				{/if}
+			</div>
+		{/if}
+
+		{#if view === 'browse'}
+			{#if loading}
+				<div class="grid grid-cols-[repeat(auto-fill,10rem)] gap-4">
+					{#each Array(12) as _, i (i)}
+						<MediaCardSkeleton />
 					{/each}
 				</div>
-			{/if}
-		</div>
-	{/if}
+			{:else if error}
+				<ErrorState message={error} onRetry={reload} />
+			{:else if !stations.length}
+				<div class="flex flex-col items-center gap-2 py-16 text-center">
+					<span class="rounded-full bg-muted p-4 text-muted-foreground/50">
+						<HugeiconsIcon icon={Radio02Icon} class="h-8 w-8" />
+					</span>
+					<p class="font-medium">{t('radio.empty')}</p>
+					<p class="text-sm text-muted-foreground">{t('radio.empty_hint')}</p>
+				</div>
+			{:else}
+				<div class="content-in grid grid-cols-[repeat(auto-fill,10rem)] gap-4">
+					{#each stations as station (station.stationuuid)}
+						<RadioStationCard
+							{station}
+							playing={nowId === playingId(station)}
+							favorite={favoriteIds.has(station.stationuuid)}
+							onplay={() => play(station)}
+							onfavorite={() => toggleFavorite(station)}
+						/>
+					{/each}
+				</div>
 
-	{#if view === 'browse'}
-		{#if loading}
-			<div class="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
-				{#each Array(12) as _, i (i)}
+				{#if loadingMore}
+					<div class="flex justify-center py-6 text-muted-foreground">
+						<HugeiconsIcon icon={Loading03Icon} class="h-5 w-5 animate-spin" />
+					</div>
+				{:else if moreError}
+					<div class="flex justify-center py-6">
+						<Button variant="outline" size="sm" onclick={() => loadMore()}>
+							{t('common.try_again')}
+						</Button>
+					</div>
+				{:else if hasMore}
+					<div class="h-1" {@attach sentinel}></div>
+				{/if}
+			{/if}
+		{:else if savedLoading}
+			<div class="grid grid-cols-[repeat(auto-fill,10rem)] gap-4">
+				{#each Array(6) as _, i (i)}
 					<MediaCardSkeleton />
 				{/each}
 			</div>
-		{:else if error}
-			<ErrorState message={error} onRetry={reload} />
-		{:else if !stations.length}
+		{:else if savedError}
+			<ErrorState message={savedError} onRetry={loadSaved} />
+		{:else if !visible.length}
 			<div class="flex flex-col items-center gap-2 py-16 text-center">
 				<span class="rounded-full bg-muted p-4 text-muted-foreground/50">
 					<HugeiconsIcon icon={Radio02Icon} class="h-8 w-8" />
 				</span>
-				<p class="font-medium">{t('radio.empty')}</p>
-				<p class="text-sm text-muted-foreground">{t('radio.empty_hint')}</p>
+				<p class="font-medium">{emptyCopy.title}</p>
+				<p class="text-sm text-muted-foreground">{emptyCopy.hint}</p>
+				{#if view === 'custom'}
+					<Button variant="outline" size="sm" class="mt-2" onclick={() => (addOpen = true)}>
+						<HugeiconsIcon icon={Add01Icon} class="h-4 w-4" />
+						{t('radio.add_station.button')}
+					</Button>
+				{/if}
 			</div>
 		{:else}
-			<div class="content-in grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
-				{#each stations as station (station.stationuuid)}
+			<div class="content-in grid grid-cols-[repeat(auto-fill,10rem)] gap-4">
+				{#each visible as station (station.stationuuid)}
 					<RadioStationCard
 						{station}
 						playing={nowId === playingId(station)}
 						favorite={favoriteIds.has(station.stationuuid)}
-						onplay={() => play(station)}
-						onfavorite={() => toggleFavorite(station)}
+						onplay={() => playFrom(visible, station)}
+						onfavorite={view === 'custom' ? undefined : () => toggleFavorite(station)}
+						onremove={view === 'custom' ? () => removeStation(station) : undefined}
 					/>
 				{/each}
 			</div>
-
-			{#if loadingMore}
-				<div class="flex justify-center py-6 text-muted-foreground">
-					<HugeiconsIcon icon={Loading03Icon} class="h-5 w-5 animate-spin" />
-				</div>
-			{:else if moreError}
-				<div class="flex justify-center py-6">
-					<Button variant="outline" size="sm" onclick={() => loadMore()}>
-						{t('common.try_again')}
-					</Button>
-				</div>
-			{:else if hasMore}
-				<div class="h-1" {@attach sentinel}></div>
-			{/if}
 		{/if}
-	{:else if savedLoading}
-		<div class="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
-			{#each Array(6) as _, i (i)}
-				<MediaCardSkeleton />
-			{/each}
-		</div>
-	{:else if savedError}
-		<ErrorState message={savedError} onRetry={loadSaved} />
-	{:else if !visible.length}
-		<div class="flex flex-col items-center gap-2 py-16 text-center">
-			<span class="rounded-full bg-muted p-4 text-muted-foreground/50">
-				<HugeiconsIcon icon={Radio02Icon} class="h-8 w-8" />
-			</span>
-			<p class="font-medium">{emptyCopy.title}</p>
-			<p class="text-sm text-muted-foreground">{emptyCopy.hint}</p>
-			{#if view === 'custom'}
-				<Button variant="outline" size="sm" class="mt-2" onclick={() => (addOpen = true)}>
-					<HugeiconsIcon icon={Add01Icon} class="h-4 w-4" />
-					{t('radio.add_station.button')}
-				</Button>
-			{/if}
-		</div>
-	{:else}
-		<div class="content-in grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
-			{#each visible as station (station.stationuuid)}
-				<RadioStationCard
-					{station}
-					playing={nowId === playingId(station)}
-					favorite={favoriteIds.has(station.stationuuid)}
-					onplay={() => playFrom(visible, station)}
-					onfavorite={view === 'custom' ? undefined : () => toggleFavorite(station)}
-					onremove={view === 'custom' ? () => removeStation(station) : undefined}
-				/>
-			{/each}
-		</div>
-	{/if}
+	</Tabs.Root>
 </div>
 
 <AddStationDialog

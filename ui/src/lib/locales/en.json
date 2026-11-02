@@ -139,7 +139,8 @@
 		"saved_accounts_hint": "Pick a saved account to switch to it.",
 		"history": "History",
 		"stats": "Stats",
-		"no_channels": "YouTube did not return any selectable channels."
+		"no_channels": "YouTube did not return any selectable channels.",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "Play",

@@ -26,6 +26,9 @@ importers:
       mode-watcher:
         specifier: ^1.1.0
         version: 1.1.0(svelte@5.57.3)
+      svelte-select:
+        specifier: ^6.0.0
+        version: 6.0.0(svelte@5.57.3)
     devDependencies:
       '@fontsource-variable/dm-sans':
         specifier: ^5.3.0
@@ -979,6 +982,14 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: ^5.0.0 || ^6.0.0
 
+  svelte-floating-ui@1.5.8:
+    resolution: {integrity: sha512-dVvJhZ2bT+kQDHlE4Lep8t+sgEc0XD96fXLzAi2DDI2bsaegBbClxXVNMma0C2WsG+n9GJSYx292dTvA8CYRtw==}
+
+  svelte-select@6.0.0:
+    resolution: {integrity: sha512-WJ1UDw0a1Z3I7oVFgaCS7G9D2rCSmYAPpufNEj/DNuk5Oyb2a5dju6F36o0urBVw9bTE3WkM9cZkI0x+Sfo8Bg==}
+    peerDependencies:
+      svelte: '>=5'
+
   svelte-toolbelt@0.10.6:
     resolution: {integrity: sha512-YWuX+RE+CnWYx09yseAe4ZVMM7e7GRFZM6OYWpBKOb++s+SQ8RBIMMe+Bs/CznBMc0QPLjr+vDBxTAkozXsFXQ==}
     engines: {node: '>=18', pnpm: '>=8.7.0'}
@@ -1854,6 +1865,16 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - picomatch
+
+  svelte-floating-ui@1.5.8:
+    dependencies:
+      '@floating-ui/core': 1.7.5
+      '@floating-ui/dom': 1.7.6
+
+  svelte-select@6.0.0(svelte@5.57.3):
+    dependencies:
+      svelte: 5.57.3
+      svelte-floating-ui: 1.5.8
 
   svelte-toolbelt@0.10.6(@sveltejs/kit@3.1.1(@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.57.3)(vite@8.1.3(jiti@2.7.0)))(svelte@5.57.3)(typescript@6.0.3)(vite@8.1.3(jiti@2.7.0)))(svelte@5.57.3):
     dependencies:

@@ -89,7 +89,8 @@
 		"remove_account_desc": "{name} hanya dihapus dari daftar ini. Akun Google itu sendiri tidak terpengaruh, dan Anda dapat masuk kembali kapan saja.",
 		"saved_accounts_hint": "Pilih akun tersimpan untuk beralih ke akun tersebut.",
 		"no_channels": "YouTube tidak mengembalikan saluran yang dapat dipilih.",
-		"stats": "Statistik"
+		"stats": "Statistik",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "Putar",
@@ -1289,5 +1290,45 @@
 		"added": "Tanggal ditambahkan",
 		"by": "Ditambahkan oleh",
 		"duration": "Durasi"
+	},
+	"radio": {
+		"title": "Radio",
+		"subtitle": "Live stations from around the world. Pick one and it plays.",
+		"search_placeholder": "Search stations",
+		"country": "Country",
+		"language": "Language",
+		"all_countries": "All countries",
+		"all_languages": "All languages",
+		"all_genres": "All genres",
+		"play_station": "Play {name}",
+		"live": "LIVE",
+		"source": "Radio",
+		"favorite": "Add {name} to favorites",
+		"unfavorite": "Remove {name} from favorites",
+		"remove_station": "Remove {name}",
+		"tabs": {
+			"browse": "Browse",
+			"favorites": "Favorites",
+			"custom": "My stations"
+		},
+		"empty": "No stations match those filters.",
+		"empty_hint": "Try a different name, or clear a country or genre.",
+		"favorites_empty": "No favorites yet.",
+		"favorites_empty_hint": "Tap the heart on a station to keep it here.",
+		"custom_empty": "No stations of your own yet.",
+		"custom_empty_hint": "Add a stream URL to play something the directory does not list.",
+		"add_station": {
+			"button": "Add station",
+			"title": "Add a station",
+			"desc": "Paste the direct stream URL of a radio station. It is checked before it is saved.",
+			"name": "Name",
+			"name_placeholder": "Leave blank to use the stream's own name",
+			"url": "Stream URL",
+			"url_placeholder": "https://example.com/stream.mp3",
+			"check": "Check",
+			"check_ok": "Stream looks playable.",
+			"add": "Add",
+			"added": "Added {name}."
+		}
 	}
 }

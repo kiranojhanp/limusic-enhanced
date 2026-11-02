@@ -138,7 +138,8 @@
 		"remove_account_desc": "{name} จะถูกนำออกจากรายการนี้เท่านั้น บัญชี Google จะไม่ได้รับผลกระทบ และคุณลงชื่อเข้าใช้ด้วยบัญชีนี้ใหม่ได้ทุกเมื่อ",
 		"saved_accounts_hint": "เลือกบัญชีที่บันทึกไว้เพื่อสลับไปใช้",
 		"history": "ประวัติ",
-		"no_channels": "YouTube ไม่ส่งช่องที่เลือกได้กลับมา"
+		"no_channels": "YouTube ไม่ส่งช่องที่เลือกได้กลับมา",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "เล่น",
@@ -1191,6 +1192,46 @@
 			"gone": "การนำเข้านั้นไม่ได้เปิดอยู่อีกต่อไป",
 			"not_found": "ไม่พบรายการนั้นบน YouTube Music",
 			"cooldown": "YouTube Music ขอให้ Limusic ช้าลง การนำเข้าจึงหยุดพักจนถึง {time} ทุกอย่างที่พบจนถึงตอนนี้ถูกบันทึกไว้แล้ว"
+		}
+	},
+	"radio": {
+		"title": "Radio",
+		"subtitle": "Live stations from around the world. Pick one and it plays.",
+		"search_placeholder": "Search stations",
+		"country": "Country",
+		"language": "Language",
+		"all_countries": "All countries",
+		"all_languages": "All languages",
+		"all_genres": "All genres",
+		"play_station": "Play {name}",
+		"live": "LIVE",
+		"source": "Radio",
+		"favorite": "Add {name} to favorites",
+		"unfavorite": "Remove {name} from favorites",
+		"remove_station": "Remove {name}",
+		"tabs": {
+			"browse": "Browse",
+			"favorites": "Favorites",
+			"custom": "My stations"
+		},
+		"empty": "No stations match those filters.",
+		"empty_hint": "Try a different name, or clear a country or genre.",
+		"favorites_empty": "No favorites yet.",
+		"favorites_empty_hint": "Tap the heart on a station to keep it here.",
+		"custom_empty": "No stations of your own yet.",
+		"custom_empty_hint": "Add a stream URL to play something the directory does not list.",
+		"add_station": {
+			"button": "Add station",
+			"title": "Add a station",
+			"desc": "Paste the direct stream URL of a radio station. It is checked before it is saved.",
+			"name": "Name",
+			"name_placeholder": "Leave blank to use the stream's own name",
+			"url": "Stream URL",
+			"url_placeholder": "https://example.com/stream.mp3",
+			"check": "Check",
+			"check_ok": "Stream looks playable.",
+			"add": "Add",
+			"added": "Added {name}."
 		}
 	}
 }

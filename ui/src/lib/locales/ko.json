@@ -110,7 +110,8 @@
 		"remove_account_desc": "{name} 계정은 이 목록에서만 삭제됩니다. Google 계정 자체는 삭제되거나 변경되지 않으며, 언제든지 다시 로그인할 수 있습니다.",
 		"saved_accounts_hint": "전환할 저장된 계정을 선택하세요.",
 		"history": "재생 기록",
-		"no_channels": "선택할 수 있는 YouTube 채널이 없습니다."
+		"no_channels": "선택할 수 있는 YouTube 채널이 없습니다.",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "재생",
@@ -1096,5 +1097,45 @@
 		"anyway_hint": "중복 곡도 추가",
 		"adds": "+{count}",
 		"anyway_hint_local": "중복 곡은 YouTube 재생목록에만 추가됩니다"
+	},
+	"radio": {
+		"title": "Radio",
+		"subtitle": "Live stations from around the world. Pick one and it plays.",
+		"search_placeholder": "Search stations",
+		"country": "Country",
+		"language": "Language",
+		"all_countries": "All countries",
+		"all_languages": "All languages",
+		"all_genres": "All genres",
+		"play_station": "Play {name}",
+		"live": "LIVE",
+		"source": "Radio",
+		"favorite": "Add {name} to favorites",
+		"unfavorite": "Remove {name} from favorites",
+		"remove_station": "Remove {name}",
+		"tabs": {
+			"browse": "Browse",
+			"favorites": "Favorites",
+			"custom": "My stations"
+		},
+		"empty": "No stations match those filters.",
+		"empty_hint": "Try a different name, or clear a country or genre.",
+		"favorites_empty": "No favorites yet.",
+		"favorites_empty_hint": "Tap the heart on a station to keep it here.",
+		"custom_empty": "No stations of your own yet.",
+		"custom_empty_hint": "Add a stream URL to play something the directory does not list.",
+		"add_station": {
+			"button": "Add station",
+			"title": "Add a station",
+			"desc": "Paste the direct stream URL of a radio station. It is checked before it is saved.",
+			"name": "Name",
+			"name_placeholder": "Leave blank to use the stream's own name",
+			"url": "Stream URL",
+			"url_placeholder": "https://example.com/stream.mp3",
+			"check": "Check",
+			"check_ok": "Stream looks playable.",
+			"add": "Add",
+			"added": "Added {name}."
+		}
 	}
 }
