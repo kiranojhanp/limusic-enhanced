@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import MediaCard from '$lib/components/MediaCard.svelte';
-	import MediaCardSkeleton from '$lib/components/MediaCardSkeleton.svelte';
-	import ErrorState from '$lib/components/ErrorState.svelte';
-	import * as api from '$lib/api';
-	import type { BrowseItem } from '$lib/api';
-	import { getCached, putCached } from '$lib/pagecache';
-	import { reveal } from '$lib/reveal.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import MediaCard from '#lib/components/MediaCard.svelte';
+	import MediaCardSkeleton from '#lib/components/MediaCardSkeleton.svelte';
+	import ErrorState from '#lib/components/ErrorState.svelte';
+	import * as api from '#lib/api.js';
+	import type { BrowseItem } from '#lib/api.js';
+	import { getCached, putCached } from '#lib/pagecache.js';
+	import { reveal } from '#lib/reveal.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let items = $state<BrowseItem[]>([]);
 	let loading = $state(true);

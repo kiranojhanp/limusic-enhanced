@@ -25,8 +25,8 @@
 	} from '@hugeicons/core-free-icons';
 	import { fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
-	import { Button } from '$lib/components/ui/button';
-	import * as api from '$lib/api';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as api from '#lib/api.js';
 	import {
 		np,
 		playback,
@@ -40,14 +40,14 @@
 		toggleNowPlayingRating,
 		ui,
 		wheelVolume
-	} from '$lib/player.svelte';
-	import { thumb } from '$lib/thumb';
-	import { appearance } from '$lib/theme.svelte';
+	} from '#lib/player.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import { appearance } from '#lib/theme.svelte.js';
 	import ArtistLine from './ArtistLine.svelte';
 	import Marquee from './Marquee.svelte';
 	import SpeedPicker from './SpeedPicker.svelte';
 	import TrackMenu from './TrackMenu.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let {
 		onToggleQueue,
@@ -93,6 +93,10 @@
 	const repeat = $derived(playback.queue.repeat ?? 'off');
 	// A podcast episode trades shuffle for speed and gets the 15-second skips either side of play.
 	const episode = $derived(!!playback.now?.isEpisode);
+	// An internet-radio station: endless, so there is no timeline to draw or seek.
+	const live = $derived(api.isRadioId(playback.now?.videoId));
+	// A station's iTunes artwork when the stream's title resolved to a song; otherwise its logo.
+	const artwork = $derived(playback.radio?.cover || playback.now?.thumbnail);
 
 	// The current track was appended by autoplay → show the subtle ∞ badge next to the title.
 	// Matched against the now-playing videoId so a transient queue/now-playing mismatch (mid
@@ -166,12 +170,14 @@
 	     that's playing (not the buttons beside them — those keep their own meaning). -->
 	<div class="flex min-w-0 flex-1 items-center gap-3" data-ctx>
 		{#key playback.now?.videoId}
-			{#if playback.now?.thumbnail}
+			{#if artwork}
 				<img
-					src={thumb(playback.now.thumbnail, 120)}
+					src={thumb(artwork, 120)}
 					alt=""
 					style="max-width:none"
-					class="h-12 w-12 shrink-0 rounded-lg object-cover"
+					class="h-12 w-12 shrink-0 rounded-lg {live
+						? 'bg-muted object-contain p-1'
+						: 'object-cover'}"
 					in:fade={{ duration: 250 }}
 				/>
 			{:else}
@@ -221,14 +227,24 @@
 				marquee
 				class="block max-w-full text-xs text-muted-foreground"
 			/>
+			{#if live && playback.radio?.title}
+				<!-- What the station says is playing, under the station's own name. The raw title is
+				     the fallback when iTunes had nothing and the artist cannot be split out. -->
+				<div class="truncate text-xs text-primary/90" title={playback.radio.raw}>
+					{#if playback.radio.artist}
+						<span class="font-medium">{playback.radio.artist}</span>
+						<span class="text-muted-foreground"> · </span>
+					{/if}{playback.radio.title}
+				</div>
+			{/if}
 		</div>
 		{#if playback.now}
 			<div class="flex items-center">
-				<!-- A local file has no YouTube identity (see api.isLocalId): nothing to like. It can
-				     still go in a playlist on this machine, so + stays. Below lg both drop and the ⋮
-				     menu carries them instead: on a narrow window three buttons here leave the title
-				     almost no room. lg, not md: the window's minWidth is 900 (tauri.conf.json), so md
-				     never fires. -->
+				<!-- A local file or a station has no YouTube identity (see api.isLocalId): nothing to
+				     like. It can still go in a playlist on this machine, so + stays. Below lg both drop
+				     and the ⋮ menu carries them instead: on a narrow window three buttons here leave the
+				     title almost no room. lg, not md: the window's minWidth is 900 (tauri.conf.json), so
+				     md never fires. -->
 				{#if !api.isLocalId(playback.now.videoId)}
 					<Button
 						variant="ghost"
@@ -369,23 +385,35 @@
 				/>
 			</Button>
 		</div>
-		<div class="flex w-full max-w-md items-center gap-2 text-xs text-muted-foreground">
-			<!-- Fixed slots, or the seek bar twitches as the position ticks: DM Sans has no tabular
-			     figures, so `tabular-nums` does nothing there (#463). -->
-			<span class="min-w-[5ch] text-right tabular-nums">{fmt(shownPosition)}</span>
-			<input
-				type="range"
-				class="range flex-1"
-				style="--pct:{shownDuration ? (shownPosition / shownDuration) * 100 : 0}%"
-				min="0"
-				max={shownDuration || 0}
-				value={shownPosition}
-				oninput={onSeekInput}
-				onchange={onSeekCommit}
-				aria-label={t('player.seek')}
-			/>
-			<span class="min-w-[5ch] tabular-nums">{fmt(shownDuration)}</span>
-		</div>
+		{#if live}
+			<!-- A live stream has no position, so the timeline's slot holds the one fact there is. -->
+			<div class="flex h-5 items-center gap-2 text-xs font-semibold tracking-wide text-primary">
+				<span class="relative flex size-2">
+					<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60"
+					></span>
+					<span class="relative inline-flex size-2 rounded-full bg-primary"></span>
+				</span>
+				{t('radio.live')}
+			</div>
+		{:else}
+			<div class="flex w-full max-w-md items-center gap-2 text-xs text-muted-foreground">
+				<!-- Fixed slots, or the seek bar twitches as the position ticks: DM Sans has no tabular
+				     figures, so `tabular-nums` does nothing there (#463). -->
+				<span class="min-w-[5ch] text-right tabular-nums">{fmt(shownPosition)}</span>
+				<input
+					type="range"
+					class="range flex-1"
+					style="--pct:{shownDuration ? (shownPosition / shownDuration) * 100 : 0}%"
+					min="0"
+					max={shownDuration || 0}
+					value={shownPosition}
+					oninput={onSeekInput}
+					onchange={onSeekCommit}
+					aria-label={t('player.seek')}
+				/>
+				<span class="min-w-[5ch] tabular-nums">{fmt(shownDuration)}</span>
+			</div>
+		{/if}
 	</div>
 
 	<!-- Volume + queue -->
@@ -437,15 +465,17 @@
 					class="h-5 w-5 {effectsOn ? 'text-primary' : ''}"
 				/>
 			</Button>
-			<Button
-				variant={lyricsOpen ? 'secondary' : 'ghost'}
-				size="icon-sm"
-				onclick={onToggleLyrics}
-				aria-label={t('player.lyrics')}
-			>
-				<HugeiconsIcon icon={Mic01Icon} class="h-5 w-5" />
-			</Button>
-			<!-- A local file has no YouTube comment thread to open. -->
+			{#if !live}
+				<Button
+					variant={lyricsOpen ? 'secondary' : 'ghost'}
+					size="icon-sm"
+					onclick={onToggleLyrics}
+					aria-label={t('player.lyrics')}
+				>
+					<HugeiconsIcon icon={Mic01Icon} class="h-5 w-5" />
+				</Button>
+			{/if}
+			<!-- A local file or a station has no YouTube comment thread to open. -->
 			{#if playback.now && !api.isLocalId(playback.now.videoId)}
 				<Button
 					variant={commentsOpen ? 'secondary' : 'ghost'}

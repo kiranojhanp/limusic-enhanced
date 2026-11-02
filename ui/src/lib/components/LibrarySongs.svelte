@@ -14,23 +14,23 @@
 		PlayIcon,
 		ShuffleIcon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import TrackFilter, { filterTracks } from './TrackFilter.svelte';
 	import TrackRow from './TrackRow.svelte';
 	import TrackRowSkeleton from './TrackRowSkeleton.svelte';
 	import ErrorState from './ErrorState.svelte';
-	import * as api from '$lib/api';
-	import type { SongItem } from '$lib/api';
-	import { getCached, putCached, LIBRARY_SONGS_KEY } from '$lib/pagecache';
-	import { thumb } from '$lib/thumb';
+	import * as api from '#lib/api.js';
+	import type { SongItem } from '#lib/api.js';
+	import { getCached, putCached, LIBRARY_SONGS_KEY } from '#lib/pagecache.js';
+	import { thumb } from '#lib/thumb.js';
 	import {
 		openAddToPlaylist,
 		openPlayer,
 		playback,
 		removeSongFromLibrary,
 		songLibraryRemoval
-	} from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	} from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	// The same tab, pointed at a different browse id: Library ▸ Songs by default, or the tracks the
 	// user uploaded to YouTube Music themselves. Both browse like a headerless playlist and page the

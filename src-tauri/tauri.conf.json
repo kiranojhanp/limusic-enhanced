@@ -6,7 +6,7 @@
   "build": {
     "frontendDist": "../ui/build",
     "devUrl": "http://localhost:5183",
-    "beforeDevCommand": "pnpm dev",
+    "beforeDevCommand": "corepack pnpm dev",
     "beforeBuildCommand": "pnpm build"
   },
   "app": {

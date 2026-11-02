@@ -6,15 +6,15 @@
 	import { cubicOut } from 'svelte/easing';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { Cancel01Icon, Copy01Icon, Tick02Icon, Alert02Icon } from '@hugeicons/core-free-icons';
-	import * as api from '$lib/api';
-	import type { BrowseItem, PlaylistPage } from '$lib/api';
-	import { copyText } from '$lib/clipboard';
-	import { getCached, invalidateCached, putCached } from '$lib/pagecache';
-	import { Switch } from '$lib/components/ui/switch';
-	import { thumb } from '$lib/thumb';
-	import { ui, toast } from '$lib/player.svelte';
-	import { windowCorners } from '$lib/win.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import * as api from '#lib/api.js';
+	import type { BrowseItem, PlaylistPage } from '#lib/api.js';
+	import { copyText } from '#lib/clipboard.js';
+	import { getCached, invalidateCached, putCached } from '#lib/pagecache.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import { thumb } from '#lib/thumb.js';
+	import { ui, toast } from '#lib/player.svelte.js';
+	import { windowCorners } from '#lib/win.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	// Playlist browseIds carry a `VL` prefix that the watch/playlist URLs don't take.
 	function shareUrl(item: BrowseItem): string {

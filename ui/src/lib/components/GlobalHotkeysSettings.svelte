@@ -8,16 +8,16 @@
 		VolumeHighIcon,
 		ComputerIcon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import { Switch } from '$lib/components/ui/switch';
-	import { t } from '$lib/i18n.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import {
 		hotkeys,
 		HOTKEY_ACTIONS,
 		eventToShortcut,
 		splitShortcut,
 		type HotkeyActionDef
-	} from '$lib/hotkeys.svelte';
+	} from '#lib/hotkeys.svelte.js';
 
 	onMount(() => {
 		hotkeys.load();

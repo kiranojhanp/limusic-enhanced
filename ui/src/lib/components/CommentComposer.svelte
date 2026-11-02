@@ -2,12 +2,12 @@
 	import { slide } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { MediaQuery } from 'svelte/reactivity';
-	import { Button } from '$lib/components/ui/button';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
-	import { auth } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
-	import { thumb } from '$lib/thumb';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Avatar, AvatarFallback, AvatarImage } from '#lib/components/ui/avatar/index.js';
+	import { auth } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { thumb } from '#lib/thumb.js';
 
 	// One text box with a send button, for the comment box, a reply and an edit. It owns no state
 	// beyond the text: the panel decides what sending means, and a failed send leaves the text here.

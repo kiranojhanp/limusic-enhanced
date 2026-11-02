@@ -15,15 +15,15 @@
 		MusicNote01Icon,
 		UserIcon
 	} from '@hugeicons/core-free-icons';
-	import * as Command from '$lib/components/ui/command/index.js';
-	import { Skeleton } from '$lib/components/ui/skeleton';
+	import * as Command from '#lib/components/ui/command/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import ExplicitIcon from './ExplicitIcon.svelte';
 	import ItemMenu from './ItemMenu.svelte';
-	import { searchSuggestions, type BrowseItem, type SearchSuggestions } from '$lib/api';
-	import { openItem, rowMeta } from '$lib/browse';
-	import { ui } from '$lib/player.svelte';
-	import { thumb } from '$lib/thumb';
-	import { t } from '$lib/i18n.svelte';
+	import { searchSuggestions, type BrowseItem, type SearchSuggestions } from '#lib/api.js';
+	import { openItem, rowMeta } from '#lib/browse.js';
+	import { ui } from '#lib/player.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let query = $state('');
 	let items = $state<BrowseItem[]>([]);

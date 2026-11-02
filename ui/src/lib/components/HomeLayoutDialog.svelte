@@ -20,14 +20,14 @@
 		UserStar01Icon,
 		YoutubeIcon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import { Switch } from '$lib/components/ui/switch';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { dragScroll, SECTION_ROW_MIME } from '$lib/dnd';
-	import { personal, resetHome, saveHome } from '$lib/player.svelte';
-	import { CARD_SIZES, hiddenSections, homeIsDefault, type CardSize } from '$lib/personal';
-	import { t, type TranslationKey } from '$lib/i18n.svelte';
-	import { onWindowChrome } from '$lib/utils';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import { dragScroll, SECTION_ROW_MIME } from '#lib/dnd.js';
+	import { personal, resetHome, saveHome } from '#lib/player.svelte.js';
+	import { CARD_SIZES, hiddenSections, homeIsDefault, type CardSize } from '#lib/personal.js';
+	import { t, type TranslationKey } from '#lib/i18n.svelte.js';
+	import { onWindowChrome } from '#lib/utils.js';
 
 	let {
 		open = $bindable(false),

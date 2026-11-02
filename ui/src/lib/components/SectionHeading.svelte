@@ -9,7 +9,7 @@
 	import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/svelte';
 	import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 	import type { Snippet } from 'svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let {
 		title,

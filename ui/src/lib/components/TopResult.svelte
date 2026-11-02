@@ -4,11 +4,11 @@
 	// kind, and the few rows YouTube pairs with it (an artist's hits, a song's other takes).
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { MusicNote01Icon, PlayIcon, UserIcon } from '@hugeicons/core-free-icons';
-	import type { BrowseItem } from '$lib/api';
-	import { asSong, openItem, playItem } from '$lib/browse';
-	import { openAddToPlaylist, playSong, playback, startRadio } from '$lib/player.svelte';
-	import { thumb } from '$lib/thumb';
-	import { t } from '$lib/i18n.svelte';
+	import type { BrowseItem } from '#lib/api.js';
+	import { asSong, openItem, playItem } from '#lib/browse.js';
+	import { openAddToPlaylist, playSong, playback, startRadio } from '#lib/player.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import ExplicitIcon from './ExplicitIcon.svelte';
 	import ItemMenu from './ItemMenu.svelte';
 	import TrackRow from './TrackRow.svelte';

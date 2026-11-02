@@ -18,21 +18,23 @@
 		SquareArrowLeft01Icon,
 		SquareArrowRight01Icon,
 		SpotifyIcon,
-		Chart02Icon
+		Chart02Icon,
+		Radio02Icon
 	} from '@hugeicons/core-free-icons';
 	import { toggleMode } from 'mode-watcher';
-	import { Button } from '$lib/components/ui/button';
-	import { ON_REPEAT_ID, isLocalPlaylist, type BrowseItem } from '$lib/api';
-	import { thumb } from '$lib/thumb';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { ON_REPEAT_ID, isLocalPlaylist, type BrowseItem } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
 	import PlaylistMenu from './PlaylistMenu.svelte';
-	import { library, personal, ui, openNewPlaylist, toggleSidebar } from '$lib/player.svelte';
-	import { mergeSaved, orderLibrary } from '$lib/personal';
-	import { t } from '$lib/i18n.svelte';
-	import { imp } from '$lib/import.svelte';
+	import { library, personal, ui, openNewPlaylist, toggleSidebar } from '#lib/player.svelte.js';
+	import { mergeSaved, orderLibrary } from '#lib/personal.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { imp } from '#lib/import.svelte.js';
 
 	const nav = $derived([
 		{ href: '/', label: t('nav.home'), icon: Home01Icon },
 		{ href: '/search', label: t('nav.search'), icon: Search01Icon },
+		{ href: '/radio', label: t('nav.radio'), icon: Radio02Icon },
 		{ href: '/library', label: t('nav.library'), icon: LibraryIcon },
 		{ href: '/stats', label: t('nav.stats'), icon: Chart02Icon }
 	]);

@@ -29,6 +29,7 @@ mod nativevideo;
 mod notify;
 mod orchestrator;
 mod potoken;
+mod radio;
 mod romanize;
 mod session;
 mod spotify;
@@ -1195,6 +1196,16 @@ pub fn run() {
             commands::get_local_library,
             commands::add_local_folder,
             commands::remove_local_folder,
+            commands::radio_discover,
+            commands::radio_search,
+            commands::radio_facets,
+            commands::radio_favorites,
+            commands::radio_custom_stations,
+            commands::radio_add_favorite,
+            commands::radio_add_custom_station,
+            commands::radio_remove_station,
+            commands::radio_probe_stream,
+            commands::radio_favicon,
             commands::allow_font_file,
             commands::get_artist,
             commands::get_artist_appears_on,
@@ -1416,6 +1427,9 @@ fn spawn_event_pump(
                 // announced (`on_track_ended` loads it on this pump), with the old track's end as
                 // the position. Guests then seek the new track to it, past the end of a shorter one.
                 PlayerEvent::Paused(paused) => state.lt_on_play_state(!paused).await,
+                // A live station's ICY title. The state layer ignores it for anything that is not
+                // a RADIO: id, because an ordinary file's tags are already in the queue row.
+                PlayerEvent::Metadata(tags) => state.on_stream_metadata(tags).await,
                 PlayerEvent::TrackEnded => {
                     state.on_track_ended().await;
                 }

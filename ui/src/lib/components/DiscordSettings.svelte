@@ -10,20 +10,20 @@
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { ArrowTurnBackwardIcon } from '@hugeicons/core-free-icons';
 	import { untrack, type Snippet } from 'svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
-	import * as Select from '$lib/components/ui/select';
-	import * as api from '$lib/api';
-	import { playback, prefs, toast } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import * as Select from '#lib/components/ui/select/index.js';
+	import * as api from '#lib/api.js';
+	import { playback, prefs, toast } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import {
 		DISCORD_DEFAULTS,
 		parseDiscordConfig,
 		type DiscordConfig,
 		type PreviewTrack
-	} from '$lib/discord';
-	import DiscordCard from '$lib/components/DiscordCard.svelte';
+	} from '#lib/discord.js';
+	import DiscordCard from '#lib/components/DiscordCard.svelte';
 
 	let { settings }: { settings: Record<string, string> } = $props();
 

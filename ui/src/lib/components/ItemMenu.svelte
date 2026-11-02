@@ -1,9 +1,9 @@
 <script lang="ts">
 	// The ⋯ menu for a browse item, whichever kind it is: songs get TrackMenu, everything else
 	// PlaylistMenu. Cards and rows all want the same split, so it lives here instead of in each one.
-	import type { BrowseItem } from '$lib/api';
-	import { asSong } from '$lib/browse';
-	import { openAddToPlaylist } from '$lib/player.svelte';
+	import type { BrowseItem } from '#lib/api.js';
+	import { asSong } from '#lib/browse.js';
+	import { openAddToPlaylist } from '#lib/player.svelte.js';
 	import TrackMenu from './TrackMenu.svelte';
 	import PlaylistMenu from './PlaylistMenu.svelte';
 

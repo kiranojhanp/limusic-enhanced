@@ -13,15 +13,15 @@
 		MusicNote01Icon,
 		UserIcon
 	} from '@hugeicons/core-free-icons';
-	import { Input } from '$lib/components/ui/input';
-	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import ExplicitIcon from './ExplicitIcon.svelte';
 	import ItemMenu from './ItemMenu.svelte';
-	import { searchSuggestions, type BrowseItem, type SearchSuggestions } from '$lib/api';
-	import { openItem, rowMeta } from '$lib/browse';
-	import { MOD } from '$lib/shortcuts';
-	import { thumb } from '$lib/thumb';
-	import { t } from '$lib/i18n.svelte';
+	import { searchSuggestions, type BrowseItem, type SearchSuggestions } from '#lib/api.js';
+	import { openItem, rowMeta } from '#lib/browse.js';
+	import { MOD } from '#lib/shortcuts.js';
+	import { thumb } from '#lib/thumb.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let {
 		value = $bindable(''),

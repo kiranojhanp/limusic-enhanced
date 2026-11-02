@@ -10,13 +10,13 @@
 	// in the *viewer's* language, and the button labels are ours, sent over the wire in English.
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { MoreHorizontalIcon, MusicNote01Icon } from '@hugeicons/core-free-icons';
-	import { t } from '$lib/i18n.svelte';
-	import { thumb } from '$lib/thumb';
+	import { t } from '#lib/i18n.svelte.js';
+	import { thumb } from '#lib/thumb.js';
 	// The bundled logo, not `appIcon.src`: the badge Rust sends is a fixed URL to the repo's own
 	// icon, so a user who replaced their app icon (#173) must not see that reflected here.
-	import limusicLogo from '$lib/assets/favicon.svg';
-	import type { DiscordConfig, PreviewTrack } from '$lib/discord';
-	import { cardText, cardLink, BUTTON_LABELS } from '$lib/discord';
+	import limusicLogo from '#lib/assets/favicon.svg';
+	import type { DiscordConfig, PreviewTrack } from '#lib/discord.js';
+	import { cardText, cardLink, BUTTON_LABELS } from '#lib/discord.js';
 
 	let {
 		cfg,

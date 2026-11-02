@@ -30,15 +30,15 @@
 	import LastFmIcon from './LastFmIcon.svelte';
 	import DiscordIcon from './DiscordIcon.svelte';
 	import AccountMenu from './AccountMenu.svelte';
-	import { appIcon } from '$lib/appicon.svelte';
-	import * as api from '$lib/api';
-	import { openMiniPlayer, playback, prefs, refreshView, toast, ui } from '$lib/player.svelte';
-	import { win } from '$lib/win.svelte';
-	import { lt } from '$lib/lt.svelte';
-	import { anchorMenu, fitMenu, NO_ANCHOR } from '$lib/menu';
-	import { t } from '$lib/i18n.svelte';
-	import { connectLastfm, disconnectLastfm, lastfm, watchLastfm } from '$lib/lastfm.svelte';
-	import { watchListenBrainz } from '$lib/listenbrainz.svelte';
+	import { appIcon } from '#lib/appicon.svelte.js';
+	import * as api from '#lib/api.js';
+	import { openMiniPlayer, playback, prefs, refreshView, toast, ui } from '#lib/player.svelte.js';
+	import { win } from '#lib/win.svelte.js';
+	import { lt } from '#lib/lt.svelte.js';
+	import { anchorMenu, fitMenu, NO_ANCHOR } from '#lib/menu.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { connectLastfm, disconnectLastfm, lastfm, watchLastfm } from '#lib/lastfm.svelte.js';
+	import { watchListenBrainz } from '#lib/listenbrainz.svelte.js';
 
 	// `w` is this window; `win` (imported) is the shared frame state.
 	const w = getCurrentWindow();
@@ -50,9 +50,8 @@
 	let depth = $state(0);
 	let deepest = $state(0);
 	afterNavigate((nav) => {
-		if (nav.type === 'enter') depth = deepest = 0;
-		else if (nav.delta !== undefined) depth = Math.max(0, depth + nav.delta);
-		else deepest = depth += 1;
+		if (nav.shallow && nav.type === 'goto') return;
+		if (nav.type === 'enter') depth = deepest = 0; else if (nav.delta !== undefined) depth = Math.max(0, depth + nav.delta); else deepest = depth += 1;
 	});
 
 	// Last.fm connection state lives in `lastfm.svelte.ts`: the Scrobbling settings tab connects
@@ -194,7 +193,7 @@
 		     link and never appears in search or the library (#63). -->
 		<button
 			class="flex h-full w-8 items-center justify-center text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground"
-			onclick={() => (ui.linkOpen = true)}
+			onclick={() => ui.linkOpen = true}
 			title={t('dialogs.link.title')}
 			aria-label={t('dialogs.link.title')}
 		>
@@ -203,11 +202,8 @@
 
 		<!-- Opens the same modal as the home hero's button (one dialog, mounted in +layout). -->
 		<button
-			class="flex h-full w-8 items-center justify-center text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground {lt.role !==
-			'none'
-				? 'text-primary'
-				: ''}"
-			onclick={() => (ui.ltOpen = true)}
+			class="flex h-full w-8 items-center justify-center text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground {lt.role !== 'none' ? 'text-primary' : ''}"
+			onclick={() => ui.ltOpen = true}
 			title={t('nav.listen_together')}
 			aria-label={t('nav.listen_together')}
 		>
@@ -277,7 +273,7 @@
 		     and disabled with nothing playing, since there'd be nothing to show. -->
 		<button
 			class="flex h-full w-8 items-center justify-center text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground disabled:pointer-events-none disabled:opacity-25"
-			onclick={() => (ui.theaterOpen = true)}
+			onclick={() => ui.theaterOpen = true}
 			disabled={!playback.now}
 			title={t('player.theater_mode')}
 			aria-label={t('player.theater_mode')}
@@ -347,7 +343,7 @@
 {#if menuOpen}
 	<button
 		class="fixed inset-0 z-40 cursor-default"
-		onclick={() => (menuOpen = false)}
+		onclick={() => menuOpen = false}
 		aria-label={t('common.close')}
 	></button>
 	<div

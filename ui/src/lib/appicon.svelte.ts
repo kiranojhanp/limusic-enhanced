@@ -3,7 +3,7 @@
 
 import { convertFileSrc } from '@tauri-apps/api/core';
 import { appIconPath, setAppIcon } from './api';
-import fallback from '$lib/assets/favicon.svg';
+import fallback from '#lib/assets/favicon.svg';
 
 export const appIcon = $state({ src: fallback });
 

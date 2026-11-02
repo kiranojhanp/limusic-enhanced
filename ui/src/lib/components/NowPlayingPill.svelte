@@ -7,7 +7,7 @@
 	import { MediaQuery } from 'svelte/reactivity';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let { above, onclick }: { above: boolean; onclick: () => void } = $props();
 

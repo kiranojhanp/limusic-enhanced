@@ -2,10 +2,10 @@
 // its rounded corners. `chrome` says whether the compositor is drawing the frame instead of us.
 // One listener, initialized once by the root layout.
 import { getCurrentWindow } from '@tauri-apps/api/window';
-import { getSettings, onUiVisible } from '$lib/api';
-import { setUiVisible } from '$lib/theme.svelte';
+import { getSettings, onUiVisible } from '#lib/api.js';
+import { setUiVisible } from '#lib/theme.svelte.js';
 import { invoke } from '@tauri-apps/api/core';
-import { ui } from '$lib/player.svelte';
+import { ui } from '#lib/player.svelte.js';
 
 /** Who draws the window frame. `off` = our custom titlebar owns it (the default), `on` = the
  *  compositor does (the "system title bar" setting, Linux/Windows), `overlay` = macOS traffic

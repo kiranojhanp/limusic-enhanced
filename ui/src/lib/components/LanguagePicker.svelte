@@ -4,10 +4,10 @@
 	// list needs a search field and a shape that grows sideways instead of down.
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { Search01Icon, Tick02Icon, TranslateIcon } from '@hugeicons/core-free-icons';
-	import { Input } from '$lib/components/ui/input';
-	import * as api from '$lib/api';
-	import { matchLocales } from '$lib/langlist';
-	import { t, LOCALES, COVERAGE, currentLocale, type LocaleId } from '$lib/i18n.svelte';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import * as api from '#lib/api.js';
+	import { matchLocales } from '#lib/langlist.js';
+	import { t, LOCALES, COVERAGE, currentLocale, type LocaleId } from '#lib/i18n.svelte.js';
 
 	let { onpick, onclose }: { onpick: (id: LocaleId) => void; onclose: () => void } = $props();
 

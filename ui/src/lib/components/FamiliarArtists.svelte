@@ -12,15 +12,15 @@
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { UserLove02Icon, UserIcon, UserStar01Icon } from '@hugeicons/core-free-icons';
 	import SectionHeading from './SectionHeading.svelte';
-	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import PlaylistMenu from './PlaylistMenu.svelte';
-	import * as api from '$lib/api';
-	import type { ArtistPage, BrowseItem } from '$lib/api';
-	import { thumb } from '$lib/thumb';
-	import { putCached } from '$lib/pagecache';
-	import { artistPage } from '$lib/browse';
-	import { toast } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import * as api from '#lib/api.js';
+	import type { ArtistPage, BrowseItem } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
+	import { putCached } from '#lib/pagecache.js';
+	import { artistPage } from '#lib/browse.js';
+	import { toast } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	// ponytail: one browse call per artist, because the subscriber count and the subscribe state
 	// only exist on the artist page. Six of them, shared with the artist route's cache (same key),

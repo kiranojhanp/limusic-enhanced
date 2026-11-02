@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { CursorMagicSelection04Icon } from '@hugeicons/core-free-icons';
-	import { t } from '$lib/i18n.svelte';
-	import type { TrackSelection } from '$lib/selection.svelte';
+	import { t } from '#lib/i18n.svelte.js';
+	import type { TrackSelection } from '#lib/selection.svelte.js';
 
 	// Lives in each list's own header row, so `class` covers the pages whose controls aren't the
 	// shadcn ghost button (the album's round bordered row).

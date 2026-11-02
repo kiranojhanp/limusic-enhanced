@@ -86,6 +86,11 @@ pub enum ResolveError {
     /// about this particular track, so the queue must not skip past it or drop it.
     #[error("could not reach YouTube. Check your connection and try again ({0})")]
     Unreachable(String),
+    /// The internet-radio directory could not be reached (radio.rs). Same reasoning as
+    /// [`ResolveError::Unreachable`]: an outage must not walk the queue, because every station in
+    /// it would fail identically.
+    #[error("could not reach the radio directory. Check your connection and try again ({0})")]
+    RadioUnreachable(String),
 }
 
 impl ResolveError {
@@ -93,7 +98,12 @@ impl ResolveError {
     /// forward, or to delete a row, has to know: skipping is right for a track YouTube refused and
     /// wrong for an outage, where it walks the whole queue and deletes what it passes.
     pub fn affects_every_track(&self) -> bool {
-        matches!(self, ResolveError::Unreachable(_) | ResolveError::SignInRequired(_))
+        matches!(
+            self,
+            ResolveError::Unreachable(_)
+                | ResolveError::SignInRequired(_)
+                | ResolveError::RadioUnreachable(_)
+        )
     }
 }
 
@@ -1035,6 +1045,10 @@ mod tests {
         assert!(
             ResolveError::SignInRequired(v()).affects_every_track(),
             "every anonymous track fails the same way until the user signs in"
+        );
+        assert!(
+            ResolveError::RadioUnreachable(v()).affects_every_track(),
+            "a directory outage fails every station the same way"
         );
         assert!(
             !ResolveError::AllClientsFailed(v()).affects_every_track(),

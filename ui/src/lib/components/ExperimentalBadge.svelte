@@ -1,6 +1,6 @@
 <script lang="ts">
 	// The Spotify import's "Experimental" mark (#375), styled like the badge on Settings ▸ Themes.
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 </script>
 
 <span

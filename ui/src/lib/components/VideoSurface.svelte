@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { forgetVideoUrl, playback, prefs, videoUrlFor } from '$lib/player.svelte';
-	import { canVideo, cinema, hasVideo, registerVideo, showVideo, video } from '$lib/video.svelte';
+	import { forgetVideoUrl, playback, prefs, videoUrlFor } from '#lib/player.svelte.js';
+	import { canVideo, cinema, hasVideo, registerVideo, showVideo, video } from '#lib/video.svelte.js';
 
 	// --- Music videos (plan 031) -------------------------------------------------------------
 	// When the track *is* a music video, the player view draws the video instead of the artwork.

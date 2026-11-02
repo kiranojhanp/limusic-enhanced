@@ -21,11 +21,11 @@
 		Share08Icon,
 		UserBlock01Icon
 	} from '@hugeicons/core-free-icons';
-	import * as api from '$lib/api';
-	import type { BrowseItem } from '$lib/api';
-	import { addItemToPlaylist, enqueueItem, playItem } from '$lib/browse';
-	import { anchorMenu, ctxHost, fitMenu, NO_ANCHOR, toBody } from '$lib/menu';
-	import { t } from '$lib/i18n.svelte';
+	import * as api from '#lib/api.js';
+	import type { BrowseItem } from '#lib/api.js';
+	import { addItemToPlaylist, enqueueItem, playItem } from '#lib/browse.js';
+	import { anchorMenu, ctxHost, fitMenu, NO_ANCHOR, toBody } from '#lib/menu.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import {
 		addPick,
 		addToLibrary,
@@ -44,7 +44,7 @@
 		toast,
 		togglePin,
 		toggleSaved
-	} from '$lib/player.svelte';
+	} from '#lib/player.svelte.js';
 
 	let {
 		item,

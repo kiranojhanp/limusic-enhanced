@@ -13,14 +13,14 @@
 		ViewIcon,
 		ViewOffSlashIcon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import TrackRow from './TrackRow.svelte';
 	import TrackRowSkeleton from './TrackRowSkeleton.svelte';
-	import * as api from '$lib/api';
-	import type { SongItem } from '$lib/api';
-	import { openAddToPlaylist, playback, toast } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
-	import { thumb } from '$lib/thumb';
+	import * as api from '#lib/api.js';
+	import type { SongItem } from '#lib/api.js';
+	import { openAddToPlaylist, playback, toast } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { thumb } from '#lib/thumb.js';
 
 	// Suggestions under a playlist you own (#395): YouTube Music's own shelf, or the playlist's
 	// radio where YouTube has none (past 100 tracks). Inline at the foot of the list rather than in

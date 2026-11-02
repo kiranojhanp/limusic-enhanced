@@ -27,37 +27,37 @@
 		SpotifyIcon,
 		Search01Icon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import * as RadioGroup from '$lib/components/ui/radio-group';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import TrackRow from '$lib/components/TrackRow.svelte';
-	import TrackColumns, { chosen, loadMyPlays, myPlays } from '$lib/components/TrackColumns.svelte';
-	import { availableColumns, fitColumns } from '$lib/trackcolumns';
-	import TrackSelectionBar from '$lib/components/TrackSelectionBar.svelte';
-	import TrackSelectButton from '$lib/components/TrackSelectButton.svelte';
-	import { trackSelection } from '$lib/selection.svelte';
-	import { subtitleCount, withSubtitleCount } from '$lib/trackcount';
-	import EditPlaylistDialog from '$lib/components/EditPlaylistDialog.svelte';
-	import TrackFilter, { filterTracks } from '$lib/components/TrackFilter.svelte';
-	import TrackRowSkeleton from '$lib/components/TrackRowSkeleton.svelte';
-	import PlaylistSuggestions from '$lib/components/PlaylistSuggestions.svelte';
-	import ErrorState from '$lib/components/ErrorState.svelte';
-	import NowPlayingPill from '$lib/components/NowPlayingPill.svelte';
-	import * as api from '$lib/api';
-	import { ON_REPEAT_ID } from '$lib/api';
-	import type { BrowseItem, PlaylistPage, SongItem } from '$lib/api';
-	import { dragScroll, PLAYLIST_ROW_MIME } from '$lib/dnd';
-	import { canDropAt, reorder, successorId } from '$lib/reorder';
-	import { getCached, putCached, invalidateCachedPrefix } from '$lib/pagecache';
-	import { thumb } from '$lib/thumb';
-	import { appearance } from '$lib/theme.svelte';
-	import { anchorMenu, fitMenu, NO_ANCHOR } from '$lib/menu';
-	import { rowWindow } from '$lib/rows';
-	import { rowScroller } from '$lib/rows.svelte';
-	import { restoreTo } from '$lib/scrollrestore';
-	import { t } from '$lib/i18n.svelte';
-	import { imp, updateFromSpotify } from '$lib/import.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as RadioGroup from '#lib/components/ui/radio-group/index.js';
+	import * as AlertDialog from '#lib/components/ui/alert-dialog/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import TrackRow from '#lib/components/TrackRow.svelte';
+	import TrackColumns, { chosen, loadMyPlays, myPlays } from '#lib/components/TrackColumns.svelte';
+	import { availableColumns, fitColumns } from '#lib/trackcolumns.js';
+	import TrackSelectionBar from '#lib/components/TrackSelectionBar.svelte';
+	import TrackSelectButton from '#lib/components/TrackSelectButton.svelte';
+	import { trackSelection } from '#lib/selection.svelte.js';
+	import { subtitleCount, withSubtitleCount } from '#lib/trackcount.js';
+	import EditPlaylistDialog from '#lib/components/EditPlaylistDialog.svelte';
+	import TrackFilter, { filterTracks } from '#lib/components/TrackFilter.svelte';
+	import TrackRowSkeleton from '#lib/components/TrackRowSkeleton.svelte';
+	import PlaylistSuggestions from '#lib/components/PlaylistSuggestions.svelte';
+	import ErrorState from '#lib/components/ErrorState.svelte';
+	import NowPlayingPill from '#lib/components/NowPlayingPill.svelte';
+	import * as api from '#lib/api.js';
+	import { ON_REPEAT_ID } from '#lib/api.js';
+	import type { BrowseItem, PlaylistPage, SongItem } from '#lib/api.js';
+	import { dragScroll, PLAYLIST_ROW_MIME } from '#lib/dnd.js';
+	import { canDropAt, reorder, successorId } from '#lib/reorder.js';
+	import { getCached, putCached, invalidateCachedPrefix } from '#lib/pagecache.js';
+	import { thumb } from '#lib/thumb.js';
+	import { appearance } from '#lib/theme.svelte.js';
+	import { anchorMenu, fitMenu, NO_ANCHOR } from '#lib/menu.js';
+	import { rowWindow } from '#lib/rows.js';
+	import { rowScroller } from '#lib/rows.svelte.js';
+	import { restoreTo } from '#lib/scrollrestore.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { imp, updateFromSpotify } from '#lib/import.svelte.js';
 
 	import {
 		SORTS,
@@ -66,7 +66,7 @@
 		sortSongs,
 		storedExactly,
 		type SortKey
-	} from '$lib/sort';
+	} from '#lib/sort.js';
 	import {
 		addPick,
 		addToLibrary,
@@ -94,7 +94,7 @@
 		lastPlaylistAdd,
 		lastPlaylistRemove,
 		refreshLocalPlaylists
-	} from '$lib/player.svelte';
+	} from '#lib/player.svelte.js';
 
 	// `$state.raw`, not `$state`: a deep proxy makes every read of a row go through a trap and
 	// create a signal, and this list runs to five figures. Measured at 5,000 rows, one filter pass
@@ -305,7 +305,7 @@
 				? withSubtitleCount(pl.subtitle ?? '', pl.items.length)
 				: pl?.subtitle
 	);
-	// --- sorting (`$lib/sort`) ---------------------------------------------------------------
+	// --- sorting (`#lib/sort.js`) ---------------------------------------------------------------
 	let sort = $state<SortKey>('default');
 	let desc = $state(false);
 	let sortOpen = $state(false);

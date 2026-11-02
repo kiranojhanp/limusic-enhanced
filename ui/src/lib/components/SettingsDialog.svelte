@@ -19,23 +19,23 @@
 		Alert02Icon,
 		LinkSquare02Icon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
-	import { Slider } from '$lib/components/ui/slider';
-	import { Alert, AlertDescription } from '$lib/components/ui/alert';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Popover from '$lib/components/ui/popover';
-	import { HELP_COMBO } from '$lib/shortcuts';
-	import { copyText } from '$lib/clipboard';
-	import * as api from '$lib/api';
-	import { blocked, prefs, refreshLanguage, setAutoplay, ui, toast, unblockArtist } from '$lib/player.svelte';
-	import { win } from '$lib/win.svelte';
-	import { lt } from '$lib/lt.svelte';
-	import AppearanceSettings from '$lib/components/AppearanceSettings.svelte';
-	import Changelog from '$lib/components/Changelog.svelte';
-	import DiscordSettings from '$lib/components/DiscordSettings.svelte';
-	import ScrobbleSettings from '$lib/components/ScrobbleSettings.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import { Slider } from '#lib/components/ui/slider/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import * as Popover from '#lib/components/ui/popover/index.js';
+	import { HELP_COMBO } from '#lib/shortcuts.js';
+	import { copyText } from '#lib/clipboard.js';
+	import * as api from '#lib/api.js';
+	import { blocked, prefs, refreshLanguage, setAutoplay, ui, toast, unblockArtist } from '#lib/player.svelte.js';
+	import { win } from '#lib/win.svelte.js';
+	import { lt } from '#lib/lt.svelte.js';
+	import AppearanceSettings from '#lib/components/AppearanceSettings.svelte';
+	import Changelog from '#lib/components/Changelog.svelte';
+	import DiscordSettings from '#lib/components/DiscordSettings.svelte';
+	import ScrobbleSettings from '#lib/components/ScrobbleSettings.svelte';
 	import {
 		updateState,
 		availableMessage,
@@ -43,12 +43,12 @@
 		installUpdate,
 		openDownloadPage,
 		recheckForUpdates
-	} from '$lib/updater.svelte';
+	} from '#lib/updater.svelte.js';
 	import { getVersion } from '@tauri-apps/api/app';
-	import { t, setLocale, currentLocale, LOCALES } from '$lib/i18n.svelte';
-	import GlobalHotkeysSettings from '$lib/components/GlobalHotkeysSettings.svelte';
-	import LyricsSourcesSettings from '$lib/components/LyricsSourcesSettings.svelte';
-	import LanguagePicker from '$lib/components/LanguagePicker.svelte';
+	import { t, setLocale, currentLocale, LOCALES } from '#lib/i18n.svelte.js';
+	import GlobalHotkeysSettings from '#lib/components/GlobalHotkeysSettings.svelte';
+	import LyricsSourcesSettings from '#lib/components/LyricsSourcesSettings.svelte';
+	import LanguagePicker from '#lib/components/LanguagePicker.svelte';
 
 	type TabId =
 		| 'general'

@@ -31,12 +31,12 @@
 	import StackCard from './StackCard.svelte';
 	import SectionHeading from './SectionHeading.svelte';
 	import TrackRow from './TrackRow.svelte';
-	import * as api from '$lib/api';
-	import type { BrowseItem } from '$lib/api';
-	import type { CardSize } from '$lib/personal';
-	import { asSong } from '$lib/browse';
-	import { openAddToPlaylist, openPlayer, playSong, playback } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import * as api from '#lib/api.js';
+	import type { BrowseItem } from '#lib/api.js';
+	import type { CardSize } from '#lib/personal.js';
+	import { asSong } from '#lib/browse.js';
+	import { openAddToPlaylist, openPlayer, playSong, playback } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let {
 		title,

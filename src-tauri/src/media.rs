@@ -18,6 +18,7 @@ use tauri::{AppHandle, Manager};
 use crate::state::AppState;
 
 /// Update messages: app → media-controls owner thread.
+#[allow(dead_code)] // `Volume(i64)` inner value is platform-conditional (used only on Linux MPRIS)
 enum MediaUpdate {
     Metadata { title: String, artist: String, album: Option<String>, cover: Option<String> },
     Album(String), // learned after the track's metadata went out; keeps the duration

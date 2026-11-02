@@ -19,15 +19,15 @@
 		SparklesIcon,
 		TheaterIcon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
-	import { Slider } from '$lib/components/ui/slider';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import type { Reverb } from '$lib/api';
-	import { inRoom } from '$lib/lt.svelte';
-	import { playback, setTempoPitch } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import { Slider } from '#lib/components/ui/slider/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import type { Reverb } from '#lib/api.js';
+	import { inRoom } from '#lib/lt.svelte.js';
+	import { playback, setTempoPitch } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import {
 		BUILTIN_PRESETS,
 		EFFECT_PRESETS_KEY,
@@ -43,7 +43,7 @@
 		type BuiltinId,
 		type EffectPreset,
 		type EffectSettings
-	} from '$lib/effect-presets';
+	} from '#lib/effect-presets.js';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 

@@ -2,9 +2,9 @@
 // Scrobbling settings tab (which can connect and disconnect too) and the track menu's "Edit
 // scrobble". A copy per component went stale the moment another one changed it, which is the
 // lesson `prefs.discordRpc` already taught.
-import * as api from '$lib/api';
-import { toast } from '$lib/player.svelte';
-import { t } from '$lib/i18n.svelte';
+import * as api from '#lib/api.js';
+import { toast } from '#lib/player.svelte.js';
+import { t } from '#lib/i18n.svelte.js';
 
 export const lastfm = $state({
 	connected: false,

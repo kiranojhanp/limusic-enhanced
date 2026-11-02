@@ -1,7 +1,7 @@
 // Shared reactive app state (playback + auth), set up ONCE by the root layout. Components import
 // `playback`/`auth` and read them reactively; the Rust side drives them via Tauri events.
 // context/11 UI contract — this module only calls commands / subscribes to events.
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import * as api from './api';
 import type {
 	Account,
@@ -40,7 +40,10 @@ export const playback = $state({
 	// Rating of the current track — seeded from its real `likeStatus` on each change, then
 	// optimistic on toggle. Owned here rather than in `ratings` below because the mini player is a
 	// separate webview with its own module instance: the backend reseed is what keeps them agreeing.
-	rating: 'indifferent' as Rating
+	rating: 'indifferent' as Rating,
+	/** The current station's live "now playing" line (ICY + iTunes), or null. Only `RADIO:` rows
+	 *  ever set it; the player bar and full view show it in place of a station's static metadata. */
+	radio: null as api.RadioMeta | null
 });
 
 /**
@@ -200,7 +203,7 @@ function resetLibraryForAccount() {
 
 /** Fetch the library once (or force a refresh). No-op while a load is in flight. */
 export async function loadLibrary(force = false) {
-	if (library.loading || (library.loaded && !force)) return;
+	if (library.loading || library.loaded && !force) return;
 	const generation = libraryGeneration;
 	library.loading = true;
 	library.error = null;
@@ -225,7 +228,7 @@ export async function loadLibrary(force = false) {
 
 /** Saved albums, artists and subscriptions, same caching rules as `loadLibrary`. */
 export async function loadLibraryExtras(force = false) {
-	if (library.extrasLoading || (library.extrasLoaded && !force)) return;
+	if (library.extrasLoading || library.extrasLoaded && !force) return;
 	const generation = libraryGeneration;
 	library.extrasLoading = true;
 	library.extrasError = null;
@@ -251,7 +254,7 @@ export async function loadLibraryExtras(force = false) {
 
 /** The user's own uploaded albums, same caching rules as `loadLibrary`. */
 export async function loadUploadAlbums(force = false) {
-	if (library.uploadAlbumsLoading || (library.uploadAlbumsLoaded && !force)) return;
+	if (library.uploadAlbumsLoading || library.uploadAlbumsLoaded && !force) return;
 	const generation = libraryGeneration;
 	library.uploadAlbumsLoading = true;
 	library.uploadAlbumsError = null;
@@ -277,15 +280,15 @@ export async function createLibraryPlaylist(title: string, local: boolean): Prom
 	if (local) {
 		// SQLite already has it, so read the real row back rather than guessing at one.
 		await refreshLocalPlaylists();
-		return (
-			library.items.find((i) => i.id === id) ?? {
-				kind: 'playlist',
-				id,
-				title,
-				subtitle: t('library.local_playlist_subtitle', { count: 0 })
-			}
-		);
+
+		return library.items.find((i) => i.id === id) ?? {
+			kind: 'playlist',
+			id,
+			title,
+			subtitle: t('library.local_playlist_subtitle', { count: 0 })
+		};
 	}
+
 	// YouTube's library browse is eventually-consistent and won't include a brand-new playlist for a
 	// few seconds, so surface it immediately instead of refetching.
 	const browseId = id.startsWith('VL') ? id : `VL${id}`;
@@ -317,7 +320,7 @@ export async function refreshLocalPlaylists(): Promise<void> {
 /** Optimistically apply an edit to a library playlist's row (sidebar + Library grid), so a rename
  *  or a new cover shows up everywhere without a refetch. */
 export function patchLibraryPlaylist(playlistId: string, patch: Partial<BrowseItem>) {
-	library.items = library.items.map((it) => (it.id === playlistId ? { ...it, ...patch } : it));
+	library.items = library.items.map((it) => it.id === playlistId ? { ...it, ...patch } : it);
 }
 
 /**
@@ -487,10 +490,7 @@ export const removeLocalFolder = (path: string) => runLocal(() => api.removeLoca
 
 export const blocked = $state({ artists: [] as api.BlockedArtist[] });
 
-export const loadBlocked = () =>
-	api.getBlockedArtists()
-		.then((l) => (blocked.artists = l))
-		.catch(() => {});
+export const loadBlocked = () => api.getBlockedArtists().then((l) => blocked.artists = l).catch(() => {});
 
 /** Block an artist. Rust also drops their upcoming tracks and skips off them if one is playing. */
 export async function blockArtist(id: string | undefined, name: string) {
@@ -808,7 +808,7 @@ export async function syncSavedToYouTube(): Promise<{ synced: number; failed: nu
 	let failed = 0;
 	for (const item of pl.unsynced(personal)) {
 		try {
-			if ((await pushSaved(item, known)) === 'unsupported') continue;
+			if (await pushSaved(item, known) === 'unsupported') continue;
 			done.push(item.id);
 		} catch {
 			failed++;
@@ -851,11 +851,7 @@ export function ratingOf(song: SongItem): Rating {
 	// `likeStatus` on any row (live-checked 2026-08-28), so without it every search result drew
 	// itself unrated. A row that does state its rating still wins, since it is fresher than a
 	// crawl up to six hours old.
-	return (
-		ratings[song.video_id] ??
-		song.rating ??
-		(savedIn.map[song.video_id]?.includes(api.LIKED_MUSIC_ID) ? 'like' : 'indifferent')
-	);
+	return ratings[song.video_id] ?? song.rating ?? (savedIn.map[song.video_id]?.includes(api.LIKED_MUSIC_ID) ? 'like' : 'indifferent');
 }
 
 export const isLiked = (song: SongItem): boolean => ratingOf(song) === 'like';
@@ -1070,7 +1066,7 @@ export async function removeSongFromLibrary(song: SongItem): Promise<boolean> {
 		return ratingOf(song) !== 'like';
 	}
 	try {
-		await api.setSongSaved(song.library!.remove_token!);
+		await api.setSongSaved((song.library!).remove_token!);
 		songLibrary[song.video_id] = false;
 		capOverrides(songLibrary);
 		toast.success(t('toasts.removed_from_library'));
@@ -1516,6 +1512,9 @@ export function initApp(mini = false): () => void {
 			Object.assign(playback, p);
 		}),
 		api.onNowPlaying((n) => {
+			// A station change invalidates the previous station's song line immediately; the new
+			// stream's first ICY report repopulates it.
+			if (playback.radio && playback.radio.videoId !== n.videoId) playback.radio = null;
 			playback.now = n;
 			playback.rating = n.rating ?? 'indifferent'; // the track's real rating when known
 			// Feeds Shortcuts recency. Every track start lands here, gapless advances included, so
@@ -1529,16 +1528,21 @@ export function initApp(mini = false): () => void {
 			// Not in the mini player, which has no player view to show it in.
 			if (!mini && prefs.musicVideos && !prefs.nativeVideo && n.isVideo) videoUrlFor(n.videoId);
 		}),
+		// A station's live title, then the same payload again with artwork once iTunes answers.
+		// Matched to the playing id so a slow lookup for the previous station cannot land on this one.
+		api.onRadioMeta((m) => {
+			if (m.videoId === playback.now?.videoId) playback.radio = m;
+		}),
 		// YouTube's own answer for a track whose row never stated one (issue #93). Into the
 		// override map as well as the player bar: the same song is on screen as a list row too,
 		// and `ratingOf` reads that map for every row that is not the playing one.
-		api.onVideoReady((videoId) => (videoReady[videoId] = true)),
+		api.onVideoReady((videoId) => videoReady[videoId] = true),
 		api.onRating((videoId, rating) => {
 			ratings[videoId] = rating;
 			capOverrides(ratings);
 			if (playback.now?.videoId === videoId) playback.rating = rating;
 		}),
-		api.onQueueChanged((q) => (playback.queue = q)),
+		api.onQueueChanged((q) => playback.queue = q),
 		// The items did not change, so keep the array we already hold and patch the rest. Splice
 		// the playing row back in: `start_current` backfills its duration and artists after the
 		// stream resolves, and that repair rides on this event rather than a whole new queue.
@@ -1560,9 +1564,8 @@ export function initApp(mini = false): () => void {
 			const items = [...playback.queue.items, ...q.items];
 			if (items.length !== q.len) {
 				// Missed an event. Cheaper to refetch once than to guess at what we are missing.
-				api.getQueue()
-					.then((full) => (playback.queue = full))
-					.catch(() => {});
+				api.getQueue().then((full) => playback.queue = full).catch(() => {});
+
 				return;
 			}
 			playback.queue = {
@@ -1575,8 +1578,8 @@ export function initApp(mini = false): () => void {
 			playback.position = p;
 			playback.positionAt = performance.now();
 		}),
-		api.onDuration((d) => (playback.duration = d)),
-		api.onPlaybackState((s) => (playback.paused = s === 'paused')),
+		api.onDuration((d) => playback.duration = d),
+		api.onPlaybackState((s) => playback.paused = s === 'paused'),
 		api.onVolume((v) => {
 			// Not while our own drag is in flight: the echo is a value the pointer has already
 			// moved past, and applying it would yank the thumb backwards mid-drag.
@@ -1616,9 +1619,9 @@ export function initApp(mini = false): () => void {
 		api.onLtNotice((msg) => toast(msg))
 	];
 	const teardown = () => subs.forEach((u) => u.then((f) => f()));
-	api.getQueue()
-		.then((q) => (playback.queue = q))
-		.catch(() => {});
+
+	api.getQueue().then((q) => playback.queue = q).catch(() => {});
+
 	// The events above are fire-and-forget, and this window missed every one that already fired:
 	// on a cold start the backend restores the queue before the UI subscribes, and the mini player
 	// is created mid-song. Ask for the current state once rather than guessing at it.
@@ -1631,6 +1634,7 @@ export function initApp(mini = false): () => void {
 			if (playback.now) return; // a real now-playing event beat us to it
 			playback.now = s.now;
 			playback.rating = s.now?.rating ?? 'indifferent';
+			playback.radio = s.radio ?? null;
 			playback.paused = s.paused;
 			playback.position = s.position;
 			playback.positionAt = performance.now();

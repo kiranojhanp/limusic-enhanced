@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 	// "E" in a rounded square: YouTube's explicit marker. Drawn here because HugeIcons' free set
 	// has no explicit-content icon, to the same 24px box / 1.5 stroke / round joins as the rest of
 	// the icons it sits beside, so it takes size and colour from `class` the same way they do.

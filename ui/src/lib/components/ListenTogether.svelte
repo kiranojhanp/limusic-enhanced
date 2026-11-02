@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import {
 		Copy01Icon,
@@ -16,11 +16,11 @@
 		ServerStack01Icon,
 		PlusSignIcon
 	} from '@hugeicons/core-free-icons';
-	import * as api from '$lib/api';
-	import { copyText } from '$lib/clipboard';
-	import { ui, toast } from '$lib/player.svelte';
-	import { lt } from '$lib/lt.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import * as api from '#lib/api.js';
+	import { copyText } from '#lib/clipboard.js';
+	import { ui, toast } from '#lib/player.svelte.js';
+	import { lt } from '#lib/lt.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let mode = $state<'join' | 'host'>('join');
 	let name = $state('');

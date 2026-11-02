@@ -6,9 +6,9 @@
 	import { PieChart, Text, Tooltip } from 'layerchart';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { Moon02Icon, Sun03Icon, SunriseIcon, SunsetIcon } from '@hugeicons/core-free-icons';
-	import * as Chart from '$lib/components/ui/chart';
-	import { DAYPARTS, dayparts, listened, tagOf, type Daypart } from '$lib/stats';
-	import { currentLocale, t } from '$lib/i18n.svelte';
+	import * as Chart from '#lib/components/ui/chart/index.js';
+	import { DAYPARTS, dayparts, listened, tagOf, type Daypart } from '#lib/stats.js';
+	import { currentLocale, t } from '#lib/i18n.svelte.js';
 
 	let { hours }: { hours: number[] } = $props();
 

@@ -9,20 +9,20 @@
 		MusicNote01Icon,
 		ViewOffSlashIcon
 	} from '@hugeicons/core-free-icons';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { Button } from '$lib/components/ui/button';
-	import MediaCardSkeleton from '$lib/components/MediaCardSkeleton.svelte';
-	import ErrorState from '$lib/components/ErrorState.svelte';
-	import HomeHero from '$lib/components/HomeHero.svelte';
-	import Shortcuts from '$lib/components/Shortcuts.svelte';
-	import RecentRail from '$lib/components/RecentRail.svelte';
-	import Shelf from '$lib/components/Shelf.svelte';
-	import ForgottenFavourites from '$lib/components/ForgottenFavourites.svelte';
-	import FamiliarArtists from '$lib/components/FamiliarArtists.svelte';
-	import HomeLayoutDialog from '$lib/components/HomeLayoutDialog.svelte';
-	import TrackRowSkeleton from '$lib/components/TrackRowSkeleton.svelte';
-	import * as api from '$lib/api';
-	import type { BrowseItem, HomeChip, HomePage, HomeSection } from '$lib/api';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import MediaCardSkeleton from '#lib/components/MediaCardSkeleton.svelte';
+	import ErrorState from '#lib/components/ErrorState.svelte';
+	import HomeHero from '#lib/components/HomeHero.svelte';
+	import Shortcuts from '#lib/components/Shortcuts.svelte';
+	import RecentRail from '#lib/components/RecentRail.svelte';
+	import Shelf from '#lib/components/Shelf.svelte';
+	import ForgottenFavourites from '#lib/components/ForgottenFavourites.svelte';
+	import FamiliarArtists from '#lib/components/FamiliarArtists.svelte';
+	import HomeLayoutDialog from '#lib/components/HomeLayoutDialog.svelte';
+	import TrackRowSkeleton from '#lib/components/TrackRowSkeleton.svelte';
+	import * as api from '#lib/api.js';
+	import type { BrowseItem, HomeChip, HomePage, HomeSection } from '#lib/api.js';
 	import {
 		auth,
 		library,
@@ -31,8 +31,8 @@
 		playback,
 		seedOnRepeatPick,
 		toast
-	} from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	} from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import {
 		HOME_KINDS,
 		arrangeSections,
@@ -40,8 +40,8 @@
 		hiddenSections,
 		interleave,
 		recentItems
-	} from '$lib/personal';
-	import { getCached, putCached } from '$lib/pagecache';
+	} from '#lib/personal.js';
+	import { getCached, putCached } from '#lib/pagecache.js';
 
 	const FORGOTTEN_KEY = 'home:forgotten';
 

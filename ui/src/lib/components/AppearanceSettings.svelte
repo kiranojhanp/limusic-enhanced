@@ -23,19 +23,19 @@
 		MinusSignIcon,
 		ArrowTurnBackwardIcon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
-	import { Slider } from '$lib/components/ui/slider';
-	import * as Select from '$lib/components/ui/select';
-	import * as Popover from '$lib/components/ui/popover';
-	import ColorPicker from '$lib/components/ColorPicker.svelte';
-	import ThemeMock from '$lib/components/ThemeMock.svelte';
-	import { LEVELS as ZOOM_LEVELS, setZoom, zoom } from '$lib/zoom.svelte';
-	import { playback, toast } from '$lib/player.svelte';
-	import { thumb } from '$lib/thumb';
-	import { appIcon, chooseAppIcon } from '$lib/appicon.svelte';
-	import { t, type TranslationKey } from '$lib/i18n.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import { Slider } from '#lib/components/ui/slider/index.js';
+	import * as Select from '#lib/components/ui/select/index.js';
+	import * as Popover from '#lib/components/ui/popover/index.js';
+	import ColorPicker from '#lib/components/ColorPicker.svelte';
+	import ThemeMock from '#lib/components/ThemeMock.svelte';
+	import { LEVELS as ZOOM_LEVELS, setZoom, zoom } from '#lib/zoom.svelte.js';
+	import { playback, toast } from '#lib/player.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import { appIcon, chooseAppIcon } from '#lib/appicon.svelte.js';
+	import { t, type TranslationKey } from '#lib/i18n.svelte.js';
 	import {
 		THEMES,
 		FONTS,
@@ -59,7 +59,7 @@
 		registerFontFiles,
 		onAccent,
 		type Custom
-	} from '$lib/theme.svelte';
+	} from '#lib/theme.svelte.js';
 
 	const GROUP = 'mb-7 last:mb-1';
 	const LABEL =

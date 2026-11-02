@@ -13,10 +13,10 @@
 	import { untrack } from 'svelte';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { ColorPickerIcon } from '@hugeicons/core-free-icons';
-	import { Slider } from '$lib/components/ui/slider';
-	import { Input } from '$lib/components/ui/input';
-	import { hexToHsv, hsvToHex, type Hsv } from '$lib/color';
-	import { t } from '$lib/i18n.svelte';
+	import { Slider } from '#lib/components/ui/slider/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { hexToHsv, hsvToHex, type Hsv } from '#lib/color.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let {
 		value,

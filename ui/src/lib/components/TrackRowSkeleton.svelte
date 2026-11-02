@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 
 	// Mirrors TrackRow's layout for loading track lists.
 	let { hideThumb = false }: { hideThumb?: boolean } = $props();

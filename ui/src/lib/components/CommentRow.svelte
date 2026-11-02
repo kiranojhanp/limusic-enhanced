@@ -11,8 +11,8 @@
 		ThumbsDownIcon,
 		ThumbsUpIcon
 	} from '@hugeicons/core-free-icons';
-	import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
-	import type { Comment, CommentAction } from '$lib/api';
+	import { Avatar, AvatarFallback, AvatarImage } from '#lib/components/ui/avatar/index.js';
+	import type { Comment, CommentAction } from '#lib/api.js';
 	import {
 		actOnComment,
 		cancelDraft,
@@ -24,10 +24,10 @@
 		requestDelete,
 		shownCount,
 		submitDraft
-	} from '$lib/comments.svelte';
+	} from '#lib/comments.svelte.js';
 	import CommentComposer from './CommentComposer.svelte';
-	import { t } from '$lib/i18n.svelte';
-	import { thumb } from '$lib/thumb';
+	import { t } from '#lib/i18n.svelte.js';
+	import { thumb } from '#lib/thumb.js';
 
 	// A comment is another person's text: everything below renders as text (never markup), and a
 	// link in it is just characters. No transitions: rows stream under a stationary pointer while

@@ -65,10 +65,10 @@
 		TextFontIcon,
 		TranslateIcon
 	} from '@hugeicons/core-free-icons';
-	import * as api from '$lib/api';
-	import { playback } from '$lib/player.svelte';
-	import { currentLocale, t } from '$lib/i18n.svelte';
-	import * as Popover from '$lib/components/ui/popover';
+	import * as api from '#lib/api.js';
+	import { playback } from '#lib/player.svelte.js';
+	import { currentLocale, t } from '#lib/i18n.svelte.js';
+	import * as Popover from '#lib/components/ui/popover/index.js';
 	import LyricsSourcePicker from './LyricsSourcePicker.svelte';
 
 	// `expanded` only sizes the type and centres the column. The owner of the extra room (the side

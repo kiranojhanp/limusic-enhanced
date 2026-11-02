@@ -15,14 +15,14 @@
 		BookmarkCheck02Icon,
 		ArrowRight01Icon
 	} from '@hugeicons/core-free-icons';
-	import MediaCardSkeleton from '$lib/components/MediaCardSkeleton.svelte';
-	import TrackRow from '$lib/components/TrackRow.svelte';
-	import TrackRowSkeleton from '$lib/components/TrackRowSkeleton.svelte';
-	import ErrorState from '$lib/components/ErrorState.svelte';
-	import Shelf from '$lib/components/Shelf.svelte';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import * as api from '$lib/api';
-	import type { ArtistPage, BrowseItem, PlaylistPage } from '$lib/api';
+	import MediaCardSkeleton from '#lib/components/MediaCardSkeleton.svelte';
+	import TrackRow from '#lib/components/TrackRow.svelte';
+	import TrackRowSkeleton from '#lib/components/TrackRowSkeleton.svelte';
+	import ErrorState from '#lib/components/ErrorState.svelte';
+	import Shelf from '#lib/components/Shelf.svelte';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import * as api from '#lib/api.js';
+	import type { ArtistPage, BrowseItem, PlaylistPage } from '#lib/api.js';
 	import {
 		addPick,
 		blockArtist,
@@ -36,10 +36,10 @@
 		toast,
 		noteLibrary,
 		toggleSaved
-	} from '$lib/player.svelte';
-	import { getCached, putCached } from '$lib/pagecache';
-	import { anchorMenu, fitMenu, NO_ANCHOR } from '$lib/menu';
-	import { t } from '$lib/i18n.svelte';
+	} from '#lib/player.svelte.js';
+	import { getCached, putCached } from '#lib/pagecache.js';
+	import { anchorMenu, fitMenu, NO_ANCHOR } from '#lib/menu.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let artist = $state<ArtistPage | null>(null);
 	let loading = $state(true);

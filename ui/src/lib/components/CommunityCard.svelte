@@ -5,14 +5,14 @@
 	import { goto } from '$app/navigation';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { PlayIcon, PlayListAddIcon, MusicNote01Icon } from '@hugeicons/core-free-icons';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import * as api from '$lib/api';
-	import type { BrowseItem, PlaylistPage } from '$lib/api';
-	import { thumb } from '$lib/thumb';
-	import { getCached, putCached } from '$lib/pagecache';
-	import { openAddManyToPlaylist, playFrom, toast, touchPick } from '$lib/player.svelte';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import * as api from '#lib/api.js';
+	import type { BrowseItem, PlaylistPage } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
+	import { getCached, putCached } from '#lib/pagecache.js';
+	import { openAddManyToPlaylist, playFrom, toast, touchPick } from '#lib/player.svelte.js';
 	import ItemMenu from './ItemMenu.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let { item }: { item: BrowseItem } = $props();
 

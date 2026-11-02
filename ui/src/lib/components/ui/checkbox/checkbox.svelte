@@ -2,7 +2,7 @@
 	import { Checkbox as CheckboxPrimitive } from "bits-ui";
 	import { HugeiconsIcon } from "@hugeicons/svelte";
 	import { Tick02Icon, MinusSignIcon } from "@hugeicons/core-free-icons";
-	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
+	import { cn, type WithoutChildrenOrChild } from "#lib/utils.js";
 
 	let {
 		ref = $bindable(null),

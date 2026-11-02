@@ -267,6 +267,32 @@ impl Db {
                 manual          INTEGER NOT NULL DEFAULT 0,
                 updated_at      INTEGER NOT NULL
             );
+            -- Radio stations the user saved. `kind` is 'favorite' (a directory station, kept as a
+            -- snapshot so it still opens when the directory is down) or 'custom' (a stream URL the
+            -- user pasted). This is user data, not a cache: nothing rebuilds it.
+            CREATE TABLE IF NOT EXISTS radio_stations (
+                uuid        TEXT PRIMARY KEY,
+                kind        TEXT NOT NULL,
+                name        TEXT NOT NULL,
+                stream_url  TEXT NOT NULL DEFAULT '',
+                homepage    TEXT NOT NULL DEFAULT '',
+                favicon     TEXT NOT NULL DEFAULT '',
+                tags        TEXT NOT NULL DEFAULT '',
+                country     TEXT NOT NULL DEFAULT '',
+                countrycode TEXT NOT NULL DEFAULT '',
+                state       TEXT NOT NULL DEFAULT '',
+                language    TEXT NOT NULL DEFAULT '',
+                votes       INTEGER NOT NULL DEFAULT 0,
+                codec       TEXT NOT NULL DEFAULT '',
+                bitrate     INTEGER NOT NULL DEFAULT 0,
+                hls         INTEGER NOT NULL DEFAULT 0,
+                lastcheckok INTEGER NOT NULL DEFAULT 0,
+                clickcount  INTEGER NOT NULL DEFAULT 0,
+                position    INTEGER NOT NULL DEFAULT 0,
+                created_at  INTEGER NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS radio_stations_kind
+                ON radio_stations(kind, position, created_at);
             "#,
         )?;
         // Migrate pre-Phase-4 DBs that predate the loudness_db column. Errors ("duplicate column")
@@ -453,6 +479,132 @@ impl Db {
     pub fn delete_setting(&self, key: &str) {
         let conn = self.0.lock().unwrap();
         let _ = conn.execute("DELETE FROM settings WHERE key = ?1", [key]);
+    }
+
+    // --- saved radio stations (favorites + user-added streams) -------------------------------
+
+    fn radio_row(r: &rusqlite::Row<'_>) -> rusqlite::Result<crate::radio::Station> {
+        let stream_url: String = r.get("stream_url")?;
+        Ok(crate::radio::Station {
+            stationuuid: r.get("uuid")?,
+            name: r.get("name")?,
+            // Stored once; the player reads either field, and `stream_url()` prefers the resolved.
+            url: stream_url.clone(),
+            url_resolved: stream_url,
+            homepage: r.get("homepage")?,
+            favicon: r.get("favicon")?,
+            tags: r.get("tags")?,
+            country: r.get("country")?,
+            countrycode: r.get("countrycode")?,
+            state: r.get("state")?,
+            language: r.get("language")?,
+            votes: r.get::<_, i64>("votes")?.max(0) as u32,
+            codec: r.get("codec")?,
+            bitrate: r.get::<_, i64>("bitrate")?.max(0) as u32,
+            hls: r.get::<_, i64>("hls")?.clamp(0, 1) as u8,
+            lastcheckok: r.get::<_, i64>("lastcheckok")?.clamp(0, 1) as u8,
+            clickcount: r.get::<_, i64>("clickcount")?.max(0) as u32,
+        })
+    }
+
+    /// Saved stations of one kind (`"favorite"` or `"custom"`), in the order the user added them.
+    pub fn radio_list(&self, kind: &str) -> Vec<crate::radio::Station> {
+        let conn = self.0.lock().unwrap();
+        let mut stmt = match conn.prepare(
+            "SELECT uuid, name, stream_url, homepage, favicon, tags, country, countrycode,
+                    state, language, votes, codec, bitrate, hls, lastcheckok, clickcount
+             FROM radio_stations WHERE kind = ?1 ORDER BY position, created_at",
+        ) {
+            Ok(stmt) => stmt,
+            Err(_) => return Vec::new(),
+        };
+        stmt.query_map([kind], Self::radio_row).and_then(|rows| rows.collect()).unwrap_or_default()
+    }
+
+    /// One saved station and the kind it was saved as. Used on the playback path before the
+    /// directory: a custom stream has no directory entry to look up, and a favorite must still play
+    /// when the directory is unreachable.
+    pub fn radio_get(&self, uuid: &str) -> Option<(String, crate::radio::Station)> {
+        let conn = self.0.lock().unwrap();
+        conn.query_row(
+            "SELECT kind, uuid, name, stream_url, homepage, favicon, tags, country, countrycode,
+                    state, language, votes, codec, bitrate, hls, lastcheckok, clickcount
+             FROM radio_stations WHERE uuid = ?1",
+            [uuid],
+            |r| Ok((r.get::<_, String>("kind")?, Self::radio_row(r)?)),
+        )
+        .ok()
+    }
+
+    pub fn radio_put(&self, kind: &str, station: &crate::radio::Station) -> rusqlite::Result<()> {
+        let conn = self.0.lock().unwrap();
+        // Re-saving a favorite keeps its place; a new row goes to the end of its list.
+        let position: i64 = conn
+            .query_row(
+                "SELECT position FROM radio_stations WHERE uuid = ?1",
+                [&station.stationuuid],
+                |r| r.get(0),
+            )
+            .unwrap_or_else(|_| {
+                conn.query_row(
+                    "SELECT COALESCE(MAX(position), 0) + 1 FROM radio_stations WHERE kind = ?1",
+                    [kind],
+                    |r| r.get(0),
+                )
+                .unwrap_or(1)
+            });
+        conn.execute(
+            "INSERT INTO radio_stations
+                (uuid, kind, name, stream_url, homepage, favicon, tags, country, countrycode,
+                 state, language, votes, codec, bitrate, hls, lastcheckok, clickcount,
+                 position, created_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19)
+             ON CONFLICT(uuid) DO UPDATE SET
+                kind = excluded.kind,
+                name = excluded.name,
+                stream_url = excluded.stream_url,
+                homepage = excluded.homepage,
+                favicon = excluded.favicon,
+                tags = excluded.tags,
+                country = excluded.country,
+                countrycode = excluded.countrycode,
+                state = excluded.state,
+                language = excluded.language,
+                votes = excluded.votes,
+                codec = excluded.codec,
+                bitrate = excluded.bitrate,
+                hls = excluded.hls,
+                lastcheckok = excluded.lastcheckok,
+                clickcount = excluded.clickcount,
+                position = excluded.position",
+            rusqlite::params![
+                station.stationuuid,
+                kind,
+                station.name,
+                station.stream_url(),
+                station.homepage,
+                station.favicon,
+                station.tags,
+                station.country,
+                station.countrycode,
+                station.state,
+                station.language,
+                station.votes as i64,
+                station.codec,
+                station.bitrate as i64,
+                station.hls as i64,
+                station.lastcheckok as i64,
+                station.clickcount as i64,
+                position,
+                now_secs(),
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn radio_delete(&self, uuid: &str) -> bool {
+        let conn = self.0.lock().unwrap();
+        conn.execute("DELETE FROM radio_stations WHERE uuid = ?1", [uuid]).unwrap_or(0) > 0
     }
 
     /// Persist the canonical selected identity and its two legacy projections atomically. Older
@@ -2555,6 +2707,48 @@ mod tests {
         assert_eq!(d.get_setting("selected_identity_json"), None);
         assert_eq!(d.get_setting("data_sync_id"), None);
         assert_eq!(d.get_setting("account_json"), None);
+    }
+
+    #[test]
+    fn saved_radio_stations_round_trip_and_keep_their_lists_apart() {
+        let d = db();
+        let favorite = crate::radio::Station {
+            stationuuid: "directory-uuid".into(),
+            name: "Saved station".into(),
+            url_resolved: "https://example.com/stream.mp3".into(),
+            country: "Iceland".into(),
+            ..Default::default()
+        };
+        let custom = crate::radio::Station::custom(
+            crate::radio::custom_uuid(),
+            "Mine".into(),
+            "https://example.com/live".into(),
+            "MP3".into(),
+        );
+        d.radio_put("favorite", &favorite).unwrap();
+        d.radio_put("custom", &custom).unwrap();
+
+        let favorites = d.radio_list("favorite");
+        assert_eq!(favorites.len(), 1, "a custom station is not a favorite");
+        assert_eq!(favorites[0].stationuuid, "directory-uuid");
+        // The stream URL is stored even though it never crosses the Tauri boundary to the UI.
+        assert_eq!(favorites[0].stream_url(), "https://example.com/stream.mp3");
+        assert_eq!(d.radio_list("custom").len(), 1);
+
+        let (kind, fetched) = d.radio_get(&custom.stationuuid).unwrap();
+        assert_eq!(kind, "custom");
+        assert_eq!(fetched.name, "Mine");
+
+        // Saving an existing favorite again renames it in place; it must not become a second row.
+        d.radio_put("favorite", &crate::radio::Station { name: "Renamed".into(), ..favorite })
+            .unwrap();
+        let favorites = d.radio_list("favorite");
+        assert_eq!(favorites.len(), 1);
+        assert_eq!(favorites[0].name, "Renamed");
+
+        assert!(d.radio_delete(&custom.stationuuid));
+        assert!(!d.radio_delete(&custom.stationuuid), "removing it twice is a no-op");
+        assert!(d.radio_list("custom").is_empty());
     }
 }
 

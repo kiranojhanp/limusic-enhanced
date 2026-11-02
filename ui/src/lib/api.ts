@@ -227,13 +227,27 @@ export const LOCAL_ARTIST_PREFIX = 'LOCALARTIST:';
 export const LOCAL_PLAYLIST_PREFIX = 'LOCALPLAYLIST:';
 export const isLocalPlaylist = (id: string | undefined | null): boolean =>
 	!!id && id.startsWith(LOCAL_PLAYLIST_PREFIX);
-/** Anything with no YouTube item behind it: nothing to share, no radio, no account to save it to. */
+/**
+ * Internet radio (Rust `radio.rs`). A station is a song whose `video_id` is `RADIO:<stationuuid>`,
+ * so it rides the queue, media keys and Shortcuts exactly as a local file does. It is live: no
+ * duration, no seek, no lyrics, no video, and no scrobble.
+ */
+export const RADIO_PREFIX = 'RADIO:';
+export const isRadioId = (id: string | undefined | null): boolean =>
+	!!id && id.startsWith(RADIO_PREFIX);
+
+/**
+ * Anything with no YouTube item behind it (a local file, a station): nothing to share, no radio, no
+ * rating, no comments, no account to save it to.
+ */
 export const isLocalId = (id: string | undefined | null): boolean =>
 	!!id &&
 	(id.startsWith(LOCAL_SONG_PREFIX) ||
 		id.startsWith(LOCAL_ALBUM_PREFIX) ||
 		id.startsWith(LOCAL_ARTIST_PREFIX) ||
-		id.startsWith(LOCAL_PLAYLIST_PREFIX));
+		id.startsWith(LOCAL_PLAYLIST_PREFIX) ||
+		id.startsWith(RADIO_PREFIX));
+
 
 export interface LocalLibrary {
 	/** Watched folders, as absolute paths. */
@@ -469,6 +483,8 @@ export interface PlaybackSnapshot {
 	duration: number;
 	/** The level restored from last run (or the one another window already set). */
 	volume: number;
+	/** A live station's current song, if the stream has reported one yet. */
+	radio?: RadioMeta | null;
 }
 export const getPlayback = () => invoke<PlaybackSnapshot>('get_playback');
 
@@ -1350,3 +1366,122 @@ export const onMatugenThemeChanged = (cb: (css: string | null) => void): Promise
 	listen<string | null>('matugen-theme-changed', (event) => cb(event.payload));
 export const startMatugenWatcher = () => invoke<void>('start_matugen_watcher');
 export const stopMatugenWatcher = () => invoke<void>('stop_matugen_watcher');
+
+// --- Internet radio (radio.rs) -----------------------------------------------------------------
+// The directory is radio-browser.info: no key, no account, ~50k community-maintained streams. The
+// stream URL never crosses this boundary — the UI plays `RADIO:<stationuuid>` and Rust resolves it,
+// so a station that moved its stream keeps working.
+
+/** One station as the directory describes it. Everything here is display metadata. */
+export interface RadioStation {
+	stationuuid: string;
+	name: string;
+	homepage: string;
+	favicon: string;
+	/** Comma-separated, as the directory stores them. */
+	tags: string;
+	country: string;
+	/** ISO 3166-1 alpha-2, for the flag in a card. */
+	countrycode: string;
+	state: string;
+	language: string;
+	votes: number;
+	codec: string;
+	bitrate: number;
+	/** 0/1. An HLS station plays but carries no ICY metadata, so no live song title. */
+	hls: number;
+	/** 0/1: the directory's last reachability check. */
+	lastcheckok: number;
+	clickcount: number;
+}
+
+/** One entry of a filter list. `iso_3166_1` is set for countries only. */
+export interface RadioFacet {
+	name: string;
+	iso_3166_1: string;
+	stationcount: number;
+}
+
+export interface RadioFacets {
+	countries: RadioFacet[];
+	languages: RadioFacet[];
+	tags: RadioFacet[];
+}
+
+export interface RadioQuery {
+	name?: string;
+	country?: string;
+	language?: string;
+	tag?: string;
+	limit?: number;
+	offset?: number;
+}
+
+/** The browse page's landing grid: the directory's most-voted stations. */
+export const radioDiscover = (limit?: number) =>
+	invoke<RadioStation[]>('radio_discover', { limit });
+export const radioSearch = (q: RadioQuery) =>
+	invoke<RadioStation[]>('radio_search', {
+		name: q.name,
+		country: q.country,
+		language: q.language,
+		tag: q.tag,
+		limit: q.limit,
+		offset: q.offset
+	});
+/** Countries, languages and genres for the filter row. Cached in Rust for a day. */
+export const radioFacets = () => invoke<RadioFacets>('radio_facets');
+
+/** Saved directory stations, snapshotted so the grid opens even when the directory is down. */
+export const radioFavorites = () => invoke<RadioStation[]>('radio_favorites');
+/** Streams the user added by URL. They have no directory entry. */
+export const radioCustomStations = () => invoke<RadioStation[]>('radio_custom_stations');
+/** Save a station from the directory. Rust re-fetches its stream URL; the UI never sees one. */
+export const radioAddFavorite = (station: RadioStation) =>
+	invoke<RadioStation>('radio_add_favorite', { station });
+/** Add a pasted stream URL. Rust probes it first, so a dead or non-audio URL is rejected here. */
+export const radioAddCustomStation = (name: string, url: string) =>
+	invoke<RadioStation>('radio_add_custom_station', { name, url });
+export const radioRemoveStation = (uuid: string) =>
+	invoke<boolean>('radio_remove_station', { uuid });
+export interface RadioProbe {
+	/** The URL after redirects: what should be saved. */
+	url: string;
+	contentType: string;
+	icyName: string | null;
+}
+/** Validate a pasted URL without saving it. */
+export const radioProbeStream = (url: string) =>
+	invoke<RadioProbe>('radio_probe_stream', { url });
+/** A station logo as a `data:` URL, for hosts the webview refuses to load directly. */
+export const radioFavicon = (url: string) => invoke<string>('radio_favicon', { url });
+
+/**
+ * A station's live "now playing" line. ICY gives `raw` ("Artist - Title"); the iTunes enrichment
+ * fills `album`, `cover` and `link` a moment later. `title`/`artist` are already split, and either
+ * can be null when the stream sent only a title.
+ */
+export interface RadioMeta {
+	videoId: string;
+	station: string;
+	raw: string;
+	title: string | null;
+	artist: string | null;
+	album: string | null;
+	cover: string | null;
+	link: string | null;
+}
+/** Fires on every ICY change, then again when artwork is found for it. */
+export const onRadioMeta = (cb: (m: RadioMeta) => void): Promise<UnlistenFn> =>
+	listen<RadioMeta>('radio-metadata', (e) => cb(e.payload));
+
+/** The queue row for a station. `artists` is what the player bar shows under the name. */
+export function stationToSong(s: RadioStation): SongItem {
+	return {
+		video_id: `${RADIO_PREFIX}${s.stationuuid}`,
+		title: s.name,
+		artists: s.country,
+		thumbnail: s.favicon || undefined
+		// No `duration`: a station has no end, and the transport hides its timeline on that.
+	};
+}

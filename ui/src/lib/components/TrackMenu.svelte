@@ -27,10 +27,10 @@
 		PreferenceVerticalIcon,
 		PencilEdit02Icon
 	} from '@hugeicons/core-free-icons';
-	import * as api from '$lib/api';
-	import type { SongItem } from '$lib/api';
-	import { anchorMenu, ctxHost, fitMenu, NO_ANCHOR, toBody } from '$lib/menu';
-	import { removableFromPlaylist } from '$lib/queue';
+	import * as api from '#lib/api.js';
+	import type { SongItem } from '#lib/api.js';
+	import { anchorMenu, ctxHost, fitMenu, NO_ANCHOR, toBody } from '#lib/menu.js';
+	import { removableFromPlaylist } from '#lib/queue.js';
 	import {
 		addPick,
 		blockArtist,
@@ -52,12 +52,12 @@
 		toggleRating,
 		toggleSongLibrary,
 		ui
-	} from '$lib/player.svelte';
-	import { lastfm } from '$lib/lastfm.svelte';
-	import { listenbrainz } from '$lib/listenbrainz.svelte';
-	import { lt } from '$lib/lt.svelte';
-	import { t } from '$lib/i18n.svelte';
-	import { invalidateCachedPrefix } from '$lib/pagecache';
+	} from '#lib/player.svelte.js';
+	import { lastfm } from '#lib/lastfm.svelte.js';
+	import { listenbrainz } from '#lib/listenbrainz.svelte.js';
+	import { lt } from '#lib/lt.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { invalidateCachedPrefix } from '#lib/pagecache.js';
 
 	let {
 		song,
@@ -136,8 +136,9 @@
 	// builds itself (local files, On Repeat, a mirrored guest queue) rather than dead.
 	const inLib = $derived(inSongLibrary(song));
 	const libraryToken = $derived(songLibraryToken(song));
-	// A local file has no YouTube identity: liking it or sharing it is not a thing, so those items
-	// don't show. Queue, shortcuts, go-to-album and saving it to a playlist on this machine work.
+	// A local file or a station has no YouTube identity: liking it or sharing it is not a thing, so
+	// those items don't show. Queue, shortcuts, go-to-album and saving it to a playlist on this
+	// machine work.
 	const isLocal = $derived(api.isLocalId(song.video_id));
 	// "Remove from this playlist", for a row playing out of a playlist (issue #270). What the three
 	// conditions are and why is in `removableFromPlaylist` (queue.ts), where they are checkable.

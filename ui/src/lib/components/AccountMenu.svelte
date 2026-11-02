@@ -13,13 +13,13 @@
 		Cancel01Icon,
 		UserMinus01Icon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as api from '$lib/api';
-	import { auth, openChannelPicker, toast } from '$lib/player.svelte';
-	import { thumb } from '$lib/thumb';
-	import { anchorMenu, fitMenu, NO_ANCHOR } from '$lib/menu';
-	import { t } from '$lib/i18n.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as AlertDialog from '#lib/components/ui/alert-dialog/index.js';
+	import * as api from '#lib/api.js';
+	import { auth, openChannelPicker, toast } from '#lib/player.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import { anchorMenu, fitMenu, NO_ANCHOR } from '#lib/menu.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let menuOpen = $state(false);
 	let anchor = $state(NO_ANCHOR);

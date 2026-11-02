@@ -15,23 +15,23 @@
         BookmarkAdd02Icon,
         BookmarkCheck02Icon,
     } from "@hugeicons/core-free-icons";
-    import TrackRow from "$lib/components/TrackRow.svelte";
-    import TrackColumns, { chosen } from "$lib/components/TrackColumns.svelte";
-    import { availableColumns, fitColumns } from "$lib/trackcolumns";
-    import TrackSelectionBar from "$lib/components/TrackSelectionBar.svelte";
-    import TrackSelectButton from "$lib/components/TrackSelectButton.svelte";
-    import { trackSelection } from "$lib/selection.svelte";
+    import TrackRow from "#lib/components/TrackRow.svelte";
+    import TrackColumns, { chosen } from "#lib/components/TrackColumns.svelte";
+    import { availableColumns, fitColumns } from "#lib/trackcolumns.js";
+    import TrackSelectionBar from "#lib/components/TrackSelectionBar.svelte";
+    import TrackSelectButton from "#lib/components/TrackSelectButton.svelte";
+    import { trackSelection } from "#lib/selection.svelte.js";
     import TrackFilter, {
         filterTracks,
-    } from "$lib/components/TrackFilter.svelte";
-    import TrackRowSkeleton from "$lib/components/TrackRowSkeleton.svelte";
-    import Shelf from "$lib/components/Shelf.svelte";
-    import ErrorState from "$lib/components/ErrorState.svelte";
-    import ArtistLine from "$lib/components/ArtistLine.svelte";
-    import ExplicitIcon from "$lib/components/ExplicitIcon.svelte";
-    import { Skeleton } from "$lib/components/ui/skeleton";
-    import * as api from "$lib/api";
-    import type { AlbumPage, BrowseItem } from "$lib/api";
+    } from "#lib/components/TrackFilter.svelte";
+    import TrackRowSkeleton from "#lib/components/TrackRowSkeleton.svelte";
+    import Shelf from "#lib/components/Shelf.svelte";
+    import ErrorState from "#lib/components/ErrorState.svelte";
+    import ArtistLine from "#lib/components/ArtistLine.svelte";
+    import ExplicitIcon from "#lib/components/ExplicitIcon.svelte";
+    import { Skeleton } from "#lib/components/ui/skeleton/index.js";
+    import * as api from "#lib/api.js";
+    import type { AlbumPage, BrowseItem } from "#lib/api.js";
     import {
         addPick,
         openShare,
@@ -45,11 +45,11 @@
         toast,
         noteLibrary,
         toggleSaved,
-    } from "$lib/player.svelte";
-    import { getCached, putCached } from "$lib/pagecache";
-    import { thumb } from "$lib/thumb";
-    import { anchorMenu, fitMenu, NO_ANCHOR, toBody } from "$lib/menu";
-    import { t } from "$lib/i18n.svelte";
+    } from "#lib/player.svelte.js";
+    import { getCached, putCached } from "#lib/pagecache.js";
+    import { thumb } from "#lib/thumb.js";
+    import { anchorMenu, fitMenu, NO_ANCHOR, toBody } from "#lib/menu.js";
+    import { t } from "#lib/i18n.svelte.js";
 
     let album = $state<AlbumPage | null>(null);
     let loading = $state(true);

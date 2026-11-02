@@ -21,22 +21,22 @@
 	} from '@hugeicons/core-free-icons';
 	import { goto } from '$app/navigation';
 	import { open as pickFile } from '@tauri-apps/plugin-dialog';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Popover from '$lib/components/ui/popover';
-	import * as RadioGroup from '$lib/components/ui/radio-group';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Checkbox } from '$lib/components/ui/checkbox';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import * as Tabs from '#lib/components/ui/tabs/index.js';
+	import * as Popover from '#lib/components/ui/popover/index.js';
+	import * as RadioGroup from '#lib/components/ui/radio-group/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import ExperimentalBadge from './ExperimentalBadge.svelte';
-	import * as api from '$lib/api';
-	import { copyText } from '$lib/clipboard';
-	import { thumb } from '$lib/thumb';
-	import { parseYtLink } from '$lib/ytlink';
-	import { rowScroller } from '$lib/rows.svelte';
-	import { rowWindow } from '$lib/rows';
-	import { t } from '$lib/i18n.svelte';
-	import { auth, toast } from '$lib/player.svelte';
+	import * as api from '#lib/api.js';
+	import { copyText } from '#lib/clipboard.js';
+	import { thumb } from '#lib/thumb.js';
+	import { parseYtLink } from '#lib/ytlink.js';
+	import { rowScroller } from '#lib/rows.svelte.js';
+	import { rowWindow } from '#lib/rows.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { auth, toast } from '#lib/player.svelte.js';
 	import {
 		clockTime,
 		cooldownUntil,
@@ -46,7 +46,7 @@
 		readFile,
 		readLink,
 		startImport
-	} from '$lib/import.svelte';
+	} from '#lib/import.svelte.js';
 
 	const SPOTIFY_PRIVACY = 'https://www.spotify.com/account/privacy/';
 

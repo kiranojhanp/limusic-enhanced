@@ -19,13 +19,13 @@
 		Timer01Icon,
 		TranslateIcon
 	} from '@hugeicons/core-free-icons';
-	import * as Popover from '$lib/components/ui/popover';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import * as api from '$lib/api';
-	import { ui } from '$lib/player.svelte';
-	import { t, currentLocale } from '$lib/i18n.svelte';
-	import { KIND_CLASS, KIND_LABEL, lyricsKind } from '$lib/lyricsSources';
+	import * as Popover from '#lib/components/ui/popover/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import * as api from '#lib/api.js';
+	import { ui } from '#lib/player.svelte.js';
+	import { t, currentLocale } from '#lib/i18n.svelte.js';
+	import { KIND_CLASS, KIND_LABEL, lyricsKind } from '#lib/lyricsSources.js';
 
 	let {
 		lyrics,
