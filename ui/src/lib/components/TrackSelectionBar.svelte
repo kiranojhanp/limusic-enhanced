@@ -11,12 +11,12 @@
 		Cancel01Icon
 	} from '@hugeicons/core-free-icons';
 	import { Button } from './ui/button';
-	import { enqueue, openAddManyToPlaylist, openPlayer, toast, ui } from '$lib/player.svelte';
-	import * as api from '$lib/api';
-	import type { SongItem } from '$lib/api';
-	import { lt } from '$lib/lt.svelte';
-	import { t } from '$lib/i18n.svelte';
-	import type { TrackSelection } from '$lib/selection.svelte';
+	import { enqueue, openAddManyToPlaylist, openPlayer, toast, ui } from '#lib/player.svelte.js';
+	import * as api from '#lib/api.js';
+	import type { SongItem } from '#lib/api.js';
+	import { lt } from '#lib/lt.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import type { TrackSelection } from '#lib/selection.svelte.js';
 
 	// `onRemove` is only given where the list is one the user can edit (a playlist page they own);
 	// everywhere else there is nothing to remove from and the button is absent.

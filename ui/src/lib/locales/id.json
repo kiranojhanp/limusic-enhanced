@@ -85,11 +85,12 @@
 		"history": "Riwayat",
 		"add_account": "Tambah akun",
 		"remove_account": "Hapus akun",
-		"remove_account_title": "Hapus dari Limusic?",
+		"remove_account_title": "Hapus dari Limusic+?",
 		"remove_account_desc": "{name} hanya dihapus dari daftar ini. Akun Google itu sendiri tidak terpengaruh, dan Anda dapat masuk kembali kapan saja.",
 		"saved_accounts_hint": "Pilih akun tersimpan untuk beralih ke akun tersebut.",
 		"no_channels": "YouTube tidak mengembalikan saluran yang dapat dipilih.",
-		"stats": "Statistik"
+		"stats": "Statistik",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "Putar",
@@ -344,28 +345,28 @@
 			"language_hint": "Pilih bahasa tampilan antarmuka.",
 			"shortcuts_hint": "Buka pintasan papan ketik dengan {key}",
 			"autostart": "Jalankan saat komputer menyala",
-			"autostart_hint": "Mulai Limusic secara otomatis saat sistem Anda dinyalakan.",
+			"autostart_hint": "Mulai Limusic+ secara otomatis saat sistem Anda dinyalakan.",
 			"close_to_tray": "Tutup ke baki sistem (tray)",
-			"close_to_tray_hint": "Biarkan Limusic tetap berjalan di latar belakang saat jendela ditutup.",
+			"close_to_tray_hint": "Biarkan Limusic+ tetap berjalan di latar belakang saat jendela ditutup.",
 			"discord_rpc": "Discord Rich Presence",
 			"discord_rpc_hint": "Tampilkan lagu yang sedang diputar di profil Discord Anda.",
 			"update_banner": "Notifikasi pembaruan",
-			"update_banner_hint": "Tampilkan banner saat versi baru Limusic tersedia.",
+			"update_banner_hint": "Tampilkan banner saat versi baru Limusic+ tersedia.",
 			"proxy": "Proksi HTTP/HTTPS",
 			"proxy_hint": "Arahkan semua permintaan jaringan melalui server proksi kustom.",
 			"proxy_placeholder": "http://host:port (kosong = tidak ada)",
 			"stream_clients": "Klien streaming",
 			"stream_clients_hint": "Nonaktifkan klien untuk melewatinya saat memuat stream. Diabaikan jika variabel lingkungan {var} diatur.",
 			"system_titlebar": "Gunakan bilah judul sistem",
-			"system_titlebar_hint": "Biarkan desktop Anda menggambar bingkai jendela beserta tombol-tombolnya. Limusic tetap menggunakan bilah alatnya sendiri di bawahnya.",
+			"system_titlebar_hint": "Biarkan desktop Anda menggambar bingkai jendela beserta tombol-tombolnya. Limusic+ tetap menggunakan bilah alatnya sendiri di bawahnya.",
 			"language_search": "Cari bahasa",
-			"language_contribute": "Bantu menerjemahkan Limusic",
+			"language_contribute": "Bantu menerjemahkan Limusic+",
 			"track_notifications": "Notifikasi lagu",
-			"track_notifications_hint": "Tampilkan notifikasi saat lagu baru dimulai saat Limusic berada di latar belakang.",
+			"track_notifications_hint": "Tampilkan notifikasi saat lagu baru dimulai saat Limusic+ berada di latar belakang.",
 			"start_minimized": "Mulai di baki sistem saat komputer menyala",
-			"start_minimized_hint": "Saat Limusic dimulai bersama sistem, aplikasi tetap berada di baki sistem sampai Anda membukanya. Membuka aplikasi secara manual akan selalu menampilkan jendela.",
-			"track_notifications_focused": "Sambil menggunakan Limusic",
-			"track_notifications_focused_hint": "Tampilkan juga notifikasi ketika lagu berikutnya mulai sendiri saat Limusic adalah jendela aktif. Lagu yang Anda pilih sendiri tidak akan menampilkan notifikasi."
+			"start_minimized_hint": "Saat Limusic+ dimulai bersama sistem, aplikasi tetap berada di baki sistem sampai Anda membukanya. Membuka aplikasi secara manual akan selalu menampilkan jendela.",
+			"track_notifications_focused": "Sambil menggunakan Limusic+",
+			"track_notifications_focused_hint": "Tampilkan juga notifikasi ketika lagu berikutnya mulai sendiri saat Limusic+ adalah jendela aktif. Lagu yang Anda pilih sendiri tidak akan menampilkan notifikasi."
 		},
 		"themes": {
 			"interface_font": "Font antarmuka",
@@ -418,7 +419,7 @@
 			"preview_hint": "Perubahan penggeser dan pemilih warna ditampilkan di sini saat Anda menyeretnya, lalu diterapkan ke aplikasi saat Anda melepasnya.",
 			"blur_playlist_header": "Burmaskan header daftar putar",
 			"blur_playlist_header_hint": "Tampilkan sampul daftar putar yang blur di dietro header-nya. Membuat halus sampul yang terlihat piksel dan diregang ke lebar penuh.",
-			"matugen_hint": "Ambil setiap warna, aksen termasuk, dari palet Matugen yang dibuat dari wallpaper Anda. Siapkan template Limusic di Matugen terlebih dahulu.",
+			"matugen_hint": "Ambil setiap warna, aksen termasuk, dari palet Matugen yang dibuat dari wallpaper Anda. Siapkan template Limusic+ di Matugen terlebih dahulu.",
 			"classic_player": "Tata letak pemain klasik",
 			"classic_player_hint": "Tampilan pemain asli: artwork saja di atas salinan blur dari sampul, dengan detail lagu berada di sebelah bilah pemain. Off menggunakan tata letak baru, dengan judul, artis dan album di bawah artwork dan tampilan diterangi oleh warna sampul.",
 			"matugen": "Matugen"
@@ -504,7 +505,7 @@
 			"update_check_failed": "Pemeriksaan pembaruan gagal: {error}",
 			"update_packaged": "Versi ini dipasang menggunakan pengelola paket, perbarui dengan cara yang sama.",
 			"kofi": "Belikan saya kopi",
-			"kofi_hint": "Limusic gratis dan akan selalu gratis. Ko-fi tersedia jika Anda ingin memberikan dukungan donasi.",
+			"kofi_hint": "Limusic+ gratis dan akan selalu gratis. Ko-fi tersedia jika Anda ingin memberikan dukungan donasi.",
 			"kofi_button": "Buka Ko-fi",
 			"rollback_available": "Versi ini dikembalikan ke {version}, versi stabil terakhir yang diketahui.",
 			"beta": "Versi beta",
@@ -512,7 +513,7 @@
 		},
 		"hotkeys": {
 			"title": "Pintasan Global",
-			"description": "Kendalikan pemutaran dengan pintasan papan ketik yang dapat disesuaikan, bahkan saat Limusic diminimalkan atau berjalan di latar belakang.",
+			"description": "Kendalikan pemutaran dengan pintasan papan ketik yang dapat disesuaikan, bahkan saat Limusic+ diminimalkan atau berjalan di latar belakang.",
 			"enable": "Aktifkan pintasan global",
 			"enable_hint": "Pintasan global dinonaktifkan. Aktifkan untuk mendengarkan pintasan di seluruh sistem.",
 			"off": "Mati",
@@ -547,7 +548,7 @@
 			"action_toggle_repeat": "Beralih pengulangan",
 			"action_toggle_repeat_hint": "Ubah mode pengulangan: mati, semua, satu.",
 			"action_show_app": "Tampilkan aplikasi",
-			"action_show_app_hint": "Bawa jendela Limusic ke latar depan."
+			"action_show_app_hint": "Bawa jendela Limusic+ ke latar depan."
 		},
 		"discord": {
 			"enable": "Rich Presence",
@@ -563,8 +564,8 @@
 			"status_line1": "Baris 1",
 			"status_line2": "Baris 2",
 			"app_name": "Nama aplikasi",
-			"app_name_hint": "Menggantikan \"Limusic\" di mana pun nama aplikasi muncul. Biarkan kosong untuk mempertahankannya.",
-			"app_name_placeholder": "Limusic",
+			"app_name_hint": "Menggantikan \"Limusic+\" di mana pun nama aplikasi muncul. Biarkan kosong untuk mempertahankannya.",
+			"app_name_placeholder": "Limusic+",
 			"line1": "Baris 1",
 			"line1_hint": "Baris teks tebal, tepat di bawah header.",
 			"line2": "Baris 2",
@@ -577,7 +578,7 @@
 			"cover": "Sampul album",
 			"cover_hint": "Tampilkan gambar sampul di samping informasi trek.",
 			"badge": "Lencana penyedia",
-			"badge_hint": "Tandai sampul dengan ikon kecil Limusic, seperti kartu Spotify dan Apple Music.",
+			"badge_hint": "Tandai sampul dengan ikon kecil Limusic+, seperti kartu Spotify dan Apple Music.",
 			"line3": "Baris 3",
 			"line3_hint": "Baris terakhir. Discord juga menggunakannya sebagai teks saat mengarahkan kursor ke sampul, jadi memerlukan sampul album aktif.",
 			"timestamps": "Bilah durasi",
@@ -592,7 +593,7 @@
 			"button_listen": "Dengarkan di YouTube Music",
 			"button_album": "Lihat album",
 			"button_artist": "Lihat artis",
-			"button_app": "Dapatkan Limusic",
+			"button_app": "Dapatkan Limusic+",
 			"button_off": "Tidak ada",
 			"preview": "Pratinjau",
 			"preview_live": "Sedang diputar",
@@ -605,7 +606,7 @@
 		},
 		"scrobbling": {
 			"account_disconnected": "Hubungkan akun Last.fm Anda untuk melakukan scrobble musik yang Anda putar.",
-			"account_connecting": "Menunggu Anda menyetujui Limusic di peramban.",
+			"account_connecting": "Menunggu Anda menyetujui Limusic+ di peramban.",
 			"connect": "Hubungkan",
 			"open_profile": "Buka profil Last.fm Anda",
 			"since": "Scrobble sejak {date}",
@@ -732,7 +733,7 @@
 			"reset_zoom": "Atur ulang skala",
 			"show_this_list": "Tampilkan daftar ini",
 			"refresh_page": "Segarkan halaman",
-			"quit_app": "Keluar dari Limusic"
+			"quit_app": "Keluar dari Limusic+"
 		},
 		"tempo_pitch": {
 			"title": "Kontrol Tempo & Nada",
@@ -813,7 +814,7 @@
 		"discord_tooltip_off": "Tampilkan apa yang Anda putar di Discord",
 		"lastfm_scrobbling_as": "Scrobble sebagai {user}",
 		"lastfm_disconnected": "Last.fm terputus",
-		"lastfm_approve_in_browser": "Setujui Limusic di peramban Anda",
+		"lastfm_approve_in_browser": "Setujui Limusic+ di peramban Anda",
 		"lastfm_connecting": "Menghubungkan ke Last.fm — klik untuk membatalkan",
 		"lastfm_scrobble_to": "Scrobble ke Last.fm",
 		"disconnect": "Putuskan",
@@ -1068,7 +1069,7 @@
 	"errors": {
 		"unreachable": "Tidak dapat menjangkau YouTube Music. Periksa koneksi Anda.",
 		"offline_title": "Tidak ada koneksi",
-		"offline_body": "Limusic tidak dapat menjangkau YouTube Music. Periksa koneksi internet Anda, lalu coba lagi.",
+		"offline_body": "Limusic+ tidak dapat menjangkau YouTube Music. Periksa koneksi internet Anda, lalu coba lagi.",
 		"generic_title": "Terjadi kesalahan"
 	},
 	"import": {
@@ -1104,7 +1105,7 @@
 		"to_check": "{count} untuk diperiksa",
 		"not_found": "{count} tidak ditemukan",
 		"keep_browsing_hint": "Anda dapat menutup jendela ini, proses impor tetap berlanjut. Bilah samping menunjukkan perkembangan proses.",
-		"pace_hint": "Limusic sengaja berjalan perlahan, sekitar satu lagu tiap dua detik, agar terbaca sebagai penggunaan normal oleh YouTube Music.",
+		"pace_hint": "Limusic+ sengaja berjalan perlahan, sekitar satu lagu tiap dua detik, agar terbaca sebagai penggunaan normal oleh YouTube Music.",
 		"waiting": "Berhenti sejenak agar tetap berada dalam batas wajar YouTube Music. Proses akan dilanjutkan pada pukul {time}.",
 		"keep_browsing": "Tetap menjelajah",
 		"stop": "Berhenti",
@@ -1166,12 +1167,12 @@
 			"empty": "Tidak ada lagu di dalamnya.",
 			"unreadable": "Berkas tidak dapat dibaca. Gunakan zip yang dikirimkan Spotify melalui email, salah satu berkas JSON di dalamnya, atau berkas CSV.",
 			"csv_columns": "Berkas CSV tersebut tidak memiliki kolom judul lagu.",
-			"spotify_changed": "Spotify mengubah format pembagian daftar putarnya. Pembaruan Limusic akan memperbaikinya.",
+			"spotify_changed": "Spotify mengubah format pembagian daftar putarnya. Pembaruan Limusic+ akan memperbaikinya.",
 			"busy": "Proses impor lain sedang berjalan.",
 			"nothing_read": "Pilih daftar putar terlebih dahulu.",
 			"gone": "Proses impor tersebut sudah tidak aktif.",
 			"not_found": "Tidak dapat menemukan lagu tersebut di YouTube Music.",
-			"cooldown": "YouTube Music meminta Limusic untuk memperlambat proses, sehingga impor dijeda hingga {time}. Semua trek yang telah ditemukan tetap tersimpan."
+			"cooldown": "YouTube Music meminta Limusic+ untuk memperlambat proses, sehingga impor dijeda hingga {time}. Semua trek yang telah ditemukan tetap tersimpan."
 		},
 		"paste_link_hint": "Hanya tersedia sebagai video di YouTube? Tempel tautannya."
 	},
@@ -1274,7 +1275,7 @@
 		"nothing_in_range": "Tidak diputar dalam periode ini.",
 		"empty_title": "Statistik Anda dimulai dari sini",
 		"empty": "Mainkan beberapa lagu dan halaman ini akan terisi dengan apa yang Anda dengarkan, kapan, dan selama berapa lama.",
-		"on_device": "Dihitung pada perangkat ini dari apa yang Anda mainkan di Limusic. Tidak ada yang dikirim ke mana-mana.",
+		"on_device": "Dihitung pada perangkat ini dari apa yang Anda mainkan di Limusic+. Tidak ada yang dikirim ke mana-mana.",
 		"clear": "Hapus riwayat mendengar",
 		"clear_title": "Hapus riwayat mendengar?",
 		"clear_desc": "Hal ini menghapus setiap putaran yang dihitung pada perangkat ini, sehingga statistik Anda dimulai dari awal dan On Repeat dikosongkan. Riwayat YouTube Music Anda tidak disentuh.",
@@ -1289,5 +1290,45 @@
 		"added": "Tanggal ditambahkan",
 		"by": "Ditambahkan oleh",
 		"duration": "Durasi"
+	},
+	"radio": {
+		"title": "Radio",
+		"subtitle": "Live stations from around the world. Pick one and it plays.",
+		"search_placeholder": "Search stations",
+		"country": "Country",
+		"language": "Language",
+		"all_countries": "All countries",
+		"all_languages": "All languages",
+		"all_genres": "All genres",
+		"play_station": "Play {name}",
+		"live": "LIVE",
+		"source": "Radio",
+		"favorite": "Add {name} to favorites",
+		"unfavorite": "Remove {name} from favorites",
+		"remove_station": "Remove {name}",
+		"tabs": {
+			"browse": "Browse",
+			"favorites": "Favorites",
+			"custom": "My stations"
+		},
+		"empty": "No stations match those filters.",
+		"empty_hint": "Try a different name, or clear a country or genre.",
+		"favorites_empty": "No favorites yet.",
+		"favorites_empty_hint": "Tap the heart on a station to keep it here.",
+		"custom_empty": "No stations of your own yet.",
+		"custom_empty_hint": "Add a stream URL to play something the directory does not list.",
+		"add_station": {
+			"button": "Add station",
+			"title": "Add a station",
+			"desc": "Paste the direct stream URL of a radio station. It is checked before it is saved.",
+			"name": "Name",
+			"name_placeholder": "Leave blank to use the stream's own name",
+			"url": "Stream URL",
+			"url_placeholder": "https://example.com/stream.mp3",
+			"check": "Check",
+			"check_ok": "Stream looks playable.",
+			"add": "Add",
+			"added": "Added {name}."
+		}
 	}
 }

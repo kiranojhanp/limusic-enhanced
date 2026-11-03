@@ -84,12 +84,13 @@
 		"sign_in_hint": "Увійдіть через обліковий запис Google, щоб отримати доступ до вашої бібліотеки та списків відтворення YouTube Music.",
 		"add_account": "Додати обліковий запис",
 		"remove_account": "Видалити обліковий запис",
-		"remove_account_title": "Видалити з Limusic?",
+		"remove_account_title": "Видалити з Limusic+?",
 		"remove_account_desc": "{name} буде видалено лише з цього списку. Сам обліковий запис Google не постраждає, і ви зможете увійти знову будь-коли.",
 		"saved_accounts_hint": "Виберіть збережений обліковий запис, щоб перейти на нього.",
 		"history": "Історія",
 		"no_channels": "YouTube не повернув доступних для вибору каналів.",
-		"stats": "Статистика"
+		"stats": "Статистика",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "Відтворити",
@@ -353,28 +354,28 @@
 			"language_hint": "Виберіть мову відображення інтерфейсу.",
 			"shortcuts_hint": "Відкрити список гарячих клавіш за допомогою {key}",
 			"autostart": "Запускати під час завантаження системи",
-			"autostart_hint": "Автоматично запускати Limusic під час завантаження ОС.",
+			"autostart_hint": "Автоматично запускати Limusic+ під час завантаження ОС.",
 			"close_to_tray": "Закривати в системний трей",
-			"close_to_tray_hint": "Залишати Limusic працювати у фоні після закриття вікна.",
+			"close_to_tray_hint": "Залишати Limusic+ працювати у фоні після закриття вікна.",
 			"system_titlebar": "Використовувати системний заголовок вікна",
-			"system_titlebar_hint": "Дозволити системі малювати рамку вікна та кнопки керування. Limusic розмістить власну панель інструментів під нею.",
+			"system_titlebar_hint": "Дозволити системі малювати рамку вікна та кнопки керування. Limusic+ розмістить власну панель інструментів під нею.",
 			"discord_rpc": "Discord Rich Presence",
 			"discord_rpc_hint": "Показувати поточну пісню у вашому профілі Discord.",
 			"update_banner": "Сповіщення про оновлення",
-			"update_banner_hint": "Показувати банер, коли доступна нова версія Limusic.",
+			"update_banner_hint": "Показувати банер, коли доступна нова версія Limusic+.",
 			"proxy": "HTTP/HTTPS Проксі",
 			"proxy_hint": "Спрямовувати всі мережеві запити через власний проксі-сервер.",
 			"proxy_placeholder": "http://хост:порт (порожньо = без проксі)",
 			"stream_clients": "Клієнти потокового передавання",
 			"stream_clients_hint": "Вимкніть клієнт, щоб пропускати його під час пошуку потоків. Перевизначається змінною середовища {var}.",
 			"language_search": "Пошук мов",
-			"language_contribute": "Допомогти з перекладом Limusic",
+			"language_contribute": "Допомогти з перекладом Limusic+",
 			"track_notifications": "Сповіщення про пісні",
-			"track_notifications_hint": "Показувати сповіщення про початок нової пісні, коли Limusic у фоні.",
-			"start_minimized_hint": "Коли Limusic запускається із системою, він залишатиметься в треї, доки ви його не відкриєте. Звичайний запуск користувачем завжди відкриває вікно.",
+			"track_notifications_hint": "Показувати сповіщення про початок нової пісні, коли Limusic+ у фоні.",
+			"start_minimized_hint": "Коли Limusic+ запускається із системою, він залишатиметься в треї, доки ви його не відкриєте. Звичайний запуск користувачем завжди відкриває вікно.",
 			"start_minimized": "Запускати згорнутим у трей",
-			"track_notifications_focused": "Також під час використання Limusic",
-			"track_notifications_focused_hint": "Показувати сповіщення, коли наступна пісня починається сама, навіть коли вікно Limusic активне. Для пісень, які ви вибираєте власноруч, воно ніколи не з'являється."
+			"track_notifications_focused": "Також під час використання Limusic+",
+			"track_notifications_focused_hint": "Показувати сповіщення, коли наступна пісня починається сама, навіть коли вікно Limusic+ активне. Для пісень, які ви вибираєте власноруч, воно ніколи не з'являється."
 		},
 		"themes": {
 			"interface_font": "Шрифт інтерфейсу",
@@ -430,7 +431,7 @@
 			"blur_playlist_header": "Розмивати шапку списків відтворення",
 			"blur_playlist_header_hint": "Показувати обкладинку списку відтворення розмитою на фоні його заголовка. Згладжує обкладинки, які виглядають піксельними при розтягуванні на всю ширину.",
 			"matugen": "Matugen",
-			"matugen_hint": "Брати всі кольори, включно з акцентним, із палітри, яку Matugen генерує з ваших шпалер. Спочатку налаштуйте шаблон Limusic у Matugen."
+			"matugen_hint": "Брати всі кольори, включно з акцентним, із палітри, яку Matugen генерує з ваших шпалер. Спочатку налаштуйте шаблон Limusic+ у Matugen."
 		},
 		"playback": {
 			"audio_quality": "Якість звуку",
@@ -513,7 +514,7 @@
 			"report_issue_hint": "Відкриває GitHub у браузері із заздалегідь заповненими даними про версію та систему.",
 			"report_issue_button": "Повідомити",
 			"kofi": "Купити мені каву",
-			"kofi_hint": "Limusic безкоштовний і завжди залишатиметься таким. Ko-fi доступний, якщо ви бажаєте підтримати проєкт.",
+			"kofi_hint": "Limusic+ безкоштовний і завжди залишатиметься таким. Ko-fi доступний, якщо ви бажаєте підтримати проєкт.",
 			"kofi_button": "Відкрити Ko-fi",
 			"rollback_available": "Цю версію буде повернено до {version} — останнього стабільного випуску.",
 			"beta": "Бета-версії",
@@ -521,7 +522,7 @@
 		},
 		"hotkeys": {
 			"title": "Глобальні гарячі клавіші",
-			"description": "Керуйте відтворенням за допомогою налаштовуваних комбінацій клавіш, навіть коли Limusic згорнуто або працює у фоновому режимі.",
+			"description": "Керуйте відтворенням за допомогою налаштовуваних комбінацій клавіш, навіть коли Limusic+ згорнуто або працює у фоновому режимі.",
 			"enable": "Увімкнути глобальні гарячі клавіші",
 			"enable_hint": "Глобальні гарячі клавіші вимкнено. Увімкніть, щоб система відстежувала їх у будь-якій програмі.",
 			"off": "Вимкнено",
@@ -556,7 +557,7 @@
 			"action_toggle_repeat": "Перемкнути режим повторення",
 			"action_toggle_repeat_hint": "Циклічно перемикати повторення: вимкнено, все, один трек.",
 			"action_show_app": "Показати програму",
-			"action_show_app_hint": "Вивести вікно Limusic на передній план."
+			"action_show_app_hint": "Вивести вікно Limusic+ на передній план."
 		},
 		"discord": {
 			"enable": "Rich Presence",
@@ -572,8 +573,8 @@
 			"status_line1": "Рядок 1",
 			"status_line2": "Рядок 2",
 			"app_name": "Назва програми",
-			"app_name_hint": "Замінює «Limusic» усюди, де вказується назва програми. Залиште порожнім, щоб не змінювати.",
-			"app_name_placeholder": "Limusic",
+			"app_name_hint": "Замінює «Limusic+» усюди, де вказується назва програми. Залиште порожнім, щоб не змінювати.",
+			"app_name_placeholder": "Limusic+",
 			"line1": "Рядок 1",
 			"line1_hint": "Жирний рядок одразу під заголовком.",
 			"line2": "Рядок 2",
@@ -586,7 +587,7 @@
 			"cover": "Обкладинка альбому",
 			"cover_hint": "Показувати обкладинку поруч із треком.",
 			"badge": "Значок джерела",
-			"badge_hint": "Додати на обкладинку маленький значок Limusic, як на картках Spotify та Apple Music.",
+			"badge_hint": "Додати на обкладинку маленький значок Limusic+, як на картках Spotify та Apple Music.",
 			"line3": "Рядок 3",
 			"line3_hint": "Останній рядок. Discord також показує його як спливаючу підказку при наведенні на обкладинку, тому вона має бути увімкнена.",
 			"timestamps": "Шкала прогресу",
@@ -601,7 +602,7 @@
 			"button_listen": "Слухати на YouTube Music",
 			"button_album": "Переглянути альбом",
 			"button_artist": "Переглянути виконавця",
-			"button_app": "Завантажити Limusic",
+			"button_app": "Завантажити Limusic+",
 			"button_off": "Немає",
 			"preview": "Попередній перегляд",
 			"preview_live": "Зараз грає",
@@ -614,7 +615,7 @@
 		},
 		"scrobbling": {
 			"account_disconnected": "Підключіть обліковий запис Last.fm, щоб скробблити відтворені треки.",
-			"account_connecting": "Очікування підтвердження Limusic у вашому браузері.",
+			"account_connecting": "Очікування підтвердження Limusic+ у вашому браузері.",
 			"connect": "Підключити",
 			"open_profile": "Відкрити профіль Last.fm",
 			"since": "Скробблінг із {date}",
@@ -741,7 +742,7 @@
 			"reset_zoom": "Скинути масштаб",
 			"show_this_list": "Показати цей список",
 			"refresh_page": "Оновити сторінку",
-			"quit_app": "Вийти з Limusic"
+			"quit_app": "Вийти з Limusic+"
 		},
 		"tempo_pitch": {
 			"title": "Керування темпом і тональністю",
@@ -822,7 +823,7 @@
 		"discord_tooltip_off": "Показувати відтворювану музику в Discord",
 		"lastfm_scrobbling_as": "Скробблінг як {user}",
 		"lastfm_disconnected": "Last.fm відключено",
-		"lastfm_approve_in_browser": "Підтвердьте Limusic у браузері",
+		"lastfm_approve_in_browser": "Підтвердьте Limusic+ у браузері",
 		"lastfm_connecting": "Підключення до Last.fm — натисніть для скасування",
 		"lastfm_scrobble_to": "Скробблити на Last.fm",
 		"disconnect": "Від'єднати",
@@ -1044,7 +1045,7 @@
 	"errors": {
 		"unreachable": "Не вдається з'єднатися з YouTube Music. Перевірте підключення.",
 		"offline_title": "Немає з'єднання",
-		"offline_body": "Limusic не може з'єднатися з YouTube Music. Перевірте підключення до інтернету та спробуйте ще раз.",
+		"offline_body": "Limusic+ не може з'єднатися з YouTube Music. Перевірте підключення до інтернету та спробуйте ще раз.",
 		"generic_title": "Щось пішло не так"
 	},
 	"search": {
@@ -1100,7 +1101,7 @@
 		"to_check": "Потребують перевірки: {count}",
 		"not_found": "Не знайдено: {count}",
 		"keep_browsing_hint": "Ви можете закрити це вікно, процес триватиме у фоні. На бічній панелі відображатиметься перебіг виконання.",
-		"pace_hint": "Limusic навмисно працює повільно — приблизно одна пісня кожні дві секунди, щоб запити виглядали як звичайне використання YouTube Music.",
+		"pace_hint": "Limusic+ навмисно працює повільно — приблизно одна пісня кожні дві секунди, щоб запити виглядали як звичайне використання YouTube Music.",
 		"waiting": "Пауза для дотримання лімітів YouTube Music. Процес продовжиться о {time}.",
 		"keep_browsing": "Продовжити перегляд",
 		"stop": "Зупинити",
@@ -1162,7 +1163,7 @@
 			"empty": "Тут немає пісень.",
 			"unreadable": "Не вдалося прочитати файл. Використайте ZIP-архів від Spotify, один із файлів JSON усередині нього або CSV.",
 			"csv_columns": "У цьому CSV-файлі немає стовпця з назвами пісень.",
-			"spotify_changed": "Spotify змінив спосіб експорту списків відтворення. Оновлення Limusic виправить це.",
+			"spotify_changed": "Spotify змінив спосіб експорту списків відтворення. Оновлення Limusic+ виправить це.",
 			"busy": "Імпорт уже виконується.",
 			"nothing_read": "Спочатку виберіть список відтворення.",
 			"gone": "Цей процес імпорту вже не активний.",
@@ -1270,7 +1271,7 @@
 		"nothing_in_range": "У цей період нічого не відтворювалося.",
 		"empty_title": "Ваша статистика починається тут",
 		"empty": "Послухайте кілька пісень, і ця сторінка заповниться інформацією про те, що, коли і як довго ви слухаєте.",
-		"on_device": "Підраховується на цьому пристрої на основі прослуховувань у Limusic. Жодні дані нікуди не надсилаються.",
+		"on_device": "Підраховується на цьому пристрої на основі прослуховувань у Limusic+. Жодні дані нікуди не надсилаються.",
 		"clear": "Очистити історію прослуховувань",
 		"clear_title": "Очистити історію прослуховувань?",
 		"clear_desc": "Це зітре всі підраховані на цьому пристрої прослуховування: статистика почнеться спочатку, а список «На повторі» очиститься. Ваша історія в YouTube Music залишиться незмінною.",
@@ -1287,5 +1288,45 @@
 		"plays": "Прослуховування",
 		"mine": "Ваші прослуховування",
 		"duration": "Тривалість"
+	},
+	"radio": {
+		"title": "Radio",
+		"subtitle": "Live stations from around the world. Pick one and it plays.",
+		"search_placeholder": "Search stations",
+		"country": "Country",
+		"language": "Language",
+		"all_countries": "All countries",
+		"all_languages": "All languages",
+		"all_genres": "All genres",
+		"play_station": "Play {name}",
+		"live": "LIVE",
+		"source": "Radio",
+		"favorite": "Add {name} to favorites",
+		"unfavorite": "Remove {name} from favorites",
+		"remove_station": "Remove {name}",
+		"tabs": {
+			"browse": "Browse",
+			"favorites": "Favorites",
+			"custom": "My stations"
+		},
+		"empty": "No stations match those filters.",
+		"empty_hint": "Try a different name, or clear a country or genre.",
+		"favorites_empty": "No favorites yet.",
+		"favorites_empty_hint": "Tap the heart on a station to keep it here.",
+		"custom_empty": "No stations of your own yet.",
+		"custom_empty_hint": "Add a stream URL to play something the directory does not list.",
+		"add_station": {
+			"button": "Add station",
+			"title": "Add a station",
+			"desc": "Paste the direct stream URL of a radio station. It is checked before it is saved.",
+			"name": "Name",
+			"name_placeholder": "Leave blank to use the stream's own name",
+			"url": "Stream URL",
+			"url_placeholder": "https://example.com/stream.mp3",
+			"check": "Check",
+			"check_ok": "Stream looks playable.",
+			"add": "Add",
+			"added": "Added {name}."
+		}
 	}
 }

@@ -114,7 +114,7 @@
 	"errors": {
 		"unreachable": "Không thể kết nối với YouTube Music. Vui lòng kiểm tra đường truyền mạng.",
 		"offline_title": "Không có kết nối",
-		"offline_body": "Limusic không thể kết nối tới YouTube Music. Vui lòng kiểm tra lại kết nối mạng rồi thử lại.",
+		"offline_body": "Limusic+ không thể kết nối tới YouTube Music. Vui lòng kiểm tra lại kết nối mạng rồi thử lại.",
 		"generic_title": "Đã xảy ra lỗi"
 	},
 	"nav": {
@@ -134,12 +134,13 @@
 		"sign_in_hint": "Đăng nhập bằng tài khoản Google để truy cập thư viện và danh sách phát YouTube Music của bạn.",
 		"add_account": "Thêm tài khoản",
 		"remove_account": "Xoá tài khoản",
-		"remove_account_title": "Xoá khỏi Limusic?",
+		"remove_account_title": "Xoá khỏi Limusic+?",
 		"remove_account_desc": "{name} chỉ bị xoá khỏi danh sách này. Tài khoản Google thực tế không bị ảnh hưởng và bạn có thể đăng nhập lại bất cứ lúc nào.",
 		"saved_accounts_hint": "Chọn một tài khoản đã lưu để chuyển đổi.",
 		"history": "Lịch sử",
 		"no_channels": "YouTube không trả về kênh nào có thể chọn.",
-		"stats": "Thống kê"
+		"stats": "Thống kê",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "Phát",
@@ -402,29 +403,29 @@
 			"language": "Ngôn ngữ giao diện",
 			"language_hint": "Chọn ngôn ngữ hiển thị giao diện.",
 			"language_search": "Tìm ngôn ngữ",
-			"language_contribute": "Hỗ trợ dịch Limusic",
+			"language_contribute": "Hỗ trợ dịch Limusic+",
 			"shortcuts_hint": "Mở danh sách phím tắt bằng {key}",
 			"autostart": "Khởi động cùng hệ thống",
-			"autostart_hint": "Tự động khởi chạy Limusic khi bạn khởi động máy tính.",
+			"autostart_hint": "Tự động khởi chạy Limusic+ khi bạn khởi động máy tính.",
 			"close_to_tray": "Đóng vào khay hệ thống",
-			"close_to_tray_hint": "Tiếp tục chạy Limusic dưới nền khi đóng cửa sổ.",
+			"close_to_tray_hint": "Tiếp tục chạy Limusic+ dưới nền khi đóng cửa sổ.",
 			"track_notifications": "Thông báo bài hát",
-			"track_notifications_hint": "Hiển thị thông báo khi bài hát mới bắt đầu phát trong lúc Limusic đang chạy dưới nền.",
+			"track_notifications_hint": "Hiển thị thông báo khi bài hát mới bắt đầu phát trong lúc Limusic+ đang chạy dưới nền.",
 			"start_minimized": "Khởi động thu nhỏ vào khay hệ thống",
-			"start_minimized_hint": "Khi khởi động cùng hệ thống, Limusic sẽ nằm trong khay hệ thống cho đến khi bạn mở. Khi bạn tự mở ứng dụng, cửa sổ sẽ luôn xuất hiện.",
+			"start_minimized_hint": "Khi khởi động cùng hệ thống, Limusic+ sẽ nằm trong khay hệ thống cho đến khi bạn mở. Khi bạn tự mở ứng dụng, cửa sổ sẽ luôn xuất hiện.",
 			"system_titlebar": "Dùng thanh tiêu đề hệ thống",
-			"system_titlebar_hint": "Để hệ điều hành vẽ khung cửa sổ và các nút điều khiển. Limusic sẽ hiển thị thanh công cụ của mình bên dưới.",
+			"system_titlebar_hint": "Để hệ điều hành vẽ khung cửa sổ và các nút điều khiển. Limusic+ sẽ hiển thị thanh công cụ của mình bên dưới.",
 			"discord_rpc": "Discord Rich Presence",
 			"discord_rpc_hint": "Hiển thị bài hát đang phát trên hồ sơ Discord của bạn.",
 			"update_banner": "Thông báo cập nhật",
-			"update_banner_hint": "Hiển thị biểu ngữ khi có phiên bản Limusic mới.",
+			"update_banner_hint": "Hiển thị biểu ngữ khi có phiên bản Limusic+ mới.",
 			"proxy": "Proxy HTTP/HTTPS",
 			"proxy_hint": "Định tuyến toàn bộ yêu cầu mạng qua máy chủ proxy tuỳ chỉnh.",
 			"proxy_placeholder": "http://host:port (để trống = không dùng)",
 			"stream_clients": "Client phát luồng",
 			"stream_clients_hint": "Tắt client để bỏ qua khi phân giải luồng âm thanh. Bị ghi đè bởi biến môi trường {var}.",
-			"track_notifications_focused": "Trong khi sử dụng Limusic",
-			"track_notifications_focused_hint": "Hiện thông báo khi bài hát tiếp theo tự động phát kể cả trong lúc bạn đang sử dụng Limusic. Những bài bạn chọn thủ công sẽ không hiện thông báo."
+			"track_notifications_focused": "Trong khi sử dụng Limusic+",
+			"track_notifications_focused_hint": "Hiện thông báo khi bài hát tiếp theo tự động phát kể cả trong lúc bạn đang sử dụng Limusic+. Những bài bạn chọn thủ công sẽ không hiện thông báo."
 		},
 		"themes": {
 			"interface_font": "Phông chữ giao diện",
@@ -480,7 +481,7 @@
 			"blur_playlist_header": "Làm mờ tiêu đề danh sách phát",
 			"blur_playlist_header_hint": "Hiển thị ảnh bìa danh sách phát làm nền mờ phía sau phần tiêu đề. Giúp làm mượt các ảnh bìa bị vỡ khi bị kéo giãn hết cỡ chiều rộng.",
 			"matugen": "Matugen",
-			"matugen_hint": "Lấy toàn bộ màu sắc, bao gồm cả màu điểm nhấn, từ bảng màu mà Matugen tạo ra từ hình nền của bạn. Trước tiên, hãy thiết lập mẫu cho Limusic trong Matugen."
+			"matugen_hint": "Lấy toàn bộ màu sắc, bao gồm cả màu điểm nhấn, từ bảng màu mà Matugen tạo ra từ hình nền của bạn. Trước tiên, hãy thiết lập mẫu cho Limusic+ trong Matugen."
 		},
 		"playback": {
 			"audio_quality": "Chất lượng âm thanh",
@@ -537,7 +538,7 @@
 		},
 		"hotkeys": {
 			"title": "Phím nóng toàn cục",
-			"description": "Điều khiển phát nhạc bằng phím tắt tuỳ chỉnh ngay cả khi Limusic đang thu nhỏ hoặc chạy dưới nền.",
+			"description": "Điều khiển phát nhạc bằng phím tắt tuỳ chỉnh ngay cả khi Limusic+ đang thu nhỏ hoặc chạy dưới nền.",
 			"enable": "Bật phím nóng toàn cục",
 			"enable_hint": "Phím nóng toàn cục đang tắt. Bật lên để lắng nghe phím tắt trên toàn hệ thống.",
 			"off": "Tắt",
@@ -572,7 +573,7 @@
 			"action_toggle_repeat": "Bật/tắt lặp lại",
 			"action_toggle_repeat_hint": "Chuyển đổi chế độ lặp lại: tắt, tất cả, một bài.",
 			"action_show_app": "Hiển thị ứng dụng",
-			"action_show_app_hint": "Đưa cửa sổ Limusic lên trên cùng."
+			"action_show_app_hint": "Đưa cửa sổ Limusic+ lên trên cùng."
 		},
 		"data": {
 			"clear_cache": "Xoá bộ nhớ đệm hình ảnh và luồng phát",
@@ -605,7 +606,7 @@
 			"report_issue_hint": "Mở GitHub trên trình duyệt của bạn với thông tin phiên bản và hệ thống được điền sẵn.",
 			"report_issue_button": "Báo cáo",
 			"kofi": "Mời tôi một ly cà phê",
-			"kofi_hint": "Limusic hoàn toàn miễn phí và sẽ luôn như vậy. Bạn có thể ủng hộ dự án qua Ko-fi nếu muốn.",
+			"kofi_hint": "Limusic+ hoàn toàn miễn phí và sẽ luôn như vậy. Bạn có thể ủng hộ dự án qua Ko-fi nếu muốn.",
 			"kofi_button": "Mở Ko-fi"
 		},
 		"discord": {
@@ -622,8 +623,8 @@
 			"status_line1": "Dòng 1",
 			"status_line2": "Dòng 2",
 			"app_name": "Tên ứng dụng",
-			"app_name_hint": "Thay thế \"Limusic\" ở những nơi hiển thị tên ứng dụng. Để trống để giữ nguyên mặc định.",
-			"app_name_placeholder": "Limusic",
+			"app_name_hint": "Thay thế \"Limusic+\" ở những nơi hiển thị tên ứng dụng. Để trống để giữ nguyên mặc định.",
+			"app_name_placeholder": "Limusic+",
 			"line1": "Dòng 1",
 			"line1_hint": "Dòng in đậm, ngay dưới tiêu đề.",
 			"line2": "Dòng 2",
@@ -636,7 +637,7 @@
 			"cover": "Ảnh bìa album",
 			"cover_hint": "Hiển thị ảnh bìa bên cạnh bài hát.",
 			"badge": "Huy hiệu nhà cung cấp",
-			"badge_hint": "Đính kèm biểu tượng nhỏ của Limusic lên ảnh bìa, tương tự như Spotify và Apple Music.",
+			"badge_hint": "Đính kèm biểu tượng nhỏ của Limusic+ lên ảnh bìa, tương tự như Spotify và Apple Music.",
 			"line3": "Dòng 3",
 			"line3_hint": "Dòng cuối cùng. Discord cũng dùng dòng này làm văn bản hiển thị khi di chuột vào ảnh bìa, do đó cần phải bật ảnh bìa album.",
 			"timestamps": "Thanh tiến trình",
@@ -651,7 +652,7 @@
 			"button_listen": "Nghe trên YouTube Music",
 			"button_album": "Xem album",
 			"button_artist": "Xem nghệ sĩ",
-			"button_app": "Tải Limusic",
+			"button_app": "Tải Limusic+",
 			"button_off": "Không có",
 			"preview": "Xem trước",
 			"preview_live": "Đang phát",
@@ -664,7 +665,7 @@
 		},
 		"scrobbling": {
 			"account_disconnected": "Kết nối tài khoản Last.fm để scrobble những bài bạn nghe.",
-			"account_connecting": "Đang chờ bạn chấp nhận Limusic trên trình duyệt.",
+			"account_connecting": "Đang chờ bạn chấp nhận Limusic+ trên trình duyệt.",
 			"connect": "Kết nối",
 			"open_profile": "Mở hồ sơ Last.fm của bạn",
 			"since": "Scrobble từ {date}",
@@ -791,7 +792,7 @@
 			"zoom_out": "Thu nhỏ",
 			"reset_zoom": "Đặt lại kích thước giao diện",
 			"show_this_list": "Hiển thị danh sách này",
-			"quit_app": "Thoát Limusic"
+			"quit_app": "Thoát Limusic+"
 		},
 		"tempo_pitch": {
 			"title": "Điều khiển tốc độ & cao độ",
@@ -872,7 +873,7 @@
 		"discord_tooltip_off": "Hiển thị nhạc đang nghe trên Discord",
 		"lastfm_scrobbling_as": "Đang scrobble dưới tên {user}",
 		"lastfm_disconnected": "Đã ngắt kết nối Last.fm",
-		"lastfm_approve_in_browser": "Phê duyệt Limusic trong trình duyệt của bạn",
+		"lastfm_approve_in_browser": "Phê duyệt Limusic+ trong trình duyệt của bạn",
 		"lastfm_connecting": "Đang kết nối tới Last.fm — nhấp để huỷ",
 		"lastfm_scrobble_to": "Scrobble tới Last.fm",
 		"lastfm_settings": "Cài đặt scrobble",
@@ -1100,7 +1101,7 @@
 		"to_check": "Cần kiểm tra {count}",
 		"not_found": "Không tìm thấy {count}",
 		"keep_browsing_hint": "Bạn có thể đóng cửa sổ này, quá trình vẫn sẽ tiếp tục. Thanh bên sẽ hiển thị tiến độ.",
-		"pace_hint": "Limusic chủ động xử lý chậm (khoảng một bài mỗi hai giây) để tránh bị YouTube Music hạn chế yêu cầu.",
+		"pace_hint": "Limusic+ chủ động xử lý chậm (khoảng một bài mỗi hai giây) để tránh bị YouTube Music hạn chế yêu cầu.",
 		"waiting": "Tạm dừng để đảm bảo không vượt quá giới hạn của YouTube Music. Sẽ tiếp tục vào lúc {time}.",
 		"keep_browsing": "Tiếp tục duyệt nhạc",
 		"stop": "Dừng lại",
@@ -1162,12 +1163,12 @@
 			"empty": "Không có bài hát nào trong liên kết này.",
 			"unreadable": "Không thể đọc tệp này. Hãy dùng tệp zip mà Spotify đã gửi qua email, một trong các tệp JSON bên trong đó, hoặc tệp CSV.",
 			"csv_columns": "Tệp CSV này không có cột tiêu đề bài hát.",
-			"spotify_changed": "Spotify đã thay đổi cách chia sẻ danh sách phát. Bản cập nhật Limusic tiếp theo sẽ khắc phục điều này.",
+			"spotify_changed": "Spotify đã thay đổi cách chia sẻ danh sách phát. Bản cập nhật Limusic+ tiếp theo sẽ khắc phục điều này.",
 			"busy": "Một tác vụ nhập khác đang chạy.",
 			"nothing_read": "Hãy chọn một danh sách phát trước.",
 			"gone": "Tác vụ nhập đó không còn mở nữa.",
 			"not_found": "Không tìm thấy trên YouTube Music.",
-			"cooldown": "YouTube Music yêu cầu Limusic giảm tần suất gửi yêu cầu, quá trình nhập tạm dừng đến {time}. Mọi bài đã tìm thấy đều được lưu lại."
+			"cooldown": "YouTube Music yêu cầu Limusic+ giảm tần suất gửi yêu cầu, quá trình nhập tạm dừng đến {time}. Mọi bài đã tìm thấy đều được lưu lại."
 		},
 		"paste_link_hint": "Chỉ có video trên YouTube? Dán liên kết vào đây."
 	},
@@ -1229,7 +1230,7 @@
 		"clear_desc": "Điều này sẽ xoá toàn bộ lượt nghe trên thiết bị này. Mọi thứ sẽ bắt đầu lại từ đầu và danh sách Phát lại sẽ trống không. Lịch sử nghe trên YouTube Music của bạn sẽ không bị ảnh hưởng.",
 		"clear_confirm": "Xoá lịch sử",
 		"cleared": "Lịch sử nghe đã bị xoá",
-		"on_device": "Được đếm trên thiết bị này từ những gì bạn phát trong Limusic. Không có dữ liệu nào được gửi đi."
+		"on_device": "Được đếm trên thiết bị này từ những gì bạn phát trong Limusic+. Không có dữ liệu nào được gửi đi."
 	},
 	"comments": {
 		"title": "Bình luận",
@@ -1287,5 +1288,45 @@
 		"plays": "Lượt phát",
 		"mine": "Lượt phát của tôi",
 		"duration": "Thời lượng"
+	},
+	"radio": {
+		"title": "Radio",
+		"subtitle": "Live stations from around the world. Pick one and it plays.",
+		"search_placeholder": "Search stations",
+		"country": "Country",
+		"language": "Language",
+		"all_countries": "All countries",
+		"all_languages": "All languages",
+		"all_genres": "All genres",
+		"play_station": "Play {name}",
+		"live": "LIVE",
+		"source": "Radio",
+		"favorite": "Add {name} to favorites",
+		"unfavorite": "Remove {name} from favorites",
+		"remove_station": "Remove {name}",
+		"tabs": {
+			"browse": "Browse",
+			"favorites": "Favorites",
+			"custom": "My stations"
+		},
+		"empty": "No stations match those filters.",
+		"empty_hint": "Try a different name, or clear a country or genre.",
+		"favorites_empty": "No favorites yet.",
+		"favorites_empty_hint": "Tap the heart on a station to keep it here.",
+		"custom_empty": "No stations of your own yet.",
+		"custom_empty_hint": "Add a stream URL to play something the directory does not list.",
+		"add_station": {
+			"button": "Add station",
+			"title": "Add a station",
+			"desc": "Paste the direct stream URL of a radio station. It is checked before it is saved.",
+			"name": "Name",
+			"name_placeholder": "Leave blank to use the stream's own name",
+			"url": "Stream URL",
+			"url_placeholder": "https://example.com/stream.mp3",
+			"check": "Check",
+			"check_ok": "Stream looks playable.",
+			"add": "Add",
+			"added": "Added {name}."
+		}
 	}
 }

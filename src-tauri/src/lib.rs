@@ -29,6 +29,7 @@ mod nativevideo;
 mod notify;
 mod orchestrator;
 mod potoken;
+mod radio;
 mod romanize;
 mod session;
 mod spotify;
@@ -694,7 +695,7 @@ pub fn run() {
             let (db, quarantined) = match Db::open_or_quarantine(&data_dir.join("limusic.sqlite")) {
                 Ok(v) => v,
                 Err(e) => fatal(
-                    "Limusic could not open or create its database",
+                    "Limusic+ could not open or create its database",
                     &format!("{}: {e}", data_dir.display()),
                 ),
             };
@@ -754,7 +755,7 @@ pub fn run() {
             let session = Session { locale: Locale::default(), visitor_data, data_sync_id, cookie };
             let it = match InnerTube::new(session, proxy.as_deref()) {
                 Ok(it) => it,
-                Err(e) => fatal("Limusic could not start its network client", &e.to_string()),
+                Err(e) => fatal("Limusic+ could not start its network client", &e.to_string()),
             };
             // Shelf titles, mood chips and playlist subtitles are YouTube's text, so the UI's
             // language has to go out with the request (#274). Persisted rather than pushed from the
@@ -774,7 +775,7 @@ pub fn run() {
             let mut player = match Player::new(&cache_dir.to_string_lossy()) {
                 Ok(p) => p,
                 Err(e) => fatal(
-                    "Limusic could not load libmpv, which it uses to play audio",
+                    "Limusic+ could not load libmpv, which it uses to play audio",
                     &format!(
                         "{e}. On Linux, install your distribution's mpv library \
                          (Fedora: mpv-libs, Debian/Ubuntu: libmpv2)."
@@ -797,7 +798,7 @@ pub fn run() {
             let events = match player.take_events() {
                 Some(ev) => ev,
                 None => fatal(
-                    "Limusic could not start its audio event loop",
+                    "Limusic+ could not start its audio event loop",
                     "the player's event channel was already taken, which is a bug",
                 ),
             };
@@ -1195,6 +1196,16 @@ pub fn run() {
             commands::get_local_library,
             commands::add_local_folder,
             commands::remove_local_folder,
+            commands::radio_discover,
+            commands::radio_search,
+            commands::radio_facets,
+            commands::radio_favorites,
+            commands::radio_custom_stations,
+            commands::radio_add_favorite,
+            commands::radio_add_custom_station,
+            commands::radio_remove_station,
+            commands::radio_probe_stream,
+            commands::radio_favicon,
             commands::allow_font_file,
             commands::get_artist,
             commands::get_artist_appears_on,
@@ -1416,6 +1427,9 @@ fn spawn_event_pump(
                 // announced (`on_track_ended` loads it on this pump), with the old track's end as
                 // the position. Guests then seek the new track to it, past the end of a shorter one.
                 PlayerEvent::Paused(paused) => state.lt_on_play_state(!paused).await,
+                // A live station's ICY title. The state layer ignores it for anything that is not
+                // a RADIO: id, because an ordinary file's tags are already in the queue row.
+                PlayerEvent::Metadata(tags) => state.on_stream_metadata(tags).await,
                 PlayerEvent::TrackEnded => {
                     state.on_track_ended().await;
                 }

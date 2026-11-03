@@ -7,14 +7,14 @@
 	import { open as pickFile } from '@tauri-apps/plugin-dialog';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { ImageAdd02Icon, Delete02Icon } from '@hugeicons/core-free-icons';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
-	import * as api from '$lib/api';
-	import { thumb } from '$lib/thumb';
-	import { toast } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import * as api from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
+	import { toast } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	/** What the page shows while YouTube catches up, and what it puts back if the write fails. */
 	type Edit = { title?: string; description?: string; privacy?: string; cover?: string };

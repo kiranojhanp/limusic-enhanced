@@ -2,7 +2,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import CommentsView from './CommentsView.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let { onClose, queueOpen = false }: { onClose: () => void; queueOpen?: boolean } = $props();
 </script>

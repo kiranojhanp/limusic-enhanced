@@ -7,17 +7,17 @@
 	import { onMount } from 'svelte';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { HistoryIcon, PlayIcon, ShuffleIcon } from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import TrackFilter, { filterTracks } from '$lib/components/TrackFilter.svelte';
-	import TrackRow from '$lib/components/TrackRow.svelte';
-	import TrackRowSkeleton from '$lib/components/TrackRowSkeleton.svelte';
-	import ErrorState from '$lib/components/ErrorState.svelte';
-	import * as api from '$lib/api';
-	import type { HistoryGroup, SongItem } from '$lib/api';
-	import { getCached, putCached } from '$lib/pagecache';
-	import { thumb } from '$lib/thumb';
-	import { auth, openAddToPlaylist, openPlayer, playback } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import TrackFilter, { filterTracks } from '#lib/components/TrackFilter.svelte';
+	import TrackRow from '#lib/components/TrackRow.svelte';
+	import TrackRowSkeleton from '#lib/components/TrackRowSkeleton.svelte';
+	import ErrorState from '#lib/components/ErrorState.svelte';
+	import * as api from '#lib/api.js';
+	import type { HistoryGroup, SongItem } from '#lib/api.js';
+	import { getCached, putCached } from '#lib/pagecache.js';
+	import { thumb } from '#lib/thumb.js';
+	import { auth, openAddToPlaylist, openPlayer, playback } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	const KEY = 'history';
 

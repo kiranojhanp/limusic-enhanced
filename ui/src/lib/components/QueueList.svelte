@@ -6,11 +6,11 @@
 	import { MediaQuery } from 'svelte/reactivity';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { ArrowTurnBackwardIcon, InfinityIcon, PlayListAddIcon } from '@hugeicons/core-free-icons';
-	import TrackRow from '$lib/components/TrackRow.svelte';
-	import NowPlayingPill from '$lib/components/NowPlayingPill.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Switch } from '$lib/components/ui/switch';
-	import * as api from '$lib/api';
+	import TrackRow from '#lib/components/TrackRow.svelte';
+	import NowPlayingPill from '#lib/components/NowPlayingPill.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import * as api from '#lib/api.js';
 	import {
 		followPlaying,
 		formatLeft,
@@ -18,14 +18,14 @@
 		queueLeft,
 		queueView,
 		type QueueRow
-	} from '$lib/queue';
-	import { blockWindows, fullWindow, type RowWindow } from '$lib/rows';
-	import { rowScroller } from '$lib/rows.svelte';
-	import { dragScroll, QUEUE_ROW_MIME } from '$lib/dnd';
-	import { playback, prefs, setAutoplay, openAddToPlaylist, openNewPlaylist } from '$lib/player.svelte';
-	import { lt } from '$lib/lt.svelte';
-	import { appearance } from '$lib/theme.svelte';
-	import { currentLocale, t } from '$lib/i18n.svelte';
+	} from '#lib/queue.js';
+	import { blockWindows, fullWindow, type RowWindow } from '#lib/rows.js';
+	import { rowScroller } from '#lib/rows.svelte.js';
+	import { dragScroll, QUEUE_ROW_MIME } from '#lib/dnd.js';
+	import { playback, prefs, setAutoplay, openAddToPlaylist, openNewPlaylist } from '#lib/player.svelte.js';
+	import { lt } from '#lib/lt.svelte.js';
+	import { appearance } from '#lib/theme.svelte.js';
+	import { currentLocale, t } from '#lib/i18n.svelte.js';
 
 	const reducedMotion = new MediaQuery('(prefers-reduced-motion: reduce)');
 

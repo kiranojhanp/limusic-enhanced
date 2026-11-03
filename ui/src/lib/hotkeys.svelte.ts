@@ -1,7 +1,7 @@
-import * as api from '$lib/api';
-import { toast } from '$lib/player.svelte';
-import { t, type TranslationKey } from '$lib/i18n.svelte';
-import { IS_MAC } from '$lib/shortcuts';
+import * as api from '#lib/api.js';
+import { toast } from '#lib/player.svelte.js';
+import { t, type TranslationKey } from '#lib/i18n.svelte.js';
+import { IS_MAC } from '#lib/shortcuts.js';
 
 export interface HotkeyActionDef {
 	id: string;

@@ -6,7 +6,7 @@
 	starts fetching the rest there, so the walk runs while the query is still being typed.
 -->
 <script module lang="ts">
-	import type { SongItem } from '$lib/api';
+	import type { SongItem } from '#lib/api.js';
 
 	/** Substring match over title, artist and album. Empty query returns the list untouched. */
 	export function filterTracks<T extends SongItem>(items: T[], query: string): T[] {
@@ -24,7 +24,7 @@
 <script lang="ts">
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { SearchList01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let {
 		value = $bindable(''),

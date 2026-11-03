@@ -21,15 +21,15 @@
 		UserCheck01Icon,
 		UserSharingIcon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import LibrarySongs from '$lib/components/LibrarySongs.svelte';
-	import LocalMusic from '$lib/components/LocalMusic.svelte';
-	import MediaCard from '$lib/components/MediaCard.svelte';
-	import MediaCardSkeleton from '$lib/components/MediaCardSkeleton.svelte';
-	import ErrorState from '$lib/components/ErrorState.svelte';
-	import type { BrowseItem } from '$lib/api';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Tabs from '#lib/components/ui/tabs/index.js';
+	import * as Tooltip from '#lib/components/ui/tooltip/index.js';
+	import LibrarySongs from '#lib/components/LibrarySongs.svelte';
+	import LocalMusic from '#lib/components/LocalMusic.svelte';
+	import MediaCard from '#lib/components/MediaCard.svelte';
+	import MediaCardSkeleton from '#lib/components/MediaCardSkeleton.svelte';
+	import ErrorState from '#lib/components/ErrorState.svelte';
+	import type { BrowseItem } from '#lib/api.js';
 	import {
 		auth,
 		personal,
@@ -40,12 +40,12 @@
 		loadUploadAlbums,
 		openNewPlaylist,
 		syncSavedToYouTube
-	} from '$lib/player.svelte';
-	import { mergeSaved, unsynced } from '$lib/personal';
-	import { reveal } from '$lib/reveal.svelte';
-	import { t } from '$lib/i18n.svelte';
-	import { openImport } from '$lib/import.svelte';
-	import ExperimentalBadge from '$lib/components/ExperimentalBadge.svelte';
+	} from '#lib/player.svelte.js';
+	import { mergeSaved, unsynced } from '#lib/personal.js';
+	import { reveal } from '#lib/reveal.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { openImport } from '#lib/import.svelte.js';
+	import ExperimentalBadge from '#lib/components/ExperimentalBadge.svelte';
 
 	// `?tab=local` so anything that sends you back here (an album whose files were deleted) lands
 	// on the tab you came from instead of a sign-in prompt.

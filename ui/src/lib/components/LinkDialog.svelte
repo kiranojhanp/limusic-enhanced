@@ -3,15 +3,15 @@
 	// that is shared by link only, so it never turns up in search or the library.
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { onOpenLink, takeLaunchArgs } from '$lib/api';
-	import { hrefFor } from '$lib/browse';
-	import { parseYtLink, type LinkTarget } from '$lib/ytlink';
-	import { startRadio, toast, ui } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
-	import { isSpotifyLink, openSpotifyLink } from '$lib/import.svelte';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { onOpenLink, takeLaunchArgs } from '#lib/api.js';
+	import { hrefFor } from '#lib/browse.js';
+	import { parseYtLink, type LinkTarget } from '#lib/ytlink.js';
+	import { startRadio, toast, ui } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { isSpotifyLink, openSpotifyLink } from '#lib/import.svelte.js';
 
 	let url = $state('');
 

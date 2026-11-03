@@ -6,9 +6,9 @@
 	// shadcn-svelte's chart (LayerChart) underneath.
 	import { BarChart, type ChartState } from 'layerchart';
 	import { cubicOut } from 'svelte/easing';
-	import * as Chart from '$lib/components/ui/chart';
-	import { listened, tagOf, type Bar } from '$lib/stats';
-	import { currentLocale, t } from '$lib/i18n.svelte';
+	import * as Chart from '#lib/components/ui/chart/index.js';
+	import { listened, tagOf, type Bar } from '#lib/stats.js';
+	import { currentLocale, t } from '#lib/i18n.svelte.js';
 
 	let {
 		bars,

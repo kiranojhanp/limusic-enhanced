@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog as DialogPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils.js";
-	import { windowCorners } from "$lib/win.svelte";
+	import { cn } from "#lib/utils.js";
+	import { windowCorners } from "#lib/win.svelte.js";
 
 	let {
 		ref = $bindable(null),

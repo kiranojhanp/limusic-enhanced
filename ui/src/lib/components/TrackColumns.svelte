@@ -11,8 +11,8 @@
 	label over its cells.
 -->
 <script module lang="ts">
-	import * as api from '$lib/api';
-	import { parseColumns, type TrackColumn } from '$lib/trackcolumns';
+	import * as api from '#lib/api.js';
+	import { parseColumns, type TrackColumn } from '#lib/trackcolumns.js';
 
 	const KEY = 'track_columns';
 	function stored(): string | null {
@@ -55,9 +55,9 @@
 <script lang="ts">
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { ArrowDown01Icon, Clock01Icon } from '@hugeicons/core-free-icons';
-	import { CELL, END, TITLE } from '$lib/trackcolumns';
-	import { anchorMenu, fitMenu, NO_ANCHOR, toBody } from '$lib/menu';
-	import { t } from '$lib/i18n.svelte';
+	import { CELL, END, TITLE } from '#lib/trackcolumns.js';
+	import { anchorMenu, fitMenu, NO_ANCHOR, toBody } from '#lib/menu.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import { Checkbox } from './ui/checkbox';
 
 	let {

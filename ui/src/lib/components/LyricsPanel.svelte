@@ -5,8 +5,8 @@
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { Maximize01Icon, Minimize01Icon } from '@hugeicons/core-free-icons';
 	import LyricsView from './LyricsView.svelte';
-	import { ui } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { ui } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let { onClose, queueOpen = false }: { onClose: () => void; queueOpen?: boolean } = $props();
 
@@ -15,7 +15,8 @@
 	// Expanded, the panel covers the page — so navigating anywhere means the user wants to see that
 	// page, not the lyrics. The docked panel sits beside the content, so it stays put.
 	// beforeNavigate (not a pathname effect) so clicking the tab you're already on also closes it.
-	beforeNavigate(() => {
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
 		if (expanded) onClose();
 	});
 </script>
@@ -39,7 +40,7 @@
 	<div class="flex items-center justify-between border-b px-4 py-3">
 		<h2 class="font-heading text-sm font-semibold">{t('lyrics.title')}</h2>
 		<button
-			onclick={() => (expanded = !expanded)}
+			onclick={() => expanded = !expanded}
 			class="cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
 			aria-label={expanded ? t('a11y.shrink_lyrics') : t('a11y.expand_lyrics')}
 		>
@@ -52,5 +53,5 @@
 			/>
 		</button>
 	</div>
-	<LyricsView {expanded} />
+	<LyricsView expanded={expanded} />
 </aside>

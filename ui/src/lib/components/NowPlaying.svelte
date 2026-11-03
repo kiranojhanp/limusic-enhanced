@@ -20,8 +20,8 @@
 		VolumeHighIcon,
 		VolumeMute02Icon
 	} from '@hugeicons/core-free-icons';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as api from '$lib/api';
+	import * as Tabs from '#lib/components/ui/tabs/index.js';
+	import * as api from '#lib/api.js';
 	import {
 		np,
 		openAddToPlaylist,
@@ -30,7 +30,7 @@
 		toggleNowPlayingRating,
 		ui,
 		wheelVolume
-	} from '$lib/player.svelte';
+	} from '#lib/player.svelte.js';
 	import {
 		canSwitch,
 		claimVideo,
@@ -40,12 +40,13 @@
 		showVideo,
 		video,
 		videoSide
-	} from '$lib/video.svelte';
-	import { artRoom } from '$lib/artroom.svelte';
-	import { typing } from '$lib/shortcuts';
-	import { appearance } from '$lib/theme.svelte';
-	import { t } from '$lib/i18n.svelte';
-	import { isMissingThumb, thumb } from '$lib/thumb';
+	} from '#lib/video.svelte.js';
+	import { artRoom } from '#lib/artroom.svelte.js';
+	import { typing } from '#lib/shortcuts.js';
+	import { appearance } from '#lib/theme.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { isMissingThumb, thumb } from '#lib/thumb.js';
+	import { stationArt } from '#lib/stationart.svelte.js';
 	import ArtistLine from './ArtistLine.svelte';
 	import QueueList from './QueueList.svelte';
 	import LyricsView from './LyricsView.svelte';
@@ -71,16 +72,12 @@
 
 	// Going somewhere means the user wants that page, not this one: minimise. The player bar brings
 	// it back. beforeNavigate (not a pathname effect) so clicking the tab you're already on counts.
-	beforeNavigate(() => (np.open = false));
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
 
-	// Clicking the empty space around the artwork closes the view (#302), the way a dialog's
-	// backdrop does. `data-np-keep` marks the regions that own their clicks: the picture (with its
-	// title, in the new layout), the Song/Video switch, and the queue/lyrics column. Anything added
-	// straight to the view outside those closes it.
-	// Same press-not-release rule as the player bar: dragging a queue row (or a lyrics scroll) and
-	// releasing over the backdrop retargets the click at the common ancestor, which is this. Both
-	// ends of the drag are checked, because the retarget happens whichever way it ran: a selection
-	// started on the backdrop and finished over the lyrics lands the click here too.
+		return np.open = false;
+	});
+
 	const keeps = (t: EventTarget | null) => !!(t as Element | null)?.closest?.('[data-np-keep]');
 	let pressedKeep = false;
 	let releasedKeep = false;
@@ -113,14 +110,26 @@
 	// size a broken-image glyph *is* the page. So step down until one loads: crisp, then the size
 	// proven everywhere else in the app, then the 120 the player bar is already showing for this
 	// very track, and only then a music note.
+	// A station's artwork: its iTunes cover when the stream's title resolved to a song, otherwise
+	// its logo. The original image loads directly (best quality); Rust only steps in for one that
+	// is unloadable or far too small to fill the ~704 CSS px of the full player.
+	const art = stationArt(
+		() => playback.radio?.cover || playback.now?.thumbnail,
+		1024,
+		() => api.isRadioId(playback.now?.videoId) // a YouTube thumb keeps its own step-down
+	);
+
 	let attempt = $state(0);
 	let bgFailed = $state(false);
 	$effect(() => {
 		playback.now?.thumbnail; // re-arm on every track change
+		playback.radio?.cover; // and when the station's artwork lookup lands
+		art.src; // and when a station logo's proxy resolves
 		attempt = 0;
 		bgFailed = false;
 	});
-	const srcs = $derived([720, 400, 120].map((px) => thumb(playback.now?.thumbnail, px)));
+	const artwork = $derived(art.src);
+	const srcs = $derived([720, 400, 120].map((px) => thumb(artwork, px)));
 	const src = $derived(srcs[attempt]);
 	const imgFailed = () => attempt++;
 
@@ -147,7 +156,7 @@
 	function toggle() {
 		flash = playback.paused ? 'play' : 'pause';
 		clearTimeout(flashTimer);
-		flashTimer = setTimeout(() => (flash = null), 220);
+		flashTimer = setTimeout(() => flash = null, 220);
 		api.togglePause();
 	}
 
@@ -159,7 +168,7 @@
 		wheelVolume(e);
 		volFlash = true;
 		clearTimeout(volTimer);
-		volTimer = setTimeout(() => (volFlash = false), 1000);
+		volTimer = setTimeout(() => volFlash = false, 1000);
 	}
 
 	// The queue row for what's playing: it carries the album link and what the ⋮ menu needs, which
@@ -170,6 +179,8 @@
 		return cur?.video_id === playback.now?.videoId ? cur : null;
 	});
 	const local = $derived(!!playback.now && api.isLocalId(playback.now.videoId));
+	// An internet-radio station: no lyrics to look up, and no timeline in the docked views.
+	const live = $derived(!!playback.now && api.isRadioId(playback.now.videoId));
 	const album = $derived(playback.now?.album ?? currentSong?.album);
 	const albumId = $derived(!local ? currentSong?.album_id : undefined);
 
@@ -229,7 +240,7 @@
 	}
 </script>
 
-<svelte:window onkeydown={onKey} />
+<svelte:window onkeydown={onKey}></svelte:window>
 
 {#snippet mode(on: boolean, label: string)}
 	<button
@@ -345,10 +356,16 @@
 		     picture for as long as this one's fetch takes (#77): 720 is a size nothing else in the
 		     app asks for, so it is always a cold request. -->
 		<img
-			{src}
+			src={src}
 			alt=""
-			onerror={imgFailed}
-			onload={(e) => isMissingThumb(e) && imgFailed()}
+			onerror={() => {
+				imgFailed();
+				art.onerror();
+			}}
+			onload={(e) => {
+				if (isMissingThumb(e)) imgFailed();
+				else art.onload(e);
+			}}
 			style={srcs[2] ? `background-image:url(${srcs[2]})` : undefined}
 			class="aspect-square w-full rounded-2xl bg-cover object-cover {stage ? '' : 'shadow-2xl'}"
 		/>
@@ -378,7 +395,7 @@
 	>
 		<Tabs.Root
 			value={np.tab}
-			onValueChange={(v) => (np.tab = v as typeof np.tab)}
+			onValueChange={(v) => np.tab = v as typeof np.tab}
 			class="min-h-0 flex-1 {stage ? 'gap-0' : ''}"
 		>
 			<div
@@ -393,10 +410,12 @@
 						<HugeiconsIcon icon={Queue01Icon} class="h-4 w-4" />
 						{t('player.queue')}
 					</Tabs.Trigger>
-					<Tabs.Trigger value="lyrics" class={stage ? 'flex-none gap-2 px-0.5' : 'gap-2.5'}>
-						<HugeiconsIcon icon={Mic01Icon} class="h-4 w-4" />
-						{t('player.lyrics')}
-					</Tabs.Trigger>
+					{#if !live}
+						<Tabs.Trigger value="lyrics" class={stage ? 'flex-none gap-2 px-0.5' : 'gap-2.5'}>
+							<HugeiconsIcon icon={Mic01Icon} class="h-4 w-4" />
+							{t('player.lyrics')}
+						</Tabs.Trigger>
+					{/if}
 					{#if !api.isLocalId(playback.now?.videoId)}
 						<Tabs.Trigger value="comments" class={stage ? 'flex-none gap-2 px-0.5' : 'gap-2.5'}>
 							<HugeiconsIcon icon={Comment01Icon} class="h-4 w-4" />
@@ -407,7 +426,7 @@
 				{#if np.tab === 'lyrics'}
 					<button
 						type="button"
-						onclick={() => (big = !big)}
+						onclick={() => big = !big}
 						class="flex cursor-pointer items-center justify-center text-muted-foreground transition-colors hover:text-foreground {stage
 							? 'size-8 rounded-full hover:bg-foreground/10'
 							: 'rounded-md p-1.5'}"
@@ -457,18 +476,16 @@
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <div
 	transition:fly={{ y: '100%', duration: 320, easing: cubicOut }}
-	onoutrostart={() => ((settled = false), setHole(null))}
-	onintroend={() => (settled = true)}
+	onoutrostart={() => (settled = false, setHole(null))}
+	onintroend={() => settled = true}
 	bind:this={view}
-	onpointerdown={(e) => ((pressedKeep = keeps(e.target)), (releasedKeep = false))}
-	onpointerup={(e) => (releasedKeep = keeps(e.target))}
+	onpointerdown={(e) => (pressedKeep = keeps(e.target), releasedKeep = false)}
+	onpointerup={(e) => releasedKeep = keeps(e.target)}
 	onclick={onBackdropClick}
 	data-np-view
-	class="absolute inset-y-0 left-16 right-0 z-20 flex overflow-hidden inert:bg-background {video.hole
+	class="absolute inset-y-0 left-16 right-0 z-20 flex overflow-hidden inert:bg-background {video.hole ? '' : 'bg-background'} {stage
 		? ''
-		: 'bg-background'} {stage ? '' : 'justify-center px-4 py-4 sm:px-6 sm:py-6 lg:px-10'} {ui.sidebarCollapsed
-		? ''
-		: 'lg:left-60'} {inset}"
+		: 'justify-center px-4 py-4 sm:px-6 sm:py-6 lg:px-10'} {ui.sidebarCollapsed ? '' : 'lg:left-60'} {inset}"
 >
 	<!-- The ambient light (Settings > Video): the video's colours spilling into the view around it. Not
 	     under theater mode, which covers this view. -->
@@ -521,7 +538,7 @@
 				<div class="grid h-10 shrink-0 grid-cols-[1fr_auto_1fr] items-center">
 					<button
 						type="button"
-						onclick={() => (np.open = false)}
+						onclick={() => np.open = false}
 						class="flex size-9 cursor-pointer items-center justify-center justify-self-start rounded-full text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground"
 						aria-label={t('player.minimize_player')}
 						title={t('player.minimize_player')}
@@ -578,6 +595,15 @@
 									text={playback.now?.artists ?? ''}
 									class="mt-1.5 block text-base text-foreground/75"
 								/>
+								{#if live && playback.radio?.title}
+									<!-- The station's own line, under its name: what is playing right now. -->
+									<p class="mt-0.5 truncate text-sm text-primary/90" title={playback.radio.raw}>
+										{#if playback.radio.artist}
+											<span class="font-medium">{playback.radio.artist}</span>
+											<span class="text-muted-foreground"> · </span>
+										{/if}{playback.radio.title}
+									</p>
+								{/if}
 								{#if album}
 									<!-- There is no page per song, so the album is where "more about
 									     this" goes. Local files have none to go to. -->
@@ -608,7 +634,7 @@
 										<span
 											class="inline-flex"
 											class:animate-heart-pop={justLiked}
-											onanimationend={() => (justLiked = false)}
+											onanimationend={() => justLiked = false}
 										>
 											<HugeiconsIcon
 												icon={FavouriteIcon}
@@ -675,7 +701,7 @@
 			<img
 				src={srcs[2]}
 				alt=""
-				onerror={() => (bgFailed = true)}
+				onerror={() => bgFailed = true}
 				class="pointer-events-none absolute inset-0 h-full w-full art-wash scale-110 object-cover opacity-30 blur-2xl dark:opacity-40"
 			/>
 		{/if}

@@ -4,11 +4,11 @@
 	// when there is something new: the newest video frame every GAP while the video plays, then for
 	// the half second the blend takes to land, then not at all until the next frame or a resize.
 	import { fade } from 'svelte/transition';
-	import * as api from '$lib/api';
-	import { createGlow, type Box, type Glow } from '$lib/ambient';
-	import { logUi } from '$lib/errlog';
-	import { prefs } from '$lib/player.svelte';
-	import { video, videoElement } from '$lib/video.svelte';
+	import * as api from '#lib/api.js';
+	import { createGlow, type Box, type Glow } from '#lib/ambient.js';
+	import { logUi } from '#lib/errlog.js';
+	import { prefs } from '#lib/player.svelte.js';
+	import { video, videoElement } from '#lib/video.svelte.js';
 
 	/** The picture's box in the player view. */
 	let { box }: { box: HTMLElement } = $props();

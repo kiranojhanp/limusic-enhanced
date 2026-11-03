@@ -1,6 +1,6 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '#lib/assets/favicon.svg';
 	import { ModeWatcher, mode } from 'mode-watcher';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import {
@@ -9,9 +9,9 @@
 		InformationCircleIcon,
 		Cancel01Icon
 	} from '@hugeicons/core-free-icons';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { afterNavigate } from '$app/navigation';
-	import { cancelRestore, restoreTo } from '$lib/scrollrestore';
+	import { cancelRestore, restoreTo } from '#lib/scrollrestore.js';
 	import { onMount } from 'svelte';
 	import { getCurrentWindow } from '@tauri-apps/api/window';
 	import { fly } from 'svelte/transition';
@@ -22,43 +22,43 @@
 		prewarmArtworkAccent,
 		refreshArtworkAccent,
 		initTheme
-	} from '$lib/theme.svelte';
-	import { loadAppIcon } from '$lib/appicon.svelte';
-	import { thumb } from '$lib/thumb';
-	import { t } from '$lib/i18n.svelte';
-	import { blockForeignDrag, dragScroll } from '$lib/dnd';
-	import { suppressNative } from '$lib/menu';
-	import Sidebar from '$lib/components/Sidebar.svelte';
-	import Titlebar from '$lib/components/Titlebar.svelte';
-	import ResizeBorders from '$lib/components/ResizeBorders.svelte';
-	import PlayerBar from '$lib/components/PlayerBar.svelte';
-	import QueuePanel from '$lib/components/QueuePanel.svelte';
-	import LyricsPanel from '$lib/components/LyricsPanel.svelte';
-	import CommentsPanel from '$lib/components/CommentsPanel.svelte';
-	import AddToPlaylist from '$lib/components/AddToPlaylist.svelte';
-	import NewPlaylistDialog from '$lib/components/NewPlaylistDialog.svelte';
-	import SettingsDialog from '$lib/components/SettingsDialog.svelte';
-	import TempoPitchDialog from '$lib/components/TempoPitchDialog.svelte';
-	import ShareDialog from '$lib/components/ShareDialog.svelte';
-	import ChannelPicker from '$lib/components/ChannelPicker.svelte';
-	import ListenTogether from '$lib/components/ListenTogether.svelte';
-	import LinkDialog from '$lib/components/LinkDialog.svelte';
-	import ImportDialog from '$lib/components/ImportDialog.svelte';
-	import { handleImportDrop, initImport } from '$lib/import.svelte';
-	import MiniPlayer from '$lib/components/MiniPlayer.svelte';
-	import NowPlaying from '$lib/components/NowPlaying.svelte';
-	import TheaterMode from '$lib/components/TheaterMode.svelte';
-	import VideoSurface from '$lib/components/VideoSurface.svelte';
-	import CommandPalette from '$lib/components/CommandPalette.svelte';
-	import KeyboardShortcuts from '$lib/components/KeyboardShortcuts.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { auth, initApp, np, playback, prefs, ui } from '$lib/player.svelte';
-	import { isLocalId } from '$lib/api';
-	import { video } from '$lib/video.svelte';
-	import { initWin, windowCorners } from '$lib/win.svelte';
-	import { initZoom } from '$lib/zoom.svelte';
-	import { initShortcuts } from '$lib/shortcuts';
-	import { initErrorLog } from '$lib/errlog';
+	} from '#lib/theme.svelte.js';
+	import { loadAppIcon } from '#lib/appicon.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { blockForeignDrag, dragScroll } from '#lib/dnd.js';
+	import { suppressNative } from '#lib/menu.js';
+	import Sidebar from '#lib/components/Sidebar.svelte';
+	import Titlebar from '#lib/components/Titlebar.svelte';
+	import ResizeBorders from '#lib/components/ResizeBorders.svelte';
+	import PlayerBar from '#lib/components/PlayerBar.svelte';
+	import QueuePanel from '#lib/components/QueuePanel.svelte';
+	import LyricsPanel from '#lib/components/LyricsPanel.svelte';
+	import CommentsPanel from '#lib/components/CommentsPanel.svelte';
+	import AddToPlaylist from '#lib/components/AddToPlaylist.svelte';
+	import NewPlaylistDialog from '#lib/components/NewPlaylistDialog.svelte';
+	import SettingsDialog from '#lib/components/SettingsDialog.svelte';
+	import TempoPitchDialog from '#lib/components/TempoPitchDialog.svelte';
+	import ShareDialog from '#lib/components/ShareDialog.svelte';
+	import ChannelPicker from '#lib/components/ChannelPicker.svelte';
+	import ListenTogether from '#lib/components/ListenTogether.svelte';
+	import LinkDialog from '#lib/components/LinkDialog.svelte';
+	import ImportDialog from '#lib/components/ImportDialog.svelte';
+	import { handleImportDrop, initImport } from '#lib/import.svelte.js';
+	import MiniPlayer from '#lib/components/MiniPlayer.svelte';
+	import NowPlaying from '#lib/components/NowPlaying.svelte';
+	import TheaterMode from '#lib/components/TheaterMode.svelte';
+	import VideoSurface from '#lib/components/VideoSurface.svelte';
+	import CommandPalette from '#lib/components/CommandPalette.svelte';
+	import KeyboardShortcuts from '#lib/components/KeyboardShortcuts.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { auth, initApp, np, playback, prefs, ui } from '#lib/player.svelte.js';
+	import { isLocalId, isRadioId } from '#lib/api.js';
+	import { video } from '#lib/video.svelte.js';
+	import { initWin, windowCorners } from '#lib/win.svelte.js';
+	import { initZoom } from '#lib/zoom.svelte.js';
+	import { initShortcuts } from '#lib/shortcuts.js';
+	import { initErrorLog } from '#lib/errlog.js';
 	import {
 		updateState,
 		availableMessage,
@@ -66,23 +66,24 @@
 		openDownloadPage,
 		checkForUpdatesQuiet,
 		QUIET_INTERVAL_MS
-	} from '$lib/updater.svelte';
+	} from '#lib/updater.svelte.js';
 
 	// SvelteKit's `snapshot` keys a saved scroll to the *history entry*: two visits to the same URL
 	// each restore the position they left at, where a URL→scroll Map would collapse both onto the
 	// last save. Kit 2.69 reads `.snapshot` off the bound component *instance* (the generated
 	// root.svelte does `bind:this`), so it must be exported from this script, not the module. This
-	// covers every route that scrolls `<main>` (`$lib/scrollrestore`); /playlist/[id] scrolls its
+	// covers every route that scrolls `<main>` (`#lib/scrollrestore.js`); /playlist/[id] scrolls its
 	// own container and exports a snapshot of its own.
 	let scroller = $state<HTMLElement | null>(null);
 	export const snapshot = {
-		capture: () => (scroller ? scroller.scrollTop : null),
+		capture: () => scroller ? scroller.scrollTop : null,
 		restore: (y: unknown) => {
 			if (!scroller || typeof y !== 'number') return;
 			restoreTo(scroller, y);
 		}
 	};
 	afterNavigate((nav) => {
+		if (nav.shallow && nav.type === 'goto') return;
 		if (!scroller || !nav.to) return;
 		// Kit invokes snapshot.restore after afterNavigate on its own, so back/forward needs
 		// nothing here. Direct navigation (a link, the sidebar, a fresh history entry) starts at
@@ -115,9 +116,10 @@
 	const showQueue = $derived(queueOpen && !tabbed);
 	const showLyrics = $derived(lyricsOpen && !tabbed);
 	const showComments = $derived(commentsOpen && !tabbed);
-	// A local file has no YouTube comments, and the bar and the view hide their comments buttons for
-	// it, so nothing could close them: comments count as closed. Docked, the panel goes; tabbed, the
-	// view goes back to the tab that was open before comments. Opened again on a YouTube track as usual.
+	// A local file or a station has no YouTube comments, and the bar and the view hide their
+	// comments buttons for it, so nothing could close them: comments count as closed. Docked, the
+	// panel goes; tabbed, the view goes back to the tab that was open before comments. Opened again
+	// on a YouTube track as usual.
 	let tabBeforeComments = $state<'queue' | 'lyrics'>('queue');
 	$effect(() => {
 		if (np.tab !== 'comments') tabBeforeComments = np.tab;
@@ -126,6 +128,14 @@
 		if (!playback.now || !isLocalId(playback.now.videoId)) return;
 		commentsOpen = false;
 		if (np.tab === 'comments') np.tab = tabBeforeComments;
+	});
+
+	// A station has no lyrics either, and the bar hides its lyrics button for one. Same treatment as
+	// comments: whatever was open closes, and the tab goes back to the queue.
+	$effect(() => {
+		if (!playback.now || !isRadioId(playback.now.videoId)) return;
+		lyricsOpen = false;
+		if (np.tab === 'lyrics') np.tab = 'queue';
 	});
 
 	// "Adapt colors to artwork": re-run on every track change and on the toggle itself. The 120px
@@ -201,7 +211,7 @@
 	ondragover={blockForeignDrag}
 	ondrop={(e) => handleImportDrop(e) || blockForeignDrag(e)}
 	oncontextmenu={suppressNative}
-/>
+></svelte:window>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 <ModeWatcher />
@@ -263,12 +273,23 @@
 					lyricsOpen={showLyrics || showComments}
 				/>{/if}
 			<!-- Lyrics before queue: side by side over the page, lyrics on the left, queue on the right. -->
-			{#if showLyrics}<LyricsPanel onClose={() => (lyricsOpen = false)} queueOpen={showQueue} />{/if}
-			{#if showComments}<CommentsPanel
-					onClose={() => (commentsOpen = false)}
+			{#if showLyrics}
+				<LyricsPanel
+					onClose={() => lyricsOpen = false}
 					queueOpen={showQueue}
-				/>{/if}
-			{#if showQueue}<QueuePanel onClose={() => (queueOpen = false)} />{/if}
+				/>
+			{/if}
+
+			{#if showComments}
+				<CommentsPanel
+					onClose={() => commentsOpen = false}
+					queueOpen={showQueue}
+				/>
+			{/if}
+
+			{#if showQueue}
+				<QueuePanel onClose={() => queueOpen = false} />
+			{/if}
 		</div>
 		{#if playback.now}
 			<!-- Slides up from its own height on first play; leaves instantly (bar removal is rare).
@@ -277,7 +298,7 @@
 			     earlier in the DOM, which is what puts it behind the bar as it slides in and out. -->
 			<div class="relative z-20" in:fly={{ y: 64, duration: 250, easing: cubicOut }}>
 				<PlayerBar
-					onToggleQueue={() => (tabbed ? (np.tab = 'queue') : (queueOpen = !queueOpen))}
+					onToggleQueue={() => tabbed ? np.tab = 'queue' : queueOpen = !queueOpen}
 					queueOpen={tabbed ? np.tab === 'queue' : queueOpen}
 					onToggleLyrics={() => {
 						if (tabbed) np.tab = 'lyrics';
@@ -342,10 +363,8 @@
 					size="icon-sm"
 					class="-mr-2 text-muted-foreground hover:text-foreground"
 					aria-label={t('common.close')}
-					onclick={() => (updateState.available = null)}
-				>
-					<HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
-				</Button>
+					onclick={() => updateState.available = null}
+				><HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} /></Button>
 			{/if}
 		</div>
 	{/if}

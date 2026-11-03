@@ -2,10 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { HistoryIcon, Search01Icon } from '@hugeicons/core-free-icons';
-	import SearchSuggest from '$lib/components/SearchSuggest.svelte';
-	import { auth, personal, playback } from '$lib/player.svelte';
-	import { thumb } from '$lib/thumb';
-	import { t, type TranslationKey } from '$lib/i18n.svelte';
+	import SearchSuggest from '#lib/components/SearchSuggest.svelte';
+	import { auth, personal, playback } from '#lib/player.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import { t, type TranslationKey } from '#lib/i18n.svelte.js';
 
 	// Fixed at mount — a greeting that flips mid-session is uncanny.
 	const hour = new Date().getHours();

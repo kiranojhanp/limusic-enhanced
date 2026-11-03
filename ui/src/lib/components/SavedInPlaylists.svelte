@@ -8,11 +8,11 @@
 	// despite the whole row being a play target: nothing in there bubbles through the row any more.
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { ArrowRight01Icon, CheckmarkCircle03Icon } from '@hugeicons/core-free-icons';
-	import type { BrowseItem } from '$lib/api';
-	import { hrefFor } from '$lib/browse';
-	import { anchorMenu, fitMenu, NO_ANCHOR, toBody } from '$lib/menu';
-	import { thumb } from '$lib/thumb';
-	import { t } from '$lib/i18n.svelte';
+	import type { BrowseItem } from '#lib/api.js';
+	import { hrefFor } from '#lib/browse.js';
+	import { anchorMenu, fitMenu, NO_ANCHOR, toBody } from '#lib/menu.js';
+	import { thumb } from '#lib/thumb.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let { playlists }: { playlists: BrowseItem[] } = $props();
 

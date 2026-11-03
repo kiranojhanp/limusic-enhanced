@@ -7,7 +7,7 @@
 	//
 	// Sized in em off the root's font-size. Radii are scaled by --k: a real corner on a card this
 	// small would read as a pill.
-	import { onAccent, type Custom, type ThemeId } from '$lib/theme.svelte';
+	import { onAccent, type Custom, type ThemeId } from '#lib/theme.svelte.js';
 
 	type Overrides = Pick<Custom, 'accent' | 'hue' | 'radius' | 'fontSans' | 'fontHeading'>;
 

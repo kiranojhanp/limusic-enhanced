@@ -4,10 +4,10 @@
 	// too and the effects button stays lit while it's off 1x.
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { Tick02Icon } from '@hugeicons/core-free-icons';
-	import * as Popover from '$lib/components/ui/popover';
-	import { inRoom } from '$lib/lt.svelte';
-	import { playback, setTempoPitch } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import * as Popover from '#lib/components/ui/popover/index.js';
+	import { inRoom } from '#lib/lt.svelte.js';
+	import { playback, setTempoPitch } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let { class: klass = '' }: { class?: string } = $props();
 

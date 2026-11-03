@@ -2,9 +2,9 @@
 	import { untrack } from 'svelte';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import * as AlertDialog from '#lib/components/ui/alert-dialog/index.js';
 	import {
 		cancelDelete,
 		comments,
@@ -19,9 +19,9 @@
 		submitCreate,
 		toggleReplies,
 		type ThreadView
-	} from '$lib/comments.svelte';
-	import { auth, playback } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	} from '#lib/comments.svelte.js';
+	import { auth, playback } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import CommentRow from './CommentRow.svelte';
 	import CommentComposer from './CommentComposer.svelte';
 

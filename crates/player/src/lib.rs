@@ -72,6 +72,10 @@ pub enum PlayerEvent {
     /// worth trying. The open is a network round trip, so a skip or a crossfade can land first,
     /// and the file named is then no longer the one playing.
     VideoFailed(String),
+    /// The current file's metadata tags, reported whenever mpv's map changes. A live stream puts
+    /// its ICY title here (`icy-title`); the app filters this down to stations, because an ordinary
+    /// track's tags are already in the queue row.
+    Metadata(Vec<(String, String)>),
     Error(String),
 }
 
@@ -295,8 +299,8 @@ fn new_mpv(cache_dir: &str) -> Result<Mpv, Error> {
     // What the system mixer calls the stream. mpv's own names are "mpv" and `<media title> - mpv`,
     // and the media title of a proxied stream is the last segment of its loopback URL, so KDE's
     // mixer listed "e09087d13ce71f6d - mpv" (issue #409).
-    mpv.set_property("audio-client-name", "Limusic")?;
-    mpv.set_property("title", "Limusic")?;
+    mpv.set_property("audio-client-name", "Limusic+")?;
+    mpv.set_property("title", "Limusic+")?;
     mpv.set_property("gapless-audio", "yes")?;
     // mpv's native Matroska demuxer floors WebM DiscardPadding nanoseconds to Opus samples. For
     // values one nanosecond below a sample boundary (YouTube emits 6,833,333 ns), that leaves one
@@ -374,6 +378,9 @@ fn spawn_deck_events(mpv: &Arc<Mpv>, deck: usize, decks: Arc<Decks>) -> Result<(
     ev.observe_property("duration", Format::Double, 1)?;
     ev.observe_property("pause", Format::Flag, 2)?;
     ev.observe_property("idle-active", Format::Flag, 3)?;
+    // The only source of a live station's "now playing" title. Observed as a node map because
+    // that is how mpv reports tags; a String format would fail on any file with more than one.
+    ev.observe_property("metadata", Format::Node, 4)?;
     std::thread::Builder::new()
         .name(format!("mpv-events-{deck}"))
         .spawn(move || event_loop(ev, deck, decks))
@@ -1168,6 +1175,29 @@ fn event_loop(mut ev: EventContext, deck: usize, decks: Arc<Decks>) {
                     } => {
                         idle = i;
                         None
+                    }
+                    Event::PropertyChange {
+                        name: "metadata",
+                        change: PropertyData::Node(node),
+                        ..
+                    } => {
+                        // Only the deck being heard may speak. The idle deck is opening the next
+                        // track (or fading out under this one), and its tags are not on screen.
+                        if !live() {
+                            None
+                        } else {
+                            let tags = node
+                                .map()
+                                .map(|entries| {
+                                    entries
+                                        .filter_map(|(key, value)| {
+                                            value.str().map(|v| (key, v.to_owned()))
+                                        })
+                                        .collect()
+                                })
+                                .unwrap_or_default();
+                            Some(PlayerEvent::Metadata(tags))
+                        }
                     }
                     // mpv's own log, at whatever level `request_mpv_log` asked for. Its `prefix`
                     // is the subsystem ("mkv", "ffmpeg/demuxer", "cplayer"), which is the part

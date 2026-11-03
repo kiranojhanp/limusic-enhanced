@@ -29,14 +29,14 @@
 	} from '@hugeicons/core-free-icons';
 	import SectionHeading from './SectionHeading.svelte';
 	import ShortcutPicker from './ShortcutPicker.svelte';
-	import { ON_REPEAT_ID } from '$lib/api';
-	import type { BrowseItem } from '$lib/api';
-	import { thumb } from '$lib/thumb';
-	import { openItem, playItem } from '$lib/browse';
-	import { library, personal, placePick, removePick } from '$lib/player.svelte';
-	import { freshen, MAX_PICKS } from '$lib/personal';
-	import { getDragItem, isDragItem, setDragItem } from '$lib/dnd';
-	import { t } from '$lib/i18n.svelte';
+	import { ON_REPEAT_ID } from '#lib/api.js';
+	import type { BrowseItem } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
+	import { openItem, playItem } from '#lib/browse.js';
+	import { library, personal, placePick, removePick } from '#lib/player.svelte.js';
+	import { freshen, MAX_PICKS } from '#lib/personal.js';
+	import { getDragItem, isDragItem, setDragItem } from '#lib/dnd.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import ItemMenu from './ItemMenu.svelte';
 
 	// Tiles are stored as a snapshot of the card, so a playlist that has gained tracks since it was

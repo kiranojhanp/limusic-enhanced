@@ -8,13 +8,13 @@
 	// their top strips are ever visible. Transform-only, so the fan composites.
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { PlayIcon, MusicNote01Icon, ListRestartIcon } from '@hugeicons/core-free-icons';
-	import { ON_REPEAT_ID } from '$lib/api';
-	import type { BrowseItem } from '$lib/api';
-	import { thumb } from '$lib/thumb';
-	import { setDragItem } from '$lib/dnd';
-	import { openItem, playItem } from '$lib/browse';
+	import { ON_REPEAT_ID } from '#lib/api.js';
+	import type { BrowseItem } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
+	import { setDragItem } from '#lib/dnd.js';
+	import { openItem, playItem } from '#lib/browse.js';
 	import PlaylistMenu from './PlaylistMenu.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let { item }: { item: BrowseItem } = $props();
 

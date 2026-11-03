@@ -6,12 +6,12 @@
 	import { tick } from 'svelte';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { DragDropVerticalIcon, RefreshIcon } from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import { Switch } from '$lib/components/ui/switch';
-	import { LYRICS_SOURCE_MIME } from '$lib/dnd';
-	import * as api from '$lib/api';
-	import { t } from '$lib/i18n.svelte';
-	import { KIND_CLASS, KIND_LABEL, SOURCE_KIND, aboutKey } from '$lib/lyricsSources';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import { LYRICS_SOURCE_MIME } from '#lib/dnd.js';
+	import * as api from '#lib/api.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { KIND_CLASS, KIND_LABEL, SOURCE_KIND, aboutKey } from '#lib/lyricsSources.js';
 
 	let { settings }: { settings: Record<string, string> } = $props();
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { windowCorners } from '$lib/win.svelte';
+	import { windowCorners } from '#lib/win.svelte.js';
 	import { fade, fly, scale } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
@@ -12,12 +12,12 @@
 		SquareArrowRightDoubleIcon,
 		Tick02Icon
 	} from '@hugeicons/core-free-icons';
-	import * as api from '$lib/api';
-	import type { BrowseItem } from '$lib/api';
-	import { thumb } from '$lib/thumb';
-	import { t } from '$lib/i18n.svelte';
-	import { ui, toast, addSongsToPlaylists, openNewPlaylist, savedIn } from '$lib/player.svelte';
-	import { Button } from '$lib/components/ui/button';
+	import * as api from '#lib/api.js';
+	import type { BrowseItem } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { ui, toast, addSongsToPlaylists, openNewPlaylist, savedIn } from '#lib/player.svelte.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 
 	let playlists = $state<BrowseItem[]>([]);
 	let loading = $state(false);

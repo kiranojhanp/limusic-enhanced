@@ -2,10 +2,10 @@
 	// Ctrl+H, ⌘/ on macOS: what the keyboard can do. Nothing in the chrome points at the shortcuts, so this is
 	// where they are discoverable. It documents the zoom keys too (zoom.svelte.ts owns those) — from the
 	// outside they are the same feature, and a list that only covers half of them is worse than none.
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { HELP_COMBO, MOD, MUTE_COMBO } from '$lib/shortcuts';
-	import { ui } from '$lib/player.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import { HELP_COMBO, MOD, MUTE_COMBO } from '#lib/shortcuts.js';
+	import { ui } from '#lib/player.svelte.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	// $derived, not a plain const: the list is rebuilt when the language changes under it.
 	const GROUPS: { title: string; rows: [string, string][] }[] = $derived([

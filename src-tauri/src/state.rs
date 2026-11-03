@@ -101,6 +101,19 @@ pub struct AppState {
     /// Mirror of mpv's pause flag (set in `media_set_playing`). Position ticks must consult this
     /// instead of assuming "playing" — mpv fires `time-pos` on seeks while paused too.
     is_playing: AtomicBool,
+    /// The current track is an internet radio station (`RADIO:<uuid>`, see `radio.rs`). A live
+    /// stream has no timeline: there is no position to remember, nothing to seek, and no play to
+    /// count. Set by `start_current`, read on the position tick, which runs too hot to take the
+    /// queue lock just to look at the id.
+    current_live: AtomicBool,
+    /// The current station's "now playing" line (ICY title, plus whatever iTunes knew about it).
+    /// `None` between tracks and for everything that is not a station. Emitted as `radio-metadata`
+    /// and included in `playback_snapshot` so a newly opened window does not wait for the next ICY
+    /// change (a song can last minutes).
+    radio_meta: std::sync::Mutex<Option<serde_json::Value>>,
+    /// The raw ICY title already looked up. mpv reports its metadata map on every change, and a
+    /// station may repeat the same title for minutes; this keeps the iTunes lookup to once per song.
+    radio_meta_raw: std::sync::Mutex<Option<String>>,
     /// Latest mpv position (f64 bits) + wall-clock secs of the last DB write, for throttled
     /// resume-position persistence.
     latest_position: AtomicU64,
@@ -498,6 +511,9 @@ impl AppState {
             history_pinged: AtomicBool::new(false),
             listen: std::sync::Mutex::default(),
             is_playing: AtomicBool::new(false),
+            current_live: AtomicBool::new(false),
+            radio_meta: std::sync::Mutex::new(None),
+            radio_meta_raw: std::sync::Mutex::new(None),
             generation: AtomicU64::new(0),
             rate_epoch: AtomicU64::new(0),
             comments: std::sync::Mutex::new(innertube::CommentsSession::default()),
@@ -1207,6 +1223,39 @@ impl AppState {
                 ResolveError::LocalMissing(path.to_owned())
             });
         }
+        // An internet radio station is the same kind of "stream": a live URL with no timeline and
+        // no YouTube identity (radio.rs). A user-added station has no directory entry, and a
+        // favorite is a snapshot — both are checked first, so a saved stream still plays while the
+        // directory is down. A directory station is asked again rather than trusting a URL saved
+        // months ago, because a station's stream can move.
+        if let Some(uuid) = crate::radio::song_id(video_id) {
+            let saved = self.db.radio_get(uuid);
+            if let Some((kind, station)) = &saved {
+                if kind == "custom" && !station.stream_url().is_empty() {
+                    return Ok(crate::radio::playback_data(video_id, station));
+                }
+            }
+            return match crate::radio::station(uuid).await {
+                Ok(Some(station)) if !station.stream_url().is_empty() => {
+                    Ok(crate::radio::playback_data(video_id, &station))
+                }
+                Ok(_) => match saved {
+                    Some((_, station)) if !station.stream_url().is_empty() => {
+                        Ok(crate::radio::playback_data(video_id, &station))
+                    }
+                    _ => Err(ResolveError::AllClientsFailed(video_id.to_owned())),
+                },
+                Err(e) => {
+                    tracing::warn!(uuid, error = %e, "radio station lookup failed");
+                    match saved {
+                        Some((_, station)) if !station.stream_url().is_empty() => {
+                            Ok(crate::radio::playback_data(video_id, &station))
+                        }
+                        _ => Err(ResolveError::RadioUnreachable(e)),
+                    }
+                }
+            };
+        }
         // Latency cache first (context/11) — honor expiry, never a source of truth.
         //
         // The URL has to outlive the *track*, not just the load. googlevideo keeps serving a
@@ -1302,7 +1351,9 @@ impl AppState {
         // one offline (where local music earns its keep) is a guaranteed-failing request.
         // Autoplay off means the song plays and the queue ends there (#238): the radio hydrated
         // below is exactly the "recommended tracks" that setting turns off.
-        let no_radio = crate::local::is_local_song(&video_id) || !self.autoplay_enabled();
+        let no_radio = crate::local::is_local_song(&video_id)
+            || crate::radio::is_radio_song(&video_id)
+            || !self.autoplay_enabled();
         let position = self.current_position();
 
         {
@@ -1988,6 +2039,10 @@ impl AppState {
             self.history_pinged.store(false, Ordering::Relaxed);
             self.end_listen();
             q.duration = 0.0;
+            self.current_live.store(
+                q.items.get(q.current).is_some_and(|i| crate::radio::is_radio_song(&i.video_id)),
+                Ordering::Relaxed,
+            );
         }
         if let Some(item) = self.current_item().await {
             self.emit_now_playing(&item, "gapless");
@@ -2271,6 +2326,8 @@ impl AppState {
                 }
             }
         }
+        // Which kind of track is playing now, for the position tick and the live-stream guards.
+        self.current_live.store(crate::radio::is_radio_song(&item.video_id), Ordering::Relaxed);
         self.emit_now_playing(&item, &data.stream_client);
         // The rating just emitted is whatever the row was parsed with, which for a search result
         // or a radio track is nothing at all (issue #93). Ask.
@@ -2302,6 +2359,11 @@ impl AppState {
         if self.lt.is_guest().await {
             return;
         }
+        // A live stream has no gapless boundary to prime: appending the next thing behind an
+        // endless one would make mpv's playlist disagree with the queue.
+        if self.current_live.load(Ordering::Relaxed) {
+            return;
+        }
         for _ in 0..3 {
             let next_idx = {
                 let q = self.queue.lock().await;
@@ -2315,6 +2377,7 @@ impl AppState {
             let (next_video, next_title, next_upload, next_secs) = {
                 let q = self.queue.lock().await;
                 match q.items.get(next_idx) {
+                    Some(item) if crate::radio::is_radio_song(&item.video_id) => return,
                     Some(item) => (
                         item.video_id.clone(),
                         item.title.clone(),
@@ -2470,6 +2533,109 @@ impl AppState {
         })
     }
 
+    /// A live station reported a new ICY title. Only stations use this: mpv also reports ordinary
+    /// file tags, and those are already in the queue row.
+    ///
+    /// The raw title goes out immediately so the transport never waits on Apple; the iTunes lookup
+    /// that turns "Artist - Title" into artwork and an album lands later as a second event. A slow
+    /// lookup is discarded if the station has moved on, so it cannot label the next song with the
+    /// previous one's art.
+    pub async fn on_stream_metadata(self: &Arc<Self>, metadata: Vec<(String, String)>) {
+        let (video_id, station) = {
+            let q = self.queue.lock().await;
+            let Some(item) = q.items.get(q.current) else { return };
+            if !crate::radio::is_radio_song(&item.video_id) {
+                return;
+            }
+            (item.video_id.clone(), item.title.clone())
+        };
+
+        // mpv names the map entry `icy-title`; a few streams use `StreamTitle` or a plain `title`.
+        let raw = metadata.iter().find_map(|(key, value)| {
+            let key = key.to_ascii_lowercase();
+            let interesting =
+                key.contains("icy-title") || key.contains("streamtitle") || key == "title";
+            interesting
+                .then(|| value.trim().trim_matches('\0').trim().to_owned())
+                .filter(|v| !v.is_empty())
+        });
+        let Some(raw) = raw else { return };
+
+        {
+            let Ok(mut last) = self.radio_meta_raw.lock() else { return };
+            if last.as_deref() == Some(raw.as_str()) {
+                return;
+            }
+            *last = Some(raw.clone());
+        }
+
+        let (artist, title) = crate::radio::split_stream_title(&raw);
+        let payload = serde_json::json!({
+            "videoId": video_id,
+            "station": station,
+            "raw": raw,
+            "title": title,
+            "artist": artist,
+            "album": serde_json::Value::Null,
+            "cover": serde_json::Value::Null,
+            "link": serde_json::Value::Null,
+        });
+        self.set_radio_meta(&payload);
+        let _ = self.app.emit("radio-metadata", payload);
+
+        let (Some(artist), Some(title)) = (artist, title) else { return };
+        let state = self.clone();
+        let raw_for_spawn = raw.clone();
+        let video_for_spawn = video_id.clone();
+        tauri::async_runtime::spawn(async move {
+            let Some(enriched) = crate::radio::enrich(&artist, &title).await else { return };
+            // Still the same song on the same station? A slow lookup must not overwrite the next.
+            let same_title =
+                state.radio_meta_raw.lock().ok().and_then(|raw| raw.clone()).as_deref()
+                    == Some(raw_for_spawn.as_str());
+            if !same_title {
+                return;
+            }
+            let still_playing = {
+                let q = state.queue.lock().await;
+                q.items.get(q.current).is_some_and(|i| i.video_id == video_for_spawn)
+            };
+            if !still_playing {
+                return;
+            }
+            let payload = serde_json::json!({
+                "videoId": video_for_spawn,
+                "station": station,
+                "raw": raw_for_spawn,
+                "title": enriched.title.clone().or(Some(title)),
+                "artist": enriched.artist.clone().or(Some(artist)),
+                "album": enriched.album,
+                "cover": enriched.cover,
+                "link": enriched.link,
+            });
+            state.set_radio_meta(&payload);
+            let _ = state.app.emit("radio-metadata", payload);
+        });
+    }
+
+    fn set_radio_meta(&self, meta: &serde_json::Value) {
+        if let Ok(mut current) = self.radio_meta.lock() {
+            *current = Some(meta.clone());
+        }
+    }
+
+    /// Drop the last station's line on every track change. The stream's first ICY report arrives
+    /// after the load, so clearing here (rather than on a timer) is what keeps the previous
+    /// station's song from sitting under the new one's name.
+    fn clear_radio_meta(&self) {
+        if let Ok(mut current) = self.radio_meta.lock() {
+            *current = None;
+        }
+        if let Ok(mut raw) = self.radio_meta_raw.lock() {
+            *raw = None;
+        }
+    }
+
     /// What a window that opened mid-playback missed. Events are fire-and-forget, so the mini
     /// player (a second webview, created long after the track started) and the main window on a
     /// cold start both have to ask once instead of guessing.
@@ -2479,6 +2645,10 @@ impl AppState {
             let q = self.queue.lock().await;
             (q.duration, q.items.get(q.current).cloned())
         };
+        let radio = item
+            .as_ref()
+            .filter(|i| crate::radio::is_radio_song(&i.video_id))
+            .and_then(|_| self.radio_meta.lock().ok().and_then(|meta| meta.clone()));
         serde_json::json!({
             "now": item.as_ref().map(|i| Self::now_playing_json(i, "current")),
             "paused": !self.is_playing.load(Ordering::Relaxed),
@@ -2489,6 +2659,7 @@ impl AppState {
             "speed": speed,
             "semitones": semitones,
             "reverb": reverb,
+            "radio": radio,
         })
     }
 
@@ -2512,7 +2683,10 @@ impl AppState {
     fn refresh_from_next(self: &std::sync::Arc<Self>, video_id: &str, gen: u64) {
         // Signed out there is no rating to be wrong about and no twin to learn (signed-out `/next`
         // never wraps a row), and a local file is not a videoId YouTube has ever heard of.
-        if !self.it.is_logged_in() || crate::local::is_local_song(video_id) {
+        if !self.it.is_logged_in()
+            || crate::local::is_local_song(video_id)
+            || crate::radio::is_radio_song(video_id)
+        {
             return;
         }
         let me = self.clone();
@@ -2575,20 +2749,13 @@ impl AppState {
     }
 
     fn emit_now_playing(&self, item: &SongItem, stream_client: &str) {
+        // A new track has no station line yet; the stream's first ICY report repopulates it.
+        self.clear_radio_meta();
         let _ = self.app.emit("now-playing", Self::now_playing_json(item, stream_client));
         let _ = self.app.emit("playback-state", "playing");
         // Push the same metadata to the OS media widget (context/16) and Discord.
         if let Some(m) = &self.media {
-            // MPRIS/SMTC want a URL; a local track's artwork is a path, so hand it a file:// one.
-            // Scheme, not leading slash: a Windows cover path is `C:\...`, and SMTC drops the whole
-            // metadata update (cover included) when the thumbnail URI won't parse.
-            let cover = item.thumbnail.as_ref().map(|t| {
-                if t.contains("://") {
-                    crate::media::cover_url(t)
-                } else {
-                    format!("file://{t}")
-                }
-            });
+            let cover = os_media_cover(item);
             m.set_metadata(&item.title, &item.artists, item.album.as_deref(), cover.as_deref());
         }
         if let Some(d) = &self.discord {
@@ -2606,7 +2773,11 @@ impl AppState {
                 && self.db.get_setting("track_notifications_focused").as_deref() == Some("true");
             crate::notify::track_changed(&self.app, &item.title, &item.artists, even_focused);
         }
-        self.lastfm.set_track(item);
+        // A station is not a song: scrobbling its name as a track would put junk in the user's
+        // profile, and neither Last.fm nor ListenBrainz has anything to match it to.
+        if !crate::radio::is_radio_song(&item.video_id) {
+            self.lastfm.set_track(item);
+        }
         // New track ⇒ let the next position tick through immediately instead of waiting out the
         // ~1s throttle, so a restored seek position (and the play-state self-heal) lands at once.
         self.last_media_push.store(0, Ordering::Relaxed);
@@ -2910,6 +3081,13 @@ impl AppState {
     /// watch-history ping, latched to happen exactly once per play. The ping is additionally
     /// gated on the `enable_history` setting + being logged in. Best-effort (errors logged).
     pub async fn on_position(&self, pos: f64) {
+        // A live stream has no timeline and no play to count. Everything below assumes a track
+        // with a length: a resume position would seek into the middle of whatever is on air next
+        // launch, the stats page would file a station as a song, and the watch-history ping has
+        // no video behind it. One atomic read on the hottest path.
+        if self.current_live.load(Ordering::Relaxed) {
+            return;
+        }
         self.record_position(pos);
         self.hear(pos);
         // Latched: nothing below can fire again for this play, so don't queue up behind the
@@ -3061,6 +3239,10 @@ impl AppState {
             // Nothing to continue from when the queue ends on a local file: its path is not a
             // videoId, and a queue of local music is exactly the case that has to work offline.
             if q.radio_seed.is_none() && crate::local::is_local_song(&last.video_id) {
+                return 0;
+            }
+            // A station is not a seed either: there is no "more like this" from a directory uuid.
+            if crate::radio::is_radio_song(&last.video_id) {
                 return 0;
             }
             let seed = q.radio_seed.clone().unwrap_or_else(|| format!("RDAMVM{}", last.video_id));
@@ -3389,6 +3571,10 @@ impl AppState {
     /// Flush the latest known position to the DB immediately (e.g. on pause), and the time heard
     /// of the play it belongs to.
     pub fn flush_position(&self) {
+        // A live stream has no position to remember (see `on_position`).
+        if self.current_live.load(Ordering::Relaxed) {
+            return;
+        }
         let pos = f64::from_bits(self.latest_position.load(Ordering::SeqCst));
         self.db.set_setting("queue_position", &pos.to_string());
         self.save_listen(&mut self.listen.lock().unwrap());
@@ -3743,6 +3929,11 @@ impl AppState {
     pub async fn user_seek(&self, position: f64) -> Result<(), String> {
         if self.lt.is_guest().await {
             return Ok(()); // guests can't scrub — the host controls the timeline
+        }
+        // Nothing to seek: a live stream has no timeline, and the UI hides its scrubber. Ignoring
+        // it here keeps a stale keybinding or a Listen Together seek from moving the station.
+        if self.current_live.load(Ordering::Relaxed) {
+            return Ok(());
         }
         if self.player.is_idle() {
             // Nothing loaded to seek, as with a track restored at launch: move where it will
@@ -4689,6 +4880,32 @@ fn row_secs(item: &SongItem) -> f64 {
     parse_duration_ms(item.duration.as_deref()) as f64 / 1000.0
 }
 
+/// The artwork URL the OS media widget (Now Playing / MPRIS / SMTC) should load for `item`.
+///
+/// A local path becomes `file://` — scheme, not a leading slash, because a Windows cover path is
+/// `C:\...` and SMTC drops the whole update on a URI it cannot parse. A remote cover is passed on
+/// only when it is a well-formed `https` one, after the size rewrite. A **station** gets none on
+/// macOS: a directory logo is an arbitrary third-party URL (plain `http`, which ATS refuses, or
+/// malformed), and souvlaki's `NSImage` loader *aborts the process* — a non-unwinding panic, not an
+/// error — when it cannot read one. The app's own UI still draws the logo.
+fn os_media_cover(item: &SongItem) -> Option<String> {
+    let thumb = item.thumbnail.as_deref()?;
+    if !thumb.contains("://") {
+        return Some(format!("file://{thumb}"));
+    }
+    if thumb.starts_with("file://") {
+        return Some(thumb.to_owned());
+    }
+    #[cfg(target_os = "macos")]
+    if crate::radio::is_radio_song(&item.video_id) {
+        return None;
+    }
+    // A raw space (or any non-https scheme) is where NSImage returns nil on macOS; other platforms
+    // cope with a cover that fails to load, so this is only a guard there.
+    (thumb.starts_with("https://") && !thumb.chars().any(char::is_whitespace))
+        .then(|| crate::media::cover_url(thumb))
+}
+
 fn format_duration(ms: i64) -> String {
     let total = ms / 1000;
     match total / 3600 {
@@ -4880,6 +5097,11 @@ pub fn native_video() -> bool {
 /// realtime; the proxy re-issues it as bounded ranges, which are served at full speed, so both the
 /// first play and every seek start sooner. audioproxy.rs has the numbers and the kill-switch.
 fn mpv_stream_url(data: &PlaybackData) -> String {
+    // A live radio stream is endless, and the audio proxy's bounded chunk fetches are built for a
+    // file with a length: chunking a live feed stalls it. Hand mpv the station's URL directly.
+    if crate::radio::is_radio_song(&data.video_id) {
+        return data.stream_url.clone();
+    }
     // A user proxy reaches mpv as `http-proxy` (#241), and ffmpeg would send the loopback request
     // through it, and it cannot reach our 127.0.0.1, so audio would go silent. Hand mpv the
     // googlevideo URL instead and let the user's proxy carry it: no chunked proxy, but working
@@ -4950,12 +5172,50 @@ mod tests {
     use super::{
         adopt_twin, append_page, backfill_metadata, cache_horizon, drop_duplicates, enqueue_at,
         format_duration, freshen, get_url, guest_insert_index, history_threshold, is_mix,
-        loudness_gain, merge_radio, next_index, parse_duration_ms, persist_fingerprint,
-        prefer_version, prev_track_title, put_url, queue_fingerprint, radio_seed_for,
-        retain_upcoming, shuffle_new_queue, shuffle_upcoming, splice_radio_into, swap_version,
-        trim_played, twin_position, unshuffled, upcoming_queued, QueueState, RepeatMode, VideoUrls,
-        KEEP_PLAYED, LOCAL_PLAYLIST_PREFIX, MAX_BOOST_DB,
+        loudness_gain, merge_radio, next_index, os_media_cover, parse_duration_ms,
+        persist_fingerprint, prefer_version, prev_track_title, put_url, queue_fingerprint,
+        radio_seed_for, retain_upcoming, shuffle_new_queue, shuffle_upcoming, splice_radio_into,
+        swap_version, trim_played, twin_position, unshuffled, upcoming_queued, QueueState,
+        RepeatMode, VideoUrls, KEEP_PLAYED, LOCAL_PLAYLIST_PREFIX, MAX_BOOST_DB,
     };
+
+    fn cover_item(video_id: &str, thumb: Option<&str>) -> innertube::SongItem {
+        innertube::SongItem {
+            video_id: video_id.into(),
+            thumbnail: thumb.map(str::to_owned),
+            ..Default::default()
+        }
+    }
+
+    /// The OS media widget must never be handed artwork it cannot load: souvlaki's macOS `NSImage`
+    /// loader aborts the whole process on a station logo it cannot fetch (plain http, or malformed).
+    #[test]
+    fn the_os_widget_cover_is_kept_loadable() {
+        // A normal song's https cover passes.
+        assert_eq!(
+            os_media_cover(&cover_item("dQw4w9WgXcQ", Some("https://i.ytimg.com/vi/x/hq.jpg")))
+                .as_deref(),
+            Some("https://i.ytimg.com/vi/x/hq.jpg")
+        );
+        // A local path becomes a file:// URL, not a bare path.
+        assert_eq!(
+            os_media_cover(&cover_item("LOCAL:/m/a.mp3", Some("/m/covers/a.jpg"))).as_deref(),
+            Some("file:///m/covers/a.jpg")
+        );
+        // A raw space or a plain-http scheme is where NSImage returns nil: dropped.
+        assert_eq!(os_media_cover(&cover_item("dQw4w9WgXcQ", Some("http://a/logo.png"))), None);
+        assert_eq!(os_media_cover(&cover_item("dQw4w9WgXcQ", Some("https://a/My Logo.png"))), None);
+        // Nothing to show.
+        assert_eq!(os_media_cover(&cover_item("dQw4w9WgXcQ", None)), None);
+        // A station logo is an arbitrary third-party URL; macOS gets none, other platforms keep it.
+        #[cfg(target_os = "macos")]
+        assert_eq!(os_media_cover(&cover_item("RADIO:uuid", Some("https://a/logo.png"))), None);
+        #[cfg(not(target_os = "macos"))]
+        assert_eq!(
+            os_media_cover(&cover_item("RADIO:uuid", Some("https://a/logo.png"))).as_deref(),
+            Some("https://a/logo.png")
+        );
+    }
 
     /// The whole point of the video-URL map is answering a reopen without a round trip, so a live
     /// entry has to hit and a stale one has to miss. Getting the second one wrong hands the proxy a

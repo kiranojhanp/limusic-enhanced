@@ -8,10 +8,10 @@
 	// of the middle lands on a chest.
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { UserIcon } from '@hugeicons/core-free-icons';
-	import type { BrowseItem } from '$lib/api';
-	import { thumb } from '$lib/thumb';
-	import { setDragItem } from '$lib/dnd';
-	import { openItem } from '$lib/browse';
+	import type { BrowseItem } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
+	import { setDragItem } from '#lib/dnd.js';
+	import { openItem } from '#lib/browse.js';
 	import PlaylistMenu from './PlaylistMenu.svelte';
 
 	let { item }: { item: BrowseItem } = $props();

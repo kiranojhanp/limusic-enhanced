@@ -84,10 +84,11 @@
 		"history": "Historique",
 		"add_account": "Ajouter un compte",
 		"remove_account": "Supprimer le compte",
-		"remove_account_title": "Supprimer de Limusic ?",
+		"remove_account_title": "Supprimer de Limusic+ ?",
 		"remove_account_desc": "{name} sera uniquement retiré de cette liste. Le compte Google lui-même n'est pas affecté et vous pourrez vous y reconnecter à tout moment.",
 		"saved_accounts_hint": "Sélectionnez un compte enregistré pour basculer dessus.",
-		"no_channels": "YouTube n'a renvoyé aucune chaîne sélectionnable."
+		"no_channels": "YouTube n'a renvoyé aucune chaîne sélectionnable.",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "Lire",
@@ -315,26 +316,26 @@
 			"language_hint": "Sélectionnez la langue d'affichage de l'application.",
 			"shortcuts_hint": "Ouvrez la liste des raccourcis clavier avec {key}",
 			"autostart": "Lancer au démarrage",
-			"autostart_hint": "Lancer automatiquement Limusic au démarrage de votre système.",
+			"autostart_hint": "Lancer automatiquement Limusic+ au démarrage de votre système.",
 			"close_to_tray": "Réduire dans la zone de notification",
-			"close_to_tray_hint": "Laisser Limusic tourner en arrière-plan à la fermeture de la fenêtre.",
+			"close_to_tray_hint": "Laisser Limusic+ tourner en arrière-plan à la fermeture de la fenêtre.",
 			"discord_rpc": "Discord Rich Presence",
 			"discord_rpc_hint": "Afficher le titre en cours de lecture sur votre profil Discord.",
 			"update_banner": "Notifications de mise à jour",
-			"update_banner_hint": "Afficher une bannière lorsqu'une nouvelle version de Limusic est disponible.",
+			"update_banner_hint": "Afficher une bannière lorsqu'une nouvelle version de Limusic+ est disponible.",
 			"proxy": "Proxy HTTP/HTTPS",
 			"proxy_hint": "Faire transiter toutes les requêtes réseau par un serveur proxy personnalisé.",
 			"proxy_placeholder": "http://hôte:port (laisser vide = aucun)",
 			"stream_clients": "Clients de streaming",
 			"stream_clients_hint": "Désactivez un client pour l'ignorer lors de la résolution des flux. Peut être surchargé par la variable d'environnement {var}.",
 			"system_titlebar": "Utiliser la barre de titre du système",
-			"system_titlebar_hint": "Laisser votre environnement de bureau gérer le cadre de la fenêtre et ses boutons. Limusic conserve sa propre barre d'outils en dessous.",
+			"system_titlebar_hint": "Laisser votre environnement de bureau gérer le cadre de la fenêtre et ses boutons. Limusic+ conserve sa propre barre d'outils en dessous.",
 			"language_search": "Rechercher une langue",
-			"language_contribute": "Aider à traduire Limusic",
+			"language_contribute": "Aider à traduire Limusic+",
 			"track_notifications": "Notifications de titre",
-			"track_notifications_hint": "Afficher une notification lorsqu'un nouveau titre démarre et que Limusic est en arrière-plan.",
+			"track_notifications_hint": "Afficher une notification lorsqu'un nouveau titre démarre et que Limusic+ est en arrière-plan.",
 			"start_minimized": "Démarrer réduit dans la zone de notification",
-			"start_minimized_hint": "Lorsque Limusic démarre avec votre système, il reste réduit dans la barre d'état. L'ouvrir manuellement affichera toujours la fenêtre."
+			"start_minimized_hint": "Lorsque Limusic+ démarre avec votre système, il reste réduit dans la barre d'état. L'ouvrir manuellement affichera toujours la fenêtre."
 		},
 		"themes": {
 			"interface_font": "Police de l'interface",
@@ -455,7 +456,7 @@
 			"update_check_failed": "Échec de la recherche de mise à jour : {error}",
 			"update_packaged": "Cette version a été installée via un gestionnaire de paquets, mettez-la à jour par ce même biais.",
 			"kofi": "Offrez-moi un café",
-			"kofi_hint": "Limusic est gratuit et le restera. Ko-fi permet de soutenir le projet financièrement si vous le souhaitez.",
+			"kofi_hint": "Limusic+ est gratuit et le restera. Ko-fi permet de soutenir le projet financièrement si vous le souhaitez.",
 			"kofi_button": "Ouvrir Ko-fi",
 			"rollback_available": "Cette version fait l'objet d'un retour arrière vers la version {version}, dernière version fonctionnelle connue.",
 			"beta": "Versions bêta",
@@ -475,8 +476,8 @@
 			"status_line1": "Ligne 1",
 			"status_line2": "Ligne 2",
 			"app_name": "Nom de l'application",
-			"app_name_hint": "Remplace « Limusic » partout où le nom de l'application apparaît. Laissez vide pour conserver la valeur d'origine.",
-			"app_name_placeholder": "Limusic",
+			"app_name_hint": "Remplace « Limusic+ » partout où le nom de l'application apparaît. Laissez vide pour conserver la valeur d'origine.",
+			"app_name_placeholder": "Limusic+",
 			"line1": "Ligne 1",
 			"line1_hint": "La ligne en gras, située sous l'en-tête.",
 			"line2": "Ligne 2",
@@ -489,7 +490,7 @@
 			"cover": "Pochette d'album",
 			"cover_hint": "Afficher la pochette à côté du morceau.",
 			"badge": "Badge de la source",
-			"badge_hint": "Affiche une petite icône Limusic sur la pochette, à l'image des cartes Spotify ou Apple Music.",
+			"badge_hint": "Affiche une petite icône Limusic+ sur la pochette, à l'image des cartes Spotify ou Apple Music.",
 			"line3": "Ligne 3",
 			"line3_hint": "La dernière ligne. Discord l'utilise également comme infobulle au survol de la pochette (nécessite l'activation de la pochette).",
 			"timestamps": "Barre de progression",
@@ -504,7 +505,7 @@
 			"button_listen": "Écouter sur YouTube Music",
 			"button_album": "Voir l'album",
 			"button_artist": "Voir l'artiste",
-			"button_app": "Télécharger Limusic",
+			"button_app": "Télécharger Limusic+",
 			"button_off": "Aucun",
 			"preview": "Aperçu",
 			"preview_live": "En cours de lecture",
@@ -517,7 +518,7 @@
 		},
 		"hotkeys": {
 			"title": "Raccourcis globaux",
-			"description": "Contrôlez la lecture avec des raccourcis clavier personnalisés, même lorsque Limusic est réduit ou tourne en arrière-plan.",
+			"description": "Contrôlez la lecture avec des raccourcis clavier personnalisés, même lorsque Limusic+ est réduit ou tourne en arrière-plan.",
 			"enable": "Activer les raccourcis globaux",
 			"enable_hint": "Les raccourcis globaux sont désactivés. Activez-les pour écouter les combinaisons de touches sur l'ensemble du système.",
 			"off": "Désactivé",
@@ -552,11 +553,11 @@
 			"action_toggle_repeat": "Changer le mode de répétition",
 			"action_toggle_repeat_hint": "Alterner entre les modes de répétition : désactivé, tout, un seul.",
 			"action_show_app": "Afficher l'application",
-			"action_show_app_hint": "Amener la fenêtre de Limusic au premier plan."
+			"action_show_app_hint": "Amener la fenêtre de Limusic+ au premier plan."
 		},
 		"scrobbling": {
 			"account_disconnected": "Connectez votre compte Last.fm pour scrobbler ce que vous écoutez.",
-			"account_connecting": "En attente de votre approbation pour Limusic dans votre navigateur.",
+			"account_connecting": "En attente de votre approbation pour Limusic+ dans votre navigateur.",
 			"connect": "Connection",
 			"open_profile": "Ouvrez votre dernier profil Last.fm",
 			"since": "Scrobbling depuis le {date}",
@@ -706,7 +707,7 @@
 		"discord_tooltip_off": "Afficher ce que vous écoutez sur Discord",
 		"lastfm_scrobbling_as": "Scrobbling sous {user}",
 		"lastfm_disconnected": "Last.fm déconnecté",
-		"lastfm_approve_in_browser": "Autorisez Limusic dans votre navigateur",
+		"lastfm_approve_in_browser": "Autorisez Limusic+ dans votre navigateur",
 		"lastfm_connecting": "Connexion à Last.fm — cliquez pour annuler",
 		"lastfm_scrobble_to": "Scrobbler sur Last.fm",
 		"disconnect": "Déconnecter"
@@ -923,7 +924,7 @@
 	"errors": {
 		"unreachable": "Impossible de joindre YouTube Music. Vérifiez votre connexion.",
 		"offline_title": "Aucune connexion",
-		"offline_body": "Limusic ne parvient pas à joindre YouTube Music. Vérifiez votre connexion Internet puis réessayez.",
+		"offline_body": "Limusic+ ne parvient pas à joindre YouTube Music. Vérifiez votre connexion Internet puis réessayez.",
 		"generic_title": "Une erreur est survenue"
 	},
 	"search": {
@@ -945,5 +946,45 @@
 		"anyway_hint": "Conserver en double exemplaire",
 		"anyway_hint_local": "Les copies supplémentaires s'appliquent uniquement aux playlists YouTube",
 		"adds": "+{count}"
+	},
+	"radio": {
+		"title": "Radio",
+		"subtitle": "Live stations from around the world. Pick one and it plays.",
+		"search_placeholder": "Search stations",
+		"country": "Country",
+		"language": "Language",
+		"all_countries": "All countries",
+		"all_languages": "All languages",
+		"all_genres": "All genres",
+		"play_station": "Play {name}",
+		"live": "LIVE",
+		"source": "Radio",
+		"favorite": "Add {name} to favorites",
+		"unfavorite": "Remove {name} from favorites",
+		"remove_station": "Remove {name}",
+		"tabs": {
+			"browse": "Browse",
+			"favorites": "Favorites",
+			"custom": "My stations"
+		},
+		"empty": "No stations match those filters.",
+		"empty_hint": "Try a different name, or clear a country or genre.",
+		"favorites_empty": "No favorites yet.",
+		"favorites_empty_hint": "Tap the heart on a station to keep it here.",
+		"custom_empty": "No stations of your own yet.",
+		"custom_empty_hint": "Add a stream URL to play something the directory does not list.",
+		"add_station": {
+			"button": "Add station",
+			"title": "Add a station",
+			"desc": "Paste the direct stream URL of a radio station. It is checked before it is saved.",
+			"name": "Name",
+			"name_placeholder": "Leave blank to use the stream's own name",
+			"url": "Stream URL",
+			"url_placeholder": "https://example.com/stream.mp3",
+			"check": "Check",
+			"check_ok": "Stream looks playable.",
+			"add": "Add",
+			"added": "Added {name}."
+		}
 	}
 }

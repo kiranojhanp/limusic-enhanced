@@ -693,7 +693,7 @@ impl Presence {
                 // Only ever alongside the artwork: `small_image` on its own is not a badge, it becomes
                 // the card's image.
                 if cfg.badge {
-                    let name = if cfg.app_name.is_empty() { "Limusic" } else { &cfg.app_name };
+                    let name = if cfg.app_name.is_empty() { "Limusic+" } else { &cfg.app_name };
                     assets = assets.small_image(BADGE_URL).small_text(field(name));
                 }
                 act = act.assets(assets);
@@ -858,7 +858,7 @@ fn button_for(kind: &str, t: &Track) -> Option<activity::Button<'static>> {
         "listen" => ("Listen on YouTube Music", link_for("title", t)?),
         "album" => ("View album", link_for("album", t)?),
         "artist" => ("View artist", link_for("artist", t)?),
-        "app" => ("Get Limusic", REPO_URL.to_owned()),
+        "app" => ("Get Limusic+", REPO_URL.to_owned()),
         _ => return None,
     };
     (url.len() <= MAX_BUTTON_URL).then(|| activity::Button::new(label, url))

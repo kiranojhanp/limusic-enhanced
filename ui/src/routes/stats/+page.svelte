@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { Range } from '$lib/stats';
+	import type { Range } from '#lib/stats.js';
 	// Kept for the session: whoever checks the month comes back to the month.
 	let lastRange: Range = 'month';
 </script>
@@ -25,22 +25,22 @@
 		UserStar01Icon,
 		Vynil03Icon
 	} from '@hugeicons/core-free-icons';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { Button } from '$lib/components/ui/button';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import SectionHeading from '$lib/components/SectionHeading.svelte';
-	import TrackRow from '$lib/components/TrackRow.svelte';
-	import MediaCard from '$lib/components/MediaCard.svelte';
-	import ErrorState from '$lib/components/ErrorState.svelte';
-	import ListeningChart from '$lib/components/ListeningChart.svelte';
-	import ListeningHours from '$lib/components/ListeningHours.svelte';
-	import ListeningDayparts from '$lib/components/ListeningDayparts.svelte';
-	import * as api from '$lib/api';
-	import type { ListeningStats, TopArtist } from '$lib/api';
-	import { artistPage, hrefFor } from '$lib/browse';
-	import { thumb } from '$lib/thumb';
-	import { openAddToPlaylist, openPlayer, playback, toast } from '$lib/player.svelte';
+	import * as AlertDialog from '#lib/components/ui/alert-dialog/index.js';
+	import * as Tabs from '#lib/components/ui/tabs/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import SectionHeading from '#lib/components/SectionHeading.svelte';
+	import TrackRow from '#lib/components/TrackRow.svelte';
+	import MediaCard from '#lib/components/MediaCard.svelte';
+	import ErrorState from '#lib/components/ErrorState.svelte';
+	import ListeningChart from '#lib/components/ListeningChart.svelte';
+	import ListeningHours from '#lib/components/ListeningHours.svelte';
+	import ListeningDayparts from '#lib/components/ListeningDayparts.svelte';
+	import * as api from '#lib/api.js';
+	import type { ListeningStats, TopArtist } from '#lib/api.js';
+	import { artistPage, hrefFor } from '#lib/browse.js';
+	import { thumb } from '#lib/thumb.js';
+	import { openAddToPlaylist, openPlayer, playback, toast } from '#lib/player.svelte.js';
 	import {
 		RANGES,
 		bars as toBars,
@@ -51,8 +51,8 @@
 		rangeStart,
 		tagOf,
 		type Bar
-	} from '$lib/stats';
-	import { currentLocale, t } from '$lib/i18n.svelte';
+	} from '#lib/stats.js';
+	import { currentLocale, t } from '#lib/i18n.svelte.js';
 
 	// A touch heavier than HugeIcons' 1.5 on every icon on this page: the thin default read faint
 	// next to the big numbers and the charts.

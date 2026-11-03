@@ -6,14 +6,14 @@
 		UserIcon,
 		ListRestartIcon
 	} from '@hugeicons/core-free-icons';
-	import { ON_REPEAT_ID } from '$lib/api';
-	import type { BrowseItem } from '$lib/api';
-	import { thumb } from '$lib/thumb';
-	import { setDragItem } from '$lib/dnd';
-	import { openItem, playItem } from '$lib/browse';
+	import { ON_REPEAT_ID } from '#lib/api.js';
+	import type { BrowseItem } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
+	import { setDragItem } from '#lib/dnd.js';
+	import { openItem, playItem } from '#lib/browse.js';
 	import ItemMenu from './ItemMenu.svelte';
 	import ExplicitIcon from './ExplicitIcon.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let { item, compact = false }: { item: BrowseItem; compact?: boolean } = $props();
 

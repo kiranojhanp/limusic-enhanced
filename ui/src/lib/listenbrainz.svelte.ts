@@ -1,8 +1,8 @@
 // ListenBrainz connection state. Mirrors `lastfm.svelte.ts`: the Scrobbling settings tab is
 // the only surface that reads and writes it, but one owner keeps the card from going stale.
-import * as api from '$lib/api';
-import { toast } from '$lib/player.svelte';
-import { t } from '$lib/i18n.svelte';
+import * as api from '#lib/api.js';
+import { toast } from '#lib/player.svelte.js';
+import { t } from '#lib/i18n.svelte.js';
 
 export const DEFAULT_LISTENBRAINZ_SERVER = 'https://api.listenbrainz.org';
 

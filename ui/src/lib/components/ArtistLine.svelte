@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { ArtistRun } from '$lib/api';
+	import type { ArtistRun } from '#lib/api.js';
 	import Marquee from './Marquee.svelte';
 
 	let {

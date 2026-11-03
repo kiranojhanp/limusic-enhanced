@@ -10,22 +10,22 @@
 		ThumbsUpIcon,
 		VolumeHighIcon
 	} from '@hugeicons/core-free-icons';
-	import * as api from '$lib/api';
-	import type { SongItem } from '$lib/api';
-	import { thumb } from '$lib/thumb';
-	import { lt } from '$lib/lt.svelte';
+	import * as api from '#lib/api.js';
+	import type { SongItem } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
+	import { lt } from '#lib/lt.svelte.js';
 	import { goto } from '$app/navigation';
-	import { anySaved, isLiked, openAddManyToPlaylist, ratingOf, savedPlaylists, toast, toggleRating } from '$lib/player.svelte';
-	import { addedLabel, addedTitle, CELL, END, TITLE, type TrackColumn } from '$lib/trackcolumns';
-	import { tagOf } from '$lib/stats';
+	import { anySaved, isLiked, openAddManyToPlaylist, ratingOf, savedPlaylists, toast, toggleRating } from '#lib/player.svelte.js';
+	import { addedLabel, addedTitle, CELL, END, TITLE, type TrackColumn } from '#lib/trackcolumns.js';
+	import { tagOf } from '#lib/stats.js';
 	import { myPlays } from './TrackColumns.svelte';
 	import SavedInPlaylists from './SavedInPlaylists.svelte';
 	import TrackMenu from './TrackMenu.svelte';
 	import ArtistLine from './ArtistLine.svelte';
 	import ExplicitIcon from './ExplicitIcon.svelte';
-	import { currentLocale, t } from '$lib/i18n.svelte';
-	import { keyOf } from '$lib/shortcuts';
-	import type { TrackSelection } from '$lib/selection.svelte';
+	import { currentLocale, t } from '#lib/i18n.svelte.js';
+	import { keyOf } from '#lib/shortcuts.js';
+	import type { TrackSelection } from '#lib/selection.svelte.js';
 	import { Checkbox } from './ui/checkbox';
 
 	let {

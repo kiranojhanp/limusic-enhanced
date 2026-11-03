@@ -170,7 +170,7 @@ export async function loadComments(videoId: string, force = false) {
 	comments.create = emptyBox();
 	session++;
 	comments.state = 'ok';
-	// A local file has no YouTube comments to ask for.
+	// A local file or a station has no YouTube comments to ask for.
 	if (api.isLocalId(videoId)) {
 		comments.state = 'disabled';
 		comments.status = 'ready';

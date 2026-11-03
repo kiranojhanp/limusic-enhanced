@@ -2,7 +2,7 @@
 // first paint has to be in the right language, and an async read paints English and flips a frame
 // later. Rust gets a copy too, because YouTube's own text is part of the language: see
 // `pushLocaleToRust`.
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { invoke } from '@tauri-apps/api/core';
 import { translations, LOCALES, type LocaleId, type Translations } from './locales';
 import { coverage, pickLocale } from './langlist';
@@ -32,7 +32,7 @@ function getInitialLocale(): LocaleId {
 	// hasOwn, not `in`: localStorage is user-writable, and `in` would accept 'constructor'.
 	if (saved && Object.hasOwn(translations, saved)) return saved as LocaleId;
 	const hit = pickLocale(Object.keys(translations), navigator.language ?? '');
-	return (hit as LocaleId) ?? 'en';
+	return hit as LocaleId ?? 'en';
 }
 
 let activeLocale = $state<LocaleId>(getInitialLocale());
@@ -83,7 +83,7 @@ export function t(key: TranslationKey, params?: Record<string, string | number>)
 	if (typeof str !== 'string' || str === '') str = getNestedValue(translations.en, key);
 	if (typeof str !== 'string') return key;
 	if (!params) return str;
-	return str.replace(/\{(\w+)\}/g, (_, k) => (params[k] !== undefined ? String(params[k]) : `{${k}}`));
+	return str.replace(/\{(\w+)\}/g, (_, k) => params[k] !== undefined ? String(params[k]) : `{${k}}`);
 }
 
 /**

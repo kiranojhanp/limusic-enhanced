@@ -114,7 +114,7 @@
 	"errors": {
 		"unreachable": "YouTube Musicuga ei saa ühendust. Kontrolli oma ühendust.",
 		"offline_title": "Ühendus puudub",
-		"offline_body": "Limusic ei saa YouTube Musicuga ühendust. Kontrolli internetiühendust ja proovi siis uuesti.",
+		"offline_body": "Limusic+ ei saa YouTube Musicuga ühendust. Kontrolli internetiühendust ja proovi siis uuesti.",
 		"generic_title": "Midagi läks valesti"
 	},
 	"nav": {
@@ -134,12 +134,13 @@
 		"sign_in_hint": "Logi sisse oma Google'i kontoga, et pääseda ligi oma YouTube Musicu kogule ja esitusloenditele.",
 		"add_account": "Lisa konto",
 		"remove_account": "Eemalda konto",
-		"remove_account_title": "Kas eemaldada Limusicust?",
+		"remove_account_title": "Kas eemaldada Limusic+ust?",
 		"remove_account_desc": "{name} eemaldatakse ainult sellest loendist. Google'i kontot see ei mõjuta ja saad sellega igal ajal uuesti sisse logida.",
 		"saved_accounts_hint": "Vali salvestatud konto, et sellele lülituda.",
 		"history": "Ajalugu",
 		"no_channels": "YouTube ei tagastanud ühtegi valitavat kanalit.",
-		"stats": "Statistika"
+		"stats": "Statistika",
+		"radio": "Radio"
 	},
 	"player": {
 		"play": "Esita",
@@ -402,29 +403,29 @@
 			"language": "Kasutajaliidese keel",
 			"language_hint": "Vali kasutajaliidese kuvamiskeel.",
 			"language_search": "Otsi keeli",
-			"language_contribute": "Aita Limusicut tõlkida",
+			"language_contribute": "Aita Limusic+ut tõlkida",
 			"shortcuts_hint": "Ava kiirklahvide loend klahviga {key}",
 			"autostart": "Käivita süsteemi käivitumisel",
-			"autostart_hint": "Käivita Limusic automaatselt, kui süsteem käivitub.",
+			"autostart_hint": "Käivita Limusic+ automaatselt, kui süsteem käivitub.",
 			"close_to_tray": "Sulge süsteemisalve",
-			"close_to_tray_hint": "Hoia Limusic akna sulgemisel taustal töös.",
+			"close_to_tray_hint": "Hoia Limusic+ akna sulgemisel taustal töös.",
 			"track_notifications": "Loo teavitused",
-			"track_notifications_hint": "Näita teavitust, kui uus lugu algab ja Limusic on taustal.",
+			"track_notifications_hint": "Näita teavitust, kui uus lugu algab ja Limusic+ on taustal.",
 			"start_minimized": "Käivita süsteemisalve",
-			"start_minimized_hint": "Kui Limusic käivitub koos süsteemiga, jääb see salve, kuni selle avad. Kui avad selle ise, kuvatakse aken alati.",
+			"start_minimized_hint": "Kui Limusic+ käivitub koos süsteemiga, jääb see salve, kuni selle avad. Kui avad selle ise, kuvatakse aken alati.",
 			"system_titlebar": "Kasuta süsteemi tiitliriba",
-			"system_titlebar_hint": "Lase töölaual joonistada aknaraam ja selle nupud. Limusic hoiab oma tööriistariba selle all.",
+			"system_titlebar_hint": "Lase töölaual joonistada aknaraam ja selle nupud. Limusic+ hoiab oma tööriistariba selle all.",
 			"discord_rpc": "Discord Rich Presence",
 			"discord_rpc_hint": "Näita parajasti mängivat lugu oma Discordi profiilil.",
 			"update_banner": "Uuenduste teavitused",
-			"update_banner_hint": "Näita bännerit, kui Limusicu uus versioon on saadaval.",
+			"update_banner_hint": "Näita bännerit, kui Limusic+u uus versioon on saadaval.",
 			"proxy": "HTTP/HTTPS-puhverserver",
 			"proxy_hint": "Suuna kõik võrgupäringud läbi kohandatud puhverserveri.",
 			"proxy_placeholder": "http://host:port (tühi = puudub)",
 			"stream_clients": "Voo kliendid",
 			"stream_clients_hint": "Lülita klient välja, et see voogude leidmisel vahele jätta. Keskkonnamuutuja {var} kirjutab selle üle.",
-			"track_notifications_focused": "Ka Limusicu kasutamisel",
-			"track_notifications_focused_hint": "Näita teavitust ka siis, kui järgmine lugu hakkab automaatselt mängima ja Limusic on aktiivne aken. Ise valitud lugude puhul teavitust ei näidata."
+			"track_notifications_focused": "Ka Limusic+u kasutamisel",
+			"track_notifications_focused_hint": "Näita teavitust ka siis, kui järgmine lugu hakkab automaatselt mängima ja Limusic+ on aktiivne aken. Ise valitud lugude puhul teavitust ei näidata."
 		},
 		"themes": {
 			"interface_font": "Kasutajaliidese kirjatüüp",
@@ -478,7 +479,7 @@
 			"blur_playlist_header": "Hägusta esitusloendi päised",
 			"blur_playlist_header_hint": "Näita esitusloendi kaanepilti pealkirja taga hägustatuna. Sellega kuvad kaanepildid sujuvatena, mis täislaiusele venitatuna näevad välja pikseldatuna.",
 			"matugen": "Matugen",
-			"matugen_hint": "Võta kõik värvid, sealhulgas aktsentvärvid, paletist, mille Matugen sinu taustapildist koostab. Seadista esmalt Matugenis Limusicu mall."
+			"matugen_hint": "Võta kõik värvid, sealhulgas aktsentvärvid, paletist, mille Matugen sinu taustapildist koostab. Seadista esmalt Matugenis Limusic+u mall."
 		},
 		"playback": {
 			"audio_quality": "Helikvaliteet",
@@ -535,7 +536,7 @@
 		},
 		"hotkeys": {
 			"title": "Globaalsed kiirklahvid",
-			"description": "Juhi taasesitust kohandatavate kiirklahvidega ka siis, kui Limusic on minimeeritud või töötab taustal.",
+			"description": "Juhi taasesitust kohandatavate kiirklahvidega ka siis, kui Limusic+ on minimeeritud või töötab taustal.",
 			"enable": "Luba globaalsed kiirklahvid",
 			"enable_hint": "Globaalsed kiirklahvid on keelatud. Lülita need sisse, et kiirklahve kogu süsteemis kuulata.",
 			"off": "Väljas",
@@ -570,7 +571,7 @@
 			"action_toggle_repeat": "Lülita kordust",
 			"action_toggle_repeat_hint": "Vaheta korduse režiimi: väljas, kõik, üks.",
 			"action_show_app": "Näita rakendust",
-			"action_show_app_hint": "Too Limusicu aken esiplaanile."
+			"action_show_app_hint": "Too Limusic+u aken esiplaanile."
 		},
 		"data": {
 			"clear_cache": "Tühjenda piltide ja voogude vahemälu",
@@ -603,7 +604,7 @@
 			"report_issue_hint": "Avab GitHubi sinu brauseris, versioon ja süsteem on juba täidetud.",
 			"report_issue_button": "Teata",
 			"kofi": "Osta mulle kohvi",
-			"kofi_hint": "Limusic on tasuta ja jääb tasuta. Ko-fi on olemas, kui soovid toetada.",
+			"kofi_hint": "Limusic+ on tasuta ja jääb tasuta. Ko-fi on olemas, kui soovid toetada.",
 			"kofi_button": "Ava Ko-fi"
 		},
 		"discord": {
@@ -620,8 +621,8 @@
 			"status_line1": "1. rida",
 			"status_line2": "2. rida",
 			"app_name": "Rakenduse nimi",
-			"app_name_hint": "Asendab „Limusic“ kõikjal, kus rakenduse nimi kuvatakse. Jäta tühjaks, et see alles jätta.",
-			"app_name_placeholder": "Limusic",
+			"app_name_hint": "Asendab „Limusic+“ kõikjal, kus rakenduse nimi kuvatakse. Jäta tühjaks, et see alles jätta.",
+			"app_name_placeholder": "Limusic+",
 			"line1": "1. rida",
 			"line1_hint": "Paks rida kohe päise all.",
 			"line2": "2. rida",
@@ -634,7 +635,7 @@
 			"cover": "Albumi kaanepilt",
 			"cover_hint": "Näita kaanepilti loo kõrval.",
 			"badge": "Teenuse märk",
-			"badge_hint": "Märgi kaanepilt väikese Limusicu ikooniga, nagu teevad Spotify ja Apple Musicu kaardid.",
+			"badge_hint": "Märgi kaanepilt väikese Limusic+u ikooniga, nagu teevad Spotify ja Apple Musicu kaardid.",
 			"line3": "3. rida",
 			"line3_hint": "Viimane rida. Discord kasutab seda ka kaanepildi kohal hõljumisel kuvatava tekstina, seega peab albumi kaanepilt sees olema.",
 			"timestamps": "Edenemisriba",
@@ -649,7 +650,7 @@
 			"button_listen": "Kuula YouTube Musicus",
 			"button_album": "Vaata albumit",
 			"button_artist": "Vaata esitajat",
-			"button_app": "Hangi Limusic",
+			"button_app": "Hangi Limusic+",
 			"button_off": "Puudub",
 			"preview": "Eelvaade",
 			"preview_live": "Praegu mängib",
@@ -662,7 +663,7 @@
 		},
 		"scrobbling": {
 			"account_disconnected": "Kuulatud lugude kraasimiseks ühenda oma Last.fm-i konto.",
-			"account_connecting": "Ootan, et kinnitaksid Limusicu oma brauseris.",
+			"account_connecting": "Ootan, et kinnitaksid Limusic+u oma brauseris.",
 			"connect": "Ühenda",
 			"open_profile": "Ava oma Last.fm-i profiil",
 			"since": "Kraasimisel alates {date}",
@@ -788,7 +789,7 @@
 			"zoom_in": "Suumi sisse",
 			"zoom_out": "Suumi välja",
 			"reset_zoom": "Lähtesta suum",
-			"quit_app": "Sulge Limusic",
+			"quit_app": "Sulge Limusic+",
 			"show_this_list": "Näita seda loendit"
 		},
 		"tempo_pitch": {
@@ -870,7 +871,7 @@
 		"discord_tooltip_off": "Näita Discordis, mida kuulad",
 		"lastfm_scrobbling_as": "Kraasid kasutajana {user}",
 		"lastfm_disconnected": "Last.fm pole ühendatud",
-		"lastfm_approve_in_browser": "Kinnita Limusic oma brauseris",
+		"lastfm_approve_in_browser": "Kinnita Limusic+ oma brauseris",
 		"lastfm_connecting": "Last.fm-iga ühendamine – klõpsa tühistamiseks",
 		"lastfm_scrobble_to": "Kraasi Last.fm-i",
 		"lastfm_settings": "Kraasimise seadistused",
@@ -1102,7 +1103,7 @@
 		"to_check": "{count} kontrollida",
 		"not_found": "{count} ei leitud",
 		"keep_browsing_hint": "Võid selle sulgeda, töö jätkub. Külgriba näitab, kui kaugel see on.",
-		"pace_hint": "Limusic töötab meelega aeglaselt, umbes üks lugu iga kahe sekundi järel, et YouTube Music näeks tavalist kasutust.",
+		"pace_hint": "Limusic+ töötab meelega aeglaselt, umbes üks lugu iga kahe sekundi järel, et YouTube Music näeks tavalist kasutust.",
 		"waiting": "Teen pausi, et püsida kindlalt YouTube Musicu piirangute sees. Jätkan kell {time}.",
 		"keep_browsing": "Sirvi edasi",
 		"stop": "Peata",
@@ -1164,12 +1165,12 @@
 			"empty": "Seal pole ühtegi lugu.",
 			"unreadable": "Seda faili ei õnnestunud lugeda. Kasuta zip-faili, mille Spotify sulle saatis, mõnda selles olevat JSON-faili või CSV-faili.",
 			"csv_columns": "Selles CSV-failis pole lugude pealkirjade veergu.",
-			"spotify_changed": "Spotify muutis esitusloendite jagamise viisi. Limusicu uuendus parandab selle.",
+			"spotify_changed": "Spotify muutis esitusloendite jagamise viisi. Limusic+u uuendus parandab selle.",
 			"busy": "Import juba käib.",
 			"nothing_read": "Vali esmalt esitusloend.",
 			"gone": "See import pole enam avatud.",
 			"not_found": "Seda ei leitud YouTube Musicust.",
-			"cooldown": "YouTube Music palus Limusicul aeglustada, seega on import peatatud kuni {time}. Kõik seni leitu on salvestatud."
+			"cooldown": "YouTube Music palus Limusic+ul aeglustada, seega on import peatatud kuni {time}. Kõik seni leitu on salvestatud."
 		},
 		"paste_link_hint": "Ainult YouTube'is videona? Kleebi selle link."
 	},
@@ -1283,5 +1284,45 @@
 		"plays": "Mängimist",
 		"mine": "Sinu mängimised",
 		"duration": "Kestus"
+	},
+	"radio": {
+		"title": "Radio",
+		"subtitle": "Live stations from around the world. Pick one and it plays.",
+		"search_placeholder": "Search stations",
+		"country": "Country",
+		"language": "Language",
+		"all_countries": "All countries",
+		"all_languages": "All languages",
+		"all_genres": "All genres",
+		"play_station": "Play {name}",
+		"live": "LIVE",
+		"source": "Radio",
+		"favorite": "Add {name} to favorites",
+		"unfavorite": "Remove {name} from favorites",
+		"remove_station": "Remove {name}",
+		"tabs": {
+			"browse": "Browse",
+			"favorites": "Favorites",
+			"custom": "My stations"
+		},
+		"empty": "No stations match those filters.",
+		"empty_hint": "Try a different name, or clear a country or genre.",
+		"favorites_empty": "No favorites yet.",
+		"favorites_empty_hint": "Tap the heart on a station to keep it here.",
+		"custom_empty": "No stations of your own yet.",
+		"custom_empty_hint": "Add a stream URL to play something the directory does not list.",
+		"add_station": {
+			"button": "Add station",
+			"title": "Add a station",
+			"desc": "Paste the direct stream URL of a radio station. It is checked before it is saved.",
+			"name": "Name",
+			"name_placeholder": "Leave blank to use the stream's own name",
+			"url": "Stream URL",
+			"url_placeholder": "https://example.com/stream.mp3",
+			"check": "Check",
+			"check_ok": "Stream looks playable.",
+			"add": "Add",
+			"added": "Added {name}."
+		}
 	}
 }

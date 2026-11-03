@@ -23,22 +23,22 @@
 		StarAward02Icon,
 		Video01Icon
 	} from '@hugeicons/core-free-icons';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import ErrorState from '$lib/components/ErrorState.svelte';
-	import MediaCard from '$lib/components/MediaCard.svelte';
-	import MediaCardSkeleton from '$lib/components/MediaCardSkeleton.svelte';
-	import SearchSuggest from '$lib/components/SearchSuggest.svelte';
-	import SectionHeading from '$lib/components/SectionHeading.svelte';
-	import Shelf from '$lib/components/Shelf.svelte';
-	import TopResult from '$lib/components/TopResult.svelte';
-	import TrackRow from '$lib/components/TrackRow.svelte';
-	import TrackRowSkeleton from '$lib/components/TrackRowSkeleton.svelte';
-	import TrackSelectionBar from '$lib/components/TrackSelectionBar.svelte';
-	import TrackSelectButton from '$lib/components/TrackSelectButton.svelte';
-	import { trackSelection, type TrackSelection } from '$lib/selection.svelte';
-	import * as api from '$lib/api';
-	import type { BrowseItem, Mood, MoodSection, SearchResults, SongItem } from '$lib/api';
-	import { getCached, putCached } from '$lib/pagecache';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import ErrorState from '#lib/components/ErrorState.svelte';
+	import MediaCard from '#lib/components/MediaCard.svelte';
+	import MediaCardSkeleton from '#lib/components/MediaCardSkeleton.svelte';
+	import SearchSuggest from '#lib/components/SearchSuggest.svelte';
+	import SectionHeading from '#lib/components/SectionHeading.svelte';
+	import Shelf from '#lib/components/Shelf.svelte';
+	import TopResult from '#lib/components/TopResult.svelte';
+	import TrackRow from '#lib/components/TrackRow.svelte';
+	import TrackRowSkeleton from '#lib/components/TrackRowSkeleton.svelte';
+	import TrackSelectionBar from '#lib/components/TrackSelectionBar.svelte';
+	import TrackSelectButton from '#lib/components/TrackSelectButton.svelte';
+	import { trackSelection, type TrackSelection } from '#lib/selection.svelte.js';
+	import * as api from '#lib/api.js';
+	import type { BrowseItem, Mood, MoodSection, SearchResults, SongItem } from '#lib/api.js';
+	import { getCached, putCached } from '#lib/pagecache.js';
 	import {
 		auth,
 		clearSearches,
@@ -48,11 +48,11 @@
 		personal,
 		playSong,
 		playback
-	} from '$lib/player.svelte';
-	import { asSong } from '$lib/browse';
-	import { appIcon } from '$lib/appicon.svelte';
-	import { thumb } from '$lib/thumb';
-	import { currentLocale, t } from '$lib/i18n.svelte';
+	} from '#lib/player.svelte.js';
+	import { asSong } from '#lib/browse.js';
+	import { appIcon } from '#lib/appicon.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import { currentLocale, t } from '#lib/i18n.svelte.js';
 
 	type Cached = { res: SearchResults; songs: SongItem[]; videos: SongItem[] };
 	type CardCat = 'albums' | 'artists' | 'playlists';

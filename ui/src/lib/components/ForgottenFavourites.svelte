@@ -4,10 +4,10 @@
 	import { Clock01Icon } from '@hugeicons/core-free-icons';
 	import SectionHeading from './SectionHeading.svelte';
 	import TrackRow from './TrackRow.svelte';
-	import * as api from '$lib/api';
-	import type { HomeSection, SongItem } from '$lib/api';
-	import { openAddToPlaylist, openPlayer, playback } from '$lib/player.svelte';
-	import { asSong } from '$lib/browse';
+	import * as api from '#lib/api.js';
+	import type { HomeSection, SongItem } from '#lib/api.js';
+	import { openAddToPlaylist, openPlayer, playback } from '#lib/player.svelte.js';
+	import { asSong } from '#lib/browse.js';
 
 	let { section, onMore }: { section: HomeSection; onMore?: () => void } = $props();
 

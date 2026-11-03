@@ -7,8 +7,8 @@
 	// real ones and swallow the grab. pointer-events-auto: an open dialog sets `pointer-events:
 	// none` on <body>, and resizing has to keep working under one (#427).
 	import { getCurrentWindow } from '@tauri-apps/api/window';
-	import { win } from '$lib/win.svelte';
-	import { ui } from '$lib/player.svelte';
+	import { win } from '#lib/win.svelte.js';
+	import { ui } from '#lib/player.svelte.js';
 
 	type Dir =
 		| 'North'

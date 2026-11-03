@@ -21,19 +21,19 @@
 		PencilEdit02Icon
 	} from '@hugeicons/core-free-icons';
 	import { untrack, type Snippet } from 'svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
-	import { Slider } from '$lib/components/ui/slider';
-	import * as Select from '$lib/components/ui/select';
-	import * as Popover from '$lib/components/ui/popover';
-	import * as api from '$lib/api';
-	import type { ScrobblePreview, ScrobbleTrack } from '$lib/api';
-	import { playback, prefs, toast, ui } from '$lib/player.svelte';
-	import { currentLocale, t } from '$lib/i18n.svelte';
-	import { thumb } from '$lib/thumb';
-	import LastFmIcon from '$lib/components/LastFmIcon.svelte';
-	import { connectLastfm, disconnectLastfm, lastfm } from '$lib/lastfm.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import { Slider } from '#lib/components/ui/slider/index.js';
+	import * as Select from '#lib/components/ui/select/index.js';
+	import * as Popover from '#lib/components/ui/popover/index.js';
+	import * as api from '#lib/api.js';
+	import type { ScrobblePreview, ScrobbleTrack } from '#lib/api.js';
+	import { playback, prefs, toast, ui } from '#lib/player.svelte.js';
+	import { currentLocale, t } from '#lib/i18n.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import LastFmIcon from '#lib/components/LastFmIcon.svelte';
+	import { connectLastfm, disconnectLastfm, lastfm } from '#lib/lastfm.svelte.js';
 	import {
 		DEFAULT_LISTENBRAINZ_SERVER,
 		METABRAINZ_PROFILE,
@@ -41,7 +41,7 @@
 		disconnectListenBrainz,
 		listenbrainz,
 		problemText
-	} from '$lib/listenbrainz.svelte';
+	} from '#lib/listenbrainz.svelte.js';
 	import {
 		PRESETS,
 		blankEdit,
@@ -52,7 +52,7 @@
 		type Field,
 		type ScrobbleConfig,
 		type ScrobbleEdit
-	} from '$lib/scrobble';
+	} from '#lib/scrobble.js';
 
 	let { settings }: { settings: Record<string, string> } = $props();
 

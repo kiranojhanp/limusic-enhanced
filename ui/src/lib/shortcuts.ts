@@ -2,7 +2,7 @@
 // out on a typing target first, everything else is gated on Ctrl/Cmd, so a key typed into a field
 // costs a couple of cheap checks and falls straight through. Zoom keeps its own listener (zoom.ts)
 // because it also owns the ctrl+wheel gesture.
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import * as api from './api';
 import {
 	cycleRepeat,
@@ -33,10 +33,10 @@ export const HELP_COMBO = `${MOD}${HELP_KEY}`;
  *  from e.code. Everything else (named keys, digits, symbols) is returned as e.key. */
 export const keyOf = (e: KeyboardEvent): string => {
 	const k = e.key;
-	if (k.length === 1 && /[a-z]/i.test(k)) return k.toLowerCase();
+	if (k.length === 1 && (/[a-z]/i).test(k)) return k.toLowerCase();
 	const nonAscii = k.length === 1 && k.charCodeAt(0) > 127;
 	if (!nonAscii) return k;
-	if (/^Key[A-Z]$/.test(e.code)) return e.code.slice(3).toLowerCase();
+	if ((/^Key[A-Z]$/).test(e.code)) return e.code.slice(3).toLowerCase();
 	if (e.code === 'Period') return '.';
 	if (e.code === 'Comma') return ',';
 	if (e.code === 'Slash') return '/';
@@ -132,13 +132,13 @@ export function initShortcuts(mini = false) {
 			return;
 		}
 		switch (keyOf(e)) {
-			// Real quit, unlike the window's X which hides to tray.
-			case 'q':
+			case // Real quit, unlike the window's X which hides to tray.
+			'q':
 				// Holding the keys auto-repeats keydown; one quit request is enough.
 				if (!e.repeat) api.quitApp();
 				break;
-			// Toggles, so the key that opened the palette also dismisses it.
-			case 'k':
+			case // Toggles, so the key that opened the palette also dismisses it.
+			'k':
 				ui.paletteOpen = !ui.paletteOpen;
 				break;
 			case 'e':
@@ -159,9 +159,9 @@ export function initShortcuts(mini = false) {
 			case 'r':
 				cycleRepeat();
 				break;
-			// Shift+. and Shift+, on a US layout. The unshifted keys are accepted too, so the
+			case // Shift+. and Shift+, on a US layout. The unshifted keys are accepted too, so the
 			// shortcut still works on layouts that put > and < somewhere else.
-			case '>':
+			'>':
 			case '.':
 				nudgeVolume(VOLUME_STEP);
 				break;
@@ -182,7 +182,7 @@ export function initShortcuts(mini = false) {
 	// themselves). Tab hands focus back to the keyboard until the next click, so the app can still be
 	// walked with a ring.
 	let pointer = true;
-	const onPointer = () => (pointer = true);
+	const onPointer = () => pointer = true;
 	const onTab = (e: KeyboardEvent) => {
 		if (e.key === 'Tab') pointer = false;
 	};

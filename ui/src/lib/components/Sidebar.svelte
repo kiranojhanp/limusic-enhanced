@@ -18,21 +18,23 @@
 		SquareArrowLeft01Icon,
 		SquareArrowRight01Icon,
 		SpotifyIcon,
-		Chart02Icon
+		Chart02Icon,
+		Radio02Icon
 	} from '@hugeicons/core-free-icons';
 	import { toggleMode } from 'mode-watcher';
-	import { Button } from '$lib/components/ui/button';
-	import { ON_REPEAT_ID, isLocalPlaylist, type BrowseItem } from '$lib/api';
-	import { thumb } from '$lib/thumb';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { ON_REPEAT_ID, isLocalPlaylist, type BrowseItem } from '#lib/api.js';
+	import { thumb } from '#lib/thumb.js';
 	import PlaylistMenu from './PlaylistMenu.svelte';
-	import { library, personal, ui, openNewPlaylist, toggleSidebar } from '$lib/player.svelte';
-	import { mergeSaved, orderLibrary } from '$lib/personal';
-	import { t } from '$lib/i18n.svelte';
-	import { imp } from '$lib/import.svelte';
+	import { library, personal, ui, openNewPlaylist, toggleSidebar } from '#lib/player.svelte.js';
+	import { mergeSaved, orderLibrary } from '#lib/personal.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { imp } from '#lib/import.svelte.js';
 
 	const nav = $derived([
 		{ href: '/', label: t('nav.home'), icon: Home01Icon },
 		{ href: '/search', label: t('nav.search'), icon: Search01Icon },
+		{ href: '/radio', label: t('nav.radio'), icon: Radio02Icon },
 		{ href: '/library', label: t('nav.library'), icon: LibraryIcon },
 		{ href: '/stats', label: t('nav.stats'), icon: Chart02Icon }
 	]);
@@ -109,7 +111,7 @@
 	)}"
 >
 	<div class="flex items-center justify-center px-2 py-2 {wide('lg:justify-between')}">
-		<span class="hidden font-heading text-lg font-bold tracking-tight {wide('lg:block')}">Limusic</span>
+		<span class="hidden font-heading text-lg font-bold tracking-tight {wide('lg:block')}">{t('common.app_name')}</span>
 		<!-- Column when collapsed: the two buttons don't fit side by side in the 64px rail. -->
 		<div class="flex items-center gap-1 {collapsed ? 'flex-col' : ''}">
 			<Button

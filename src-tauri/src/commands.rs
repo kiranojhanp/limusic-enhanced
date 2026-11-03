@@ -2341,6 +2341,134 @@ async fn scan_local(state: &Arc<AppState>) -> Result<crate::local::LocalLibrary,
     Ok(lib)
 }
 
+// --- Internet radio (radio.rs) -------------------------------------------------------------
+
+/// The browse page's landing grid: the directory's most-voted stations.
+#[tauri::command]
+pub async fn radio_discover(limit: Option<u32>) -> Result<Vec<crate::radio::Station>, String> {
+    crate::radio::discover(limit.unwrap_or(60)).await
+}
+
+/// Stations matching the filters the user set. Every filter is optional; none means "most voted",
+/// which is the same list as [`radio_discover`].
+#[tauri::command]
+pub async fn radio_search(
+    name: Option<String>,
+    country: Option<String>,
+    language: Option<String>,
+    tag: Option<String>,
+    limit: Option<u32>,
+    offset: Option<u32>,
+) -> Result<Vec<crate::radio::Station>, String> {
+    crate::radio::search(crate::radio::Query { name, country, language, tag, limit, offset }).await
+}
+
+/// Countries, languages and genres for the filter row.
+#[tauri::command]
+pub async fn radio_facets() -> Result<crate::radio::Facets, String> {
+    crate::radio::facets().await
+}
+
+/// Saved favorites, newest additions last. A snapshot of each directory row, so the grid still
+/// opens when the directory is unreachable.
+#[tauri::command]
+pub fn radio_favorites(state: St<'_>) -> Result<Vec<crate::radio::Station>, String> {
+    Ok(state.db.radio_list("favorite"))
+}
+
+/// Streams the user added by URL. These have no directory entry; `RADIO:<uuid>` resolves them from
+/// this table.
+#[tauri::command]
+pub fn radio_custom_stations(state: St<'_>) -> Result<Vec<crate::radio::Station>, String> {
+    Ok(state.db.radio_list("custom"))
+}
+
+/// Save a directory station as a favorite. The directory is asked again for the stream URL (the UI
+/// is never sent one); if it is unreachable, the display snapshot is still stored and playback will
+/// try the directory again later.
+#[tauri::command]
+pub async fn radio_add_favorite(
+    state: St<'_>,
+    mut station: crate::radio::Station,
+) -> Result<crate::radio::Station, String> {
+    if station.stationuuid.trim().is_empty() {
+        return Err("that station has no id".to_owned());
+    }
+    if crate::radio::is_custom_uuid(&station.stationuuid) {
+        return Err("that station is already one of yours".to_owned());
+    }
+    if let Ok(Some(fresh)) = crate::radio::station(&station.stationuuid).await {
+        station = fresh;
+    }
+    state.db.radio_put("favorite", &station).map_err(|e| e.to_string())?;
+    Ok(station)
+}
+
+/// Add a stream URL the user pasted. It is probed first, so a mistyped URL or an HTML error page is
+/// rejected in the dialog rather than becoming a station that silently fails.
+#[tauri::command]
+pub async fn radio_add_custom_station(
+    state: St<'_>,
+    name: String,
+    url: String,
+) -> Result<crate::radio::Station, String> {
+    let probe = crate::radio::probe(&url).await?;
+    let name = {
+        let trimmed = name.trim();
+        if trimmed.is_empty() {
+            probe.icy_name.clone().filter(|n| !n.trim().is_empty()).unwrap_or_else(|| {
+                url.split("://")
+                    .nth(1)
+                    .and_then(|rest| rest.split('/').next())
+                    .unwrap_or("My station")
+                    .to_owned()
+            })
+        } else {
+            trimmed.to_owned()
+        }
+    };
+    let content_type = probe.content_type.to_ascii_lowercase();
+    let codec = if content_type.contains("mpegurl") || content_type.contains("m3u") {
+        "HLS".to_owned()
+    } else if content_type.contains("aac") {
+        "AAC".to_owned()
+    } else if content_type.contains("ogg") || content_type.contains("opus") {
+        "OGG".to_owned()
+    } else if content_type.contains("mpeg") {
+        "MP3".to_owned()
+    } else {
+        String::new()
+    };
+    let station =
+        crate::radio::Station::custom(crate::radio::custom_uuid(), name, probe.url, codec);
+    state.db.radio_put("custom", &station).map_err(|e| e.to_string())?;
+    Ok(station)
+}
+
+/// Remove a favorite or a user-added station. A no-op when it is already gone.
+#[tauri::command]
+pub fn radio_remove_station(state: St<'_>, uuid: String) -> Result<bool, String> {
+    Ok(state.db.radio_delete(&uuid))
+}
+
+/// Validate a stream URL without saving it (the dialog's "Check" action).
+#[tauri::command]
+pub async fn radio_probe_stream(url: String) -> Result<crate::radio::Probe, String> {
+    crate::radio::probe(&url).await
+}
+
+/// A station logo as a data URL. The webview refuses plain-`http` images from its secure origin and
+/// some hosts block hotlinking; both show up in the grid as a broken tile without this. The logo is
+/// also shrunk and re-encoded here, so a multi-megabyte print master arrives as a few tens of KB.
+#[tauri::command]
+pub async fn radio_favicon(
+    app: tauri::AppHandle,
+    url: String,
+    size: Option<u32>,
+) -> Result<String, String> {
+    crate::radio::favicon_data_url(&url, size, &crate::radio::favicon_cache_dir(&app)).await
+}
+
 // --- Listen Together (context/19) ----------------------------------------------------------
 
 /// Current client-side LT state (status, role, room, participants, pending joins, suggestions).

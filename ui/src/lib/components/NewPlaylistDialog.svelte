@@ -4,19 +4,19 @@
 	// YouTube Music account, or on this machine (#251), which is the only choice signed out.
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { CloudIcon, ComputerIcon } from '@hugeicons/core-free-icons';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as RadioGroup from '$lib/components/ui/radio-group';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import * as api from '$lib/api';
-	import { t } from '$lib/i18n.svelte';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import * as RadioGroup from '#lib/components/ui/radio-group/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import * as api from '#lib/api.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import {
 		addSongsToPlaylist,
 		auth,
 		createLibraryPlaylist,
 		toast,
 		ui
-	} from '$lib/player.svelte';
+	} from '#lib/player.svelte.js';
 
 	type Where = 'account' | 'device';
 	// The last pick sticks until changed: someone who keeps their playlists on this machine

@@ -9,9 +9,9 @@
 	than shown as text.
 -->
 <script lang="ts">
-	import { releaseNotes, openExternal } from '$lib/api';
-	import { t } from '$lib/i18n.svelte';
-	import { friendlyNetError } from '$lib/neterr';
+	import { releaseNotes, openExternal } from '#lib/api.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { friendlyNetError } from '#lib/neterr.js';
 
 	let { current }: { current: string } = $props();
 

@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { CheckmarkCircle02Icon, UserCircleIcon } from '@hugeicons/core-free-icons';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Button } from '$lib/components/ui/button';
-	import * as api from '$lib/api';
-	import type { AccountIdentity } from '$lib/api';
-	import { toast, ui } from '$lib/player.svelte';
-	import { thumb } from '$lib/thumb';
-	import { t } from '$lib/i18n.svelte';
-	import { friendlyNetError } from '$lib/neterr';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as api from '#lib/api.js';
+	import type { AccountIdentity } from '#lib/api.js';
+	import { toast, ui } from '#lib/player.svelte.js';
+	import { thumb } from '#lib/thumb.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { friendlyNetError } from '#lib/neterr.js';
 
 	let loading = $state(false);
 	let switching = $state<string | null>(null);

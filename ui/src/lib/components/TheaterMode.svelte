@@ -45,7 +45,7 @@
 		VolumeHighIcon,
 		VolumeMute02Icon
 	} from '@hugeicons/core-free-icons';
-	import * as api from '$lib/api';
+	import * as api from '#lib/api.js';
 	import {
 		commitVolume,
 		cycleRepeat,
@@ -59,7 +59,7 @@
 		toggleNowPlayingRating,
 		ui,
 		wheelVolume
-	} from '$lib/player.svelte';
+	} from '#lib/player.svelte.js';
 	import {
 		canSwitch,
 		cinema as cinemaOn,
@@ -70,12 +70,12 @@
 		showVideo,
 		video,
 		videoSide
-	} from '$lib/video.svelte';
-	import { artRoom } from '$lib/artroom.svelte';
-	import { appearance, setAppearance } from '$lib/theme.svelte';
-	import { isMissingThumb, thumb } from '$lib/thumb';
-	import { t } from '$lib/i18n.svelte';
-	import { keyOf, typing } from '$lib/shortcuts';
+	} from '#lib/video.svelte.js';
+	import { artRoom } from '#lib/artroom.svelte.js';
+	import { appearance, setAppearance } from '#lib/theme.svelte.js';
+	import { isMissingThumb, thumb } from '#lib/thumb.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { keyOf, typing } from '#lib/shortcuts.js';
 	import ArtistLine from './ArtistLine.svelte';
 	import LyricsView from './LyricsView.svelte';
 	import QueueList from './QueueList.svelte';
@@ -215,6 +215,9 @@
 	// Same podcast transport as the player bar (#500): speed for shuffle, 15-second skips round play.
 	const episode = $derived(!!playback.now?.isEpisode);
 	const local = $derived(!!playback.now && api.isLocalId(playback.now.videoId));
+	// A live station has no timeline; theater mode is only reachable from a video, but a queue can
+	// still advance onto a station while it is open.
+	const live = $derived(!!playback.now && api.isRadioId(playback.now.videoId));
 	// The queue row for what's playing: it carries the album link and what the ⋮ menu needs, which
 	// the now-playing event does not. Matched on videoId so a mid-advance mismatch can't point
 	// either at the previous song.
@@ -758,27 +761,39 @@
 			: 'pt-3 pb-7'} {calm ? 'opacity-0' : ''}"
 	>
 		<!-- Fixed-width slots for the times: the font may have no tabular figures, and the bar would
-		     shift a few px per tick (#463). -->
-		<div class="flex items-center gap-4 text-xs font-medium tabular-nums text-muted-foreground">
-			<span class="min-w-[5ch] text-right">{fmt(shownPosition)}</span>
-			<input
-				type="range"
-				class="range theater-range min-w-0 flex-1 {cinema ? 'on-art' : ''}"
-				style="--pct:{pct}%"
-				min="0"
-				max={shownDuration || 0}
-				value={shownPosition}
-				oninput={(e) => (seekDrag = Number(e.currentTarget.value) * playback.speed)}
-				onchange={(e) => {
-					const v = Number(e.currentTarget.value) * playback.speed;
-					playback.position = v;
-					seekDrag = null;
-					api.seek(v);
-				}}
-				aria-label={t('player.seek')}
-			/>
-			<span class="min-w-[5ch]">{fmt(shownDuration)}</span>
-		</div>
+		     shift a few px per tick (#463). A live station has neither time, so the slot holds LIVE. -->
+		{#if live}
+			<div class="flex h-5 items-center gap-2 text-xs font-semibold tracking-wide text-primary">
+				<span class="relative flex size-2">
+					<span
+						class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60"
+					></span>
+					<span class="relative inline-flex size-2 rounded-full bg-primary"></span>
+				</span>
+				{t('radio.live')}
+			</div>
+		{:else}
+			<div class="flex items-center gap-4 text-xs font-medium tabular-nums text-muted-foreground">
+				<span class="min-w-[5ch] text-right">{fmt(shownPosition)}</span>
+				<input
+					type="range"
+					class="range theater-range min-w-0 flex-1 {cinema ? 'on-art' : ''}"
+					style="--pct:{pct}%"
+					min="0"
+					max={shownDuration || 0}
+					value={shownPosition}
+					oninput={(e) => (seekDrag = Number(e.currentTarget.value) * playback.speed)}
+					onchange={(e) => {
+						const v = Number(e.currentTarget.value) * playback.speed;
+						playback.position = v;
+						seekDrag = null;
+						api.seek(v);
+					}}
+					aria-label={t('player.seek')}
+				/>
+				<span class="min-w-[5ch]">{fmt(shownDuration)}</span>
+			</div>
+		{/if}
 
 		<div
 			class="grid grid-cols-[1fr_auto_1fr] items-center gap-6 {short.current ? 'mt-1.5' : 'mt-3'}"

@@ -13,16 +13,16 @@
 		RefreshIcon,
 		ShuffleIcon
 	} from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import * as Tabs from '$lib/components/ui/tabs';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Tabs from '#lib/components/ui/tabs/index.js';
 	import MediaCard from './MediaCard.svelte';
 	import MediaCardSkeleton from './MediaCardSkeleton.svelte';
 	import ErrorState from './ErrorState.svelte';
 	import TrackFilter from './TrackFilter.svelte';
 	import TrackRow from './TrackRow.svelte';
-	import * as api from '$lib/api';
-	import { indexCards, indexSongs, match } from '$lib/localsearch';
-	import { t } from '$lib/i18n.svelte';
+	import * as api from '#lib/api.js';
+	import { indexCards, indexSongs, match } from '#lib/localsearch.js';
+	import { t } from '#lib/i18n.svelte.js';
 	import {
 		addLocalFolder,
 		local,
@@ -32,7 +32,7 @@
 		removeLocalFolder,
 		scanLocal,
 		toast
-	} from '$lib/player.svelte';
+	} from '#lib/player.svelte.js';
 
 	// Files come and go while the app runs, so the tab rescans when you open it (a no-op scan is a
 	// stat per file). The startup scan is what keeps deleted music out of the home grid.

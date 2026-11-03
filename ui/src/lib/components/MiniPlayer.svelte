@@ -32,7 +32,7 @@
 		GoForward15SecIcon
 	} from '@hugeicons/core-free-icons';
 	import { fade } from 'svelte/transition';
-	import * as api from '$lib/api';
+	import * as api from '#lib/api.js';
 	import {
 		playback,
 		commitVolume,
@@ -43,11 +43,11 @@
 		toggleMute,
 		toggleNowPlayingRating,
 		wheelVolume
-	} from '$lib/player.svelte';
-	import { thumb } from '$lib/thumb';
+	} from '#lib/player.svelte.js';
+	import { thumb } from '#lib/thumb.js';
 	import LyricsView from './LyricsView.svelte';
 	import Marquee from './Marquee.svelte';
-	import { t } from '$lib/i18n.svelte';
+	import { t } from '#lib/i18n.svelte.js';
 
 	// Which of the two the right column is showing. Local, and reset when the widget is destroyed:
 	// nothing here is worth persisting. The queue is the default because it is the cheaper view —
@@ -60,8 +60,10 @@
 	// A podcast episode (#500): the full layout's shuffle and repeat become the 15-second skips.
 	// No speed here, there is no room for its menu; the main window has it.
 	const episode = $derived(!!playback.now?.isEpisode);
-	// A local file has no YouTube identity, so there is nothing to like (see api.isLocalId).
+	// A local file or a station has no YouTube identity, so there is nothing to like (see api.isLocalId).
 	const likeable = $derived(!!now && !api.isLocalId(now.videoId));
+	// An internet-radio station is live: no timeline to draw.
+	const live = $derived(!!now && api.isRadioId(now.videoId));
 
 	// Zoom never applies to this window, so CSS pixels are the logical size Rust set: 560 or 320.
 	let width = $state(window.innerWidth);
@@ -220,11 +222,14 @@
 
 		<!-- Position, as a line along the bottom edge. Display only: a slider this thin is a target
 		     nobody hits, and seeking is one click away in the full layout. scaleX rather than width,
-		     so a position tick repaints the line without laying anything out. -->
-		<div
-			class="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 origin-left bg-primary"
-			style="transform:scaleX({progress})"
-		></div>
+		     so a position tick repaints the line without laying anything out. A live station has no
+		     position, so the line would only ever sit at zero. -->
+		{#if !live}
+			<div
+				class="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 origin-left bg-primary"
+				style="transform:scaleX({progress})"
+			></div>
+		{/if}
 	{:else}
 		<!-- Cover art under the left half, masked so it dissolves into the card instead of ending on a
 		     seam. Keyed so a track change cross-fades. -->
@@ -362,17 +367,26 @@
 				<button class={artBtn} onclick={() => api.prevTrack()} aria-label={t('a11y.previous')}>
 					<HugeiconsIcon icon={PreviousIcon} class="h-4 w-4" />
 				</button>
-				<input
-					type="range"
-					class="range on-art min-w-0 flex-1"
-					style="--pct:{shownDuration ? (shownPosition / shownDuration) * 100 : 0}%"
-					min="0"
-					max={shownDuration || 0}
-					value={shownPosition}
-					oninput={onSeekInput}
-					onchange={onSeekCommit}
-					aria-label={t('a11y.seek')}
-				/>
+				{#if live}
+					<span
+						class="flex flex-1 items-center justify-center gap-1 text-[10px] font-semibold tracking-wide text-white/80"
+					>
+						<span class="size-1.5 animate-pulse rounded-full bg-white/80"></span>
+						{t('radio.live')}
+					</span>
+				{:else}
+					<input
+						type="range"
+						class="range on-art min-w-0 flex-1"
+						style="--pct:{shownDuration ? (shownPosition / shownDuration) * 100 : 0}%"
+						min="0"
+						max={shownDuration || 0}
+						value={shownPosition}
+						oninput={onSeekInput}
+						onchange={onSeekCommit}
+						aria-label={t('a11y.seek')}
+					/>
+				{/if}
 				<button class={artBtn} onclick={() => api.nextTrack()} aria-label={t('a11y.next')}>
 					<HugeiconsIcon icon={NextIcon} class="h-4 w-4" />
 				</button>

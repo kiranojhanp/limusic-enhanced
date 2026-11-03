@@ -5,8 +5,8 @@
 	// them flat bars on a big screen. The gaps and corners grow with them. Plain CSS grid, no chart
 	// library: 168 cells need nothing it offers. No transition on the cells, they are a repeated
 	// element under the pointer (docs/UI-PERFORMANCE.md).
-	import { heat, listened, tagOf } from '$lib/stats';
-	import { currentLocale, t } from '$lib/i18n.svelte';
+	import { heat, listened, tagOf } from '#lib/stats.js';
+	import { currentLocale, t } from '#lib/i18n.svelte.js';
 
 	let { hours }: { hours: number[] } = $props();
 

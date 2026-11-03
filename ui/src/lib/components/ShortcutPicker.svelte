@@ -7,11 +7,11 @@
 	import { cubicOut } from 'svelte/easing';
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { Cancel01Icon, Tick02Icon, Add01Icon } from '@hugeicons/core-free-icons';
-	import { thumb } from '$lib/thumb';
-	import { addPick, library, loadLibrary, personal } from '$lib/player.svelte';
-	import { mergeSaved } from '$lib/personal';
-	import { t } from '$lib/i18n.svelte';
-	import { windowCorners } from '$lib/win.svelte';
+	import { thumb } from '#lib/thumb.js';
+	import { addPick, library, loadLibrary, personal } from '#lib/player.svelte.js';
+	import { mergeSaved } from '#lib/personal.js';
+	import { t } from '#lib/i18n.svelte.js';
+	import { windowCorners } from '#lib/win.svelte.js';
 
 	let { onclose }: { onclose: () => void } = $props();
 

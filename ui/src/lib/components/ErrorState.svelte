@@ -4,10 +4,10 @@
 	// `http: error sending request for url (https://music.youtube.com/youtubei/v1/browse)` in red.
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { RefreshIcon, Alert02Icon, NoInternetIcon } from '@hugeicons/core-free-icons';
-	import { Button } from '$lib/components/ui/button';
-	import { isUnreachable } from '$lib/neterr';
-	import { whenBackOnline } from '$lib/reconnect';
-	import { t } from '$lib/i18n.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { isUnreachable } from '#lib/neterr.js';
+	import { whenBackOnline } from '#lib/reconnect.js';
+	import { t } from '#lib/i18n.svelte.js';
 
 	let { message, onRetry }: { message: string; onRetry: () => void } = $props();
 
