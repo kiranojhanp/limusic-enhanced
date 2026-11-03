@@ -14,7 +14,7 @@
 export interface DiscordConfig {
 	/** Which slot Discord repeats after "Listening to": `app` | `line1` | `line2`. */
 	status_line: string;
-	/** Replaces the registered application name in that slot. Empty keeps "limusic+". */
+	/** Replaces the registered application name in that slot. Empty keeps "Limusic+". */
 	app_name: string;
 	/** The card's first (bold) line: `title` | `artist` | `album`. */
 	line1: string;
@@ -140,5 +140,5 @@ export const BUTTON_LABELS: Record<string, string> = {
 	listen: 'Listen on YouTube Music',
 	album: 'View album',
 	artist: 'View artist',
-	app: 'Get limusic+'
+	app: 'Get Limusic+'
 };
