@@ -1453,8 +1453,13 @@ export interface RadioProbe {
 /** Validate a pasted URL without saving it. */
 export const radioProbeStream = (url: string) =>
 	invoke<RadioProbe>('radio_probe_stream', { url });
-/** A station logo as a `data:` URL, for hosts the webview refuses to load directly. */
-export const radioFavicon = (url: string) => invoke<string>('radio_favicon', { url });
+/**
+ * A station logo as a `data:` URL, for hosts the webview refuses to load directly. Rust fetches,
+ * resizes (xBRZ for the tiny ones) and caches it; `size` is the pixel box it is rendered for, so
+ * the card and the full player get differently sized copies instead of sharing one.
+ */
+export const radioFavicon = (url: string, size?: number) =>
+	invoke<string>('radio_favicon', { url, size });
 
 /**
  * A station's live "now playing" line. ICY gives `raw` ("Artist - Title"); the iTunes enrichment

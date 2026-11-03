@@ -42,6 +42,7 @@
 		wheelVolume
 	} from '#lib/player.svelte.js';
 	import { thumb } from '#lib/thumb.js';
+	import { stationArt } from '#lib/stationart.svelte.js';
 	import { appearance } from '#lib/theme.svelte.js';
 	import ArtistLine from './ArtistLine.svelte';
 	import Marquee from './Marquee.svelte';
@@ -96,7 +97,13 @@
 	// An internet-radio station: endless, so there is no timeline to draw or seek.
 	const live = $derived(api.isRadioId(playback.now?.videoId));
 	// A station's iTunes artwork when the stream's title resolved to a song; otherwise its logo.
-	const artwork = $derived(playback.radio?.cover || playback.now?.thumbnail);
+	// The original image loads directly (best quality); Rust only steps in when it is unloadable
+	// (plain http / hotlink-blocked) or far too small to show as-is.
+	const art = stationArt(
+		() => playback.radio?.cover || playback.now?.thumbnail,
+		128, // 48px, at 2x
+		() => api.isRadioId(playback.now?.videoId) // a YouTube thumb keeps its own fallback
+	);
 
 	// The current track was appended by autoplay → show the subtle ∞ badge next to the title.
 	// Matched against the now-playing videoId so a transient queue/now-playing mismatch (mid
@@ -170,14 +177,16 @@
 	     that's playing (not the buttons beside them — those keep their own meaning). -->
 	<div class="flex min-w-0 flex-1 items-center gap-3" data-ctx>
 		{#key playback.now?.videoId}
-			{#if artwork}
+			{#if art.src}
 				<img
-					src={thumb(artwork, 120)}
+					src={thumb(art.src, 120)}
 					alt=""
 					style="max-width:none"
 					class="h-12 w-12 shrink-0 rounded-lg {live
 						? 'bg-muted object-contain p-1'
 						: 'object-cover'}"
+					onload={art.onload}
+					onerror={art.onerror}
 					in:fade={{ duration: 250 }}
 				/>
 			{:else}

@@ -46,6 +46,7 @@
 	import { appearance } from '#lib/theme.svelte.js';
 	import { t } from '#lib/i18n.svelte.js';
 	import { isMissingThumb, thumb } from '#lib/thumb.js';
+	import { stationArt } from '#lib/stationart.svelte.js';
 	import ArtistLine from './ArtistLine.svelte';
 	import QueueList from './QueueList.svelte';
 	import LyricsView from './LyricsView.svelte';
@@ -109,15 +110,25 @@
 	// size a broken-image glyph *is* the page. So step down until one loads: crisp, then the size
 	// proven everywhere else in the app, then the 120 the player bar is already showing for this
 	// very track, and only then a music note.
+	// A station's artwork: its iTunes cover when the stream's title resolved to a song, otherwise
+	// its logo. The original image loads directly (best quality); Rust only steps in for one that
+	// is unloadable or far too small to fill the ~704 CSS px of the full player.
+	const art = stationArt(
+		() => playback.radio?.cover || playback.now?.thumbnail,
+		1024,
+		() => api.isRadioId(playback.now?.videoId) // a YouTube thumb keeps its own step-down
+	);
+
 	let attempt = $state(0);
 	let bgFailed = $state(false);
 	$effect(() => {
 		playback.now?.thumbnail; // re-arm on every track change
 		playback.radio?.cover; // and when the station's artwork lookup lands
+		art.src; // and when a station logo's proxy resolves
 		attempt = 0;
 		bgFailed = false;
 	});
-	const artwork = $derived(playback.radio?.cover || playback.now?.thumbnail);
+	const artwork = $derived(art.src);
 	const srcs = $derived([720, 400, 120].map((px) => thumb(artwork, px)));
 	const src = $derived(srcs[attempt]);
 	const imgFailed = () => attempt++;
@@ -347,8 +358,14 @@
 		<img
 			src={src}
 			alt=""
-			onerror={imgFailed}
-			onload={(e) => isMissingThumb(e) && imgFailed()}
+			onerror={() => {
+				imgFailed();
+				art.onerror();
+			}}
+			onload={(e) => {
+				if (isMissingThumb(e)) imgFailed();
+				else art.onload(e);
+			}}
 			style={srcs[2] ? `background-image:url(${srcs[2]})` : undefined}
 			class="aspect-square w-full rounded-2xl bg-cover object-cover {stage ? '' : 'shadow-2xl'}"
 		/>

@@ -7,9 +7,9 @@
 	// allow inside another one.
 	import { HugeiconsIcon } from '@hugeicons/svelte';
 	import { Delete02Icon, FavouriteIcon, PlayIcon, Radio02Icon } from '@hugeicons/core-free-icons';
-	import * as api from '#lib/api.js';
 	import type { RadioStation } from '#lib/api.js';
 	import { flagOf } from '#lib/flags.js';
+	import { stationArt } from '#lib/stationart.svelte.js';
 	import { t } from '#lib/i18n.svelte.js';
 
 	let {
@@ -28,37 +28,11 @@
 		onremove?: () => void;
 	} = $props();
 
-	// A favicon that 404s, that its host refuses to serve, or that is plain `http://` (blocked as
-	// mixed content by the webview's secure origin) falls back to Rust, which fetches it and hands
-	// back a data URL. Keyed on the station so a recycled card tries again for the next one.
-	let imgSrc = $state('');
-	let failed = $state(false);
-	let proxied = false;
-
-	async function useProxy() {
-		if (!station.favicon || proxied) return;
-		proxied = true;
-		try {
-			imgSrc = await api.radioFavicon(station.favicon);
-			failed = false;
-		} catch {
-			failed = true;
-		}
-	}
-
-	$effect(() => {
-		station.stationuuid; // re-arm on a recycled card
-		imgSrc = station.favicon || '';
-		failed = !station.favicon;
-		proxied = false;
-		// A plain-http logo never loads from the tauri:// origin; do not spend an error event on it.
-		if (station.favicon.startsWith('http://')) void useProxy();
-	});
-
-	function onImageError() {
-		if (!proxied) void useProxy();
-		else failed = true;
-	}
+	// The original favicon loads directly (best quality). Rust only steps in for one the webview
+	// cannot load — a 404, a hotlink-blocked host, or a plain `http://` logo (blocked as mixed
+	// content by the secure origin) — or for one far too small to fill the tile, which Rust grows
+	// with xBRZ. The tile draws ~120 CSS px, so 256 is the box at 2x.
+	const art = stationArt(() => station.favicon, 256);
 
 	const flag = $derived(flagOf(station.countrycode));
 	const place = $derived(station.country || station.language);
@@ -94,19 +68,20 @@
 			? 'ring-2 ring-primary/60'
 			: ''}"
 	>
-		{#if imgSrc && !failed}
+		{#if art.src}
 			<!-- object-contain, not cover: station logos are whatever shape the broadcaster drew, and
 			     cropping a wordmark to a square makes it unreadable. no-referrer because a fair number
 			     of hosts refuse hotlinked images. -->
 			<img
-				src={imgSrc}
+				src={art.src}
 				alt=""
 				loading="lazy"
 				decoding="async"
 				draggable="false"
 				referrerpolicy="no-referrer"
 				class="h-full w-full object-contain p-5"
-				onerror={onImageError}
+				onload={art.onload}
+				onerror={art.onerror}
 			/>
 		{:else}
 			<div class="flex h-full w-full items-center justify-center text-muted-foreground/40">
