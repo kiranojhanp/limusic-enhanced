@@ -299,8 +299,8 @@ fn new_mpv(cache_dir: &str) -> Result<Mpv, Error> {
     // What the system mixer calls the stream. mpv's own names are "mpv" and `<media title> - mpv`,
     // and the media title of a proxied stream is the last segment of its loopback URL, so KDE's
     // mixer listed "e09087d13ce71f6d - mpv" (issue #409).
-    mpv.set_property("audio-client-name", "Limusic")?;
-    mpv.set_property("title", "Limusic")?;
+    mpv.set_property("audio-client-name", "limusic+")?;
+    mpv.set_property("title", "limusic+")?;
     mpv.set_property("gapless-audio", "yes")?;
     // mpv's native Matroska demuxer floors WebM DiscardPadding nanoseconds to Opus samples. For
     // values one nanosecond below a sample boundary (YouTube emits 6,833,333 ns), that leaves one
