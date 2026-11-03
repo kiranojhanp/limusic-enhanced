@@ -51,7 +51,10 @@
 	let deepest = $state(0);
 	afterNavigate((nav) => {
 		if (nav.shallow && nav.type === 'goto') return;
-		if (nav.type === 'enter') depth = deepest = 0; else if (nav.delta !== undefined) depth = Math.max(0, depth + nav.delta); else deepest = depth += 1;
+		if (nav.type === 'enter') depth = deepest = 0;
+		// `delta` is only on the popstate/goto members of the union, so narrow with `in` first.
+		else if ('delta' in nav && nav.delta !== undefined) depth = Math.max(0, depth + nav.delta);
+		else deepest = depth += 1;
 	});
 
 	// Last.fm connection state lives in `lastfm.svelte.ts`: the Scrobbling settings tab connects
