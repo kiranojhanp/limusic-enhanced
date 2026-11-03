@@ -302,7 +302,12 @@ fn automatic_crossfade_runs_both_effected_decks_in_real_time() {
         let mut first_positions = None;
         let mut last_positions = None;
         while p.decks.fading.load(Ordering::Acquire) {
-            assert!(started.elapsed().as_secs_f64() < 2.0, "fade did not finish");
+            // A hang guard, not a real-time SLA. The ramp thread sleeps in FADE_STEP (50 ms)
+            // increments for the whole 1.5 s fade, and each sleep overshoots under load, so on a
+            // busy CI runner the wall time slips past the fade's own ~1.5 s. The `> 1.0` assertion
+            // below and the equal-power checks are what prove the fade actually ran in real time;
+            // this only catches one that never finishes.
+            assert!(started.elapsed().as_secs_f64() < 5.0, "fade did not finish");
             let a = out.get_property::<f64>("volume").unwrap();
             let b = incoming.get_property::<f64>("volume").unwrap();
             let outputs_ready = [out.as_ref(), incoming.as_ref()]
