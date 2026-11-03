@@ -35,6 +35,21 @@ rusqlite = { version = "0.32", features = ["bundled"] }
 # one. Measured in `progress/active/webremix-stream-403.md`. This pulls in V8.
 rustypipe-botguard = "0.1.2"
 base64 = "0.22"
+# Station logos are fetched, shrunk and re-encoded on the way to the webview (radio.rs). Already in
+# the lock through Tauri's `image-png`; the extra formats are the ones a favicon actually arrives
+# as (ico/jpeg/gif/webp/bmp), and all of them are decoders already in the tree.
+image = { version = "0.25", default-features = false, features = [
+    "png",
+    "jpeg",
+    "gif",
+    "webp",
+    "bmp",
+    "ico",
+] }
+# Radio station logos are tiny (16-64px) and look blurry blown up in the full player. xBRZ is an
+# edge-aware pixel-art scaler: on flat logo art it keeps edges crisp where a plain Lanczos upscale
+# turns them to mush. GPL-3.0-only, matching this app's license.
+xbrz-rs = "0.1"
 regex = "1"
 urlencoding = "2"
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "gzip", "brotli", "stream"] }

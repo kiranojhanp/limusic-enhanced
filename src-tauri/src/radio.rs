@@ -23,6 +23,7 @@
 //! line and artwork.
 
 use std::collections::HashMap;
+use std::path::Path;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Mutex, OnceLock};
 use std::time::{Duration, Instant};
@@ -74,6 +75,21 @@ const FAVICON_MAX: usize = 2 * 1024 * 1024;
 const FAVICON_TTL: Duration = Duration::from_secs(24 * 60 * 60);
 /// A failed logo is retried after this long, not on every recycled card.
 const FAVICON_FAIL_TTL: Duration = Duration::from_secs(10 * 60);
+/// A logo's longest side, rounded up to a power of two and clamped here, is the size it is
+/// processed and cached at. The card only ever draws ~120 CSS px, but the full player blow-up is
+/// capped at ~44rem (704px) — and on a retina display that wants ~1400 physical px. 1024 is a
+/// compromise the eye reads as sharp; the tiny source art is what actually limits it.
+const FAVICON_MIN_SIZE: u32 = 128;
+const FAVICON_MAX_SIZE: u32 = 1024;
+/// How many processed logos to keep on disk, across every size, and the total size they may take.
+/// Flat logos are a few tens of KB, but a photographic one at the full-player size can be a
+/// megabyte, so the byte cap is what actually bounds the directory — and it is what makes a
+/// restart (or a station the directory no longer serves) show a logo at once.
+const FAVICON_DISK_MAX: usize = 512;
+const FAVICON_DISK_BYTES: u64 = 48 * 1024 * 1024;
+/// How many processed logos to keep in memory for the visit, and how many to drop when full.
+const FAVICON_CACHE_MAX: usize = 256;
+const FAVICON_CACHE_EVICT: usize = 32;
 
 /// They ask for the app's name, version and a way to reach it.
 const UA: &str = concat!(
@@ -472,21 +488,60 @@ pub async fn probe(url: &str) -> Result<Probe, String> {
     Ok(Probe { url: final_url, content_type, icy_name })
 }
 
+/// Where processed station logos live between runs. Beside the SQLite file, and deliberately not
+/// inside the audio cache: "clear caches" must not refetch every logo on the browse page.
+pub fn favicon_cache_dir(app: &tauri::AppHandle) -> std::path::PathBuf {
+    use tauri::Manager;
+    app.path().app_data_dir().unwrap_or_else(|_| std::env::temp_dir()).join("radio-logos")
+}
+
+/// Round a requested pixel box up to the size a logo is processed and cached at, so every caller
+/// that draws at roughly the same size shares one cached copy instead of each rendering its own.
+fn logo_size(px: Option<u32>) -> u32 {
+    px.unwrap_or(256).clamp(FAVICON_MIN_SIZE, FAVICON_MAX_SIZE).next_power_of_two()
+}
+
 /// A station logo as a `data:` URL, for hosts the webview refuses to load (plain `http://` under a
-/// secure origin, or a hotlink-blocked image). Cached in memory; a failure is cached briefly so a
+/// secure origin, or a hotlink-blocked image). It doubles as the place a multi-megabyte print
+/// master becomes a few tens of KB — and, the other way, a 32px favicon becomes a crisp 1024px one
+/// the full player can show without the mushy blur of a plain upscale.
+///
+/// `px` is the box the caller intends to draw, rounded up to the nearest [`logo_size`]; the same
+/// logo at the card's size and at the full player's size are two entries, so neither pays for the
+/// other. Cached in memory for the visit and on disk between runs; a failure is cached briefly so a
 /// grid of broken logos does not keep retrying.
-pub async fn favicon_data_url(url: &str) -> Result<String, String> {
-    fn cache() -> &'static Mutex<HashMap<String, (Instant, Option<String>)>> {
+pub async fn favicon_data_url(
+    url: &str,
+    px: Option<u32>,
+    cache_dir: &Path,
+) -> Result<String, String> {
+    fn memory() -> &'static Mutex<HashMap<String, (Instant, Option<String>)>> {
         static CACHE: OnceLock<Mutex<HashMap<String, (Instant, Option<String>)>>> = OnceLock::new();
         CACHE.get_or_init(|| Mutex::new(HashMap::new()))
+    }
+    fn remember(key: &str, hit: Option<String>) {
+        let Ok(mut c) = memory().lock() else { return };
+        if c.len() >= FAVICON_CACHE_MAX {
+            // Evict the oldest few rather than clearing: a full clear made a 60-tile page refetch
+            // every logo the moment one overflowed the map.
+            let mut by_age: Vec<(String, Instant)> =
+                c.iter().map(|(k, (at, _))| (k.clone(), *at)).collect();
+            by_age.sort_by_key(|(_, at)| *at);
+            for (k, _) in by_age.into_iter().take(FAVICON_CACHE_EVICT) {
+                c.remove(&k);
+            }
+        }
+        c.insert(key.to_owned(), (Instant::now(), hit));
     }
 
     let url = url.trim();
     if !(url.starts_with("http://") || url.starts_with("https://")) {
         return Err("not an http image".to_owned());
     }
-    if let Ok(c) = cache().lock() {
-        if let Some((at, hit)) = c.get(url) {
+    let size = logo_size(px);
+    let key = format!("{size}\u{1}{url}");
+    if let Ok(c) = memory().lock() {
+        if let Some((at, hit)) = c.get(&key) {
             let ttl = if hit.is_some() { FAVICON_TTL } else { FAVICON_FAIL_TTL };
             if at.elapsed() < ttl {
                 return hit.clone().ok_or_else(|| "logo unavailable".to_owned());
@@ -494,77 +549,251 @@ pub async fn favicon_data_url(url: &str) -> Result<String, String> {
         }
     }
 
-    let fetched = async {
-        let response = crate::http::client()
-            .get(url)
-            .header(reqwest::header::USER_AGENT, STREAM_UA)
-            .header(reqwest::header::ACCEPT, "image/*")
-            .timeout(Duration::from_secs(8))
-            .send()
-            .await
-            .map_err(|e| e.to_string())?;
-        if !response.status().is_success() {
-            return Err(format!("logo answered {}", response.status()));
-        }
-        if let Some(length) = response.content_length() {
-            if length as usize > FAVICON_MAX {
-                return Err("logo is too large".to_owned());
-            }
-        }
-        let content_type = response
-            .headers()
-            .get(reqwest::header::CONTENT_TYPE)
-            .and_then(|v| v.to_str().ok())
-            .unwrap_or("")
-            .to_ascii_lowercase();
-        if !content_type.is_empty() && !content_type.starts_with("image/") {
-            return Err(format!("logo is {content_type}"));
-        }
+    let file = cache_dir.join(format!("{}-{size}.logo", logo_key(url)));
+    // A fresh on-disk copy is the whole answer — no network, and the logo shows on the first frame.
+    if let Some(data) = read_logo(&file, FAVICON_TTL) {
+        remember(&key, Some(data.clone()));
+        return Ok(data);
+    }
 
-        let mut bytes = Vec::new();
-        let mut stream = response.bytes_stream();
-        while let Some(chunk) = stream.next().await {
-            let chunk = chunk.map_err(|e| e.to_string())?;
-            if bytes.len() + chunk.len() > FAVICON_MAX {
-                return Err("logo is too large".to_owned());
+    match fetch_logo(url, size).await {
+        Ok(data) => {
+            write_logo(cache_dir, &file, &data);
+            remember(&key, Some(data.clone()));
+            Ok(data)
+        }
+        Err(e) => {
+            // A stale copy beats a broken tile: a station saved yesterday still shows its logo
+            // while the directory (or the host) is unreachable.
+            if let Some(data) = read_logo(&file, Duration::MAX) {
+                remember(&key, Some(data.clone()));
+                return Ok(data);
             }
-            bytes.extend_from_slice(&chunk);
+            remember(&key, None);
+            Err(e)
         }
-        if bytes.is_empty() {
-            return Err("empty logo".to_owned());
-        }
+    }
+}
 
-        // The server's type is the best answer, but only when it named an image. Otherwise sniff
-        // the magic bytes so the data URL still has a type an <img> will render.
-        let mime = if content_type.starts_with("image/") {
-            content_type.split(';').next().unwrap_or("image/png").trim().to_owned()
-        } else if bytes.starts_with(&[0x89, b'P', b'N', b'G']) {
-            "image/png".to_owned()
-        } else if bytes.starts_with(&[0xff, 0xd8, 0xff]) {
-            "image/jpeg".to_owned()
-        } else if bytes.starts_with(b"GIF8") {
-            "image/gif".to_owned()
-        } else if bytes.len() > 12 && &bytes[0..4] == b"RIFF" && &bytes[8..12] == b"WEBP" {
-            "image/webp".to_owned()
-        } else if bytes.iter().take(64).copied().any(|b| b == b'<') {
-            "image/svg+xml".to_owned()
-        } else {
-            "image/png".to_owned()
-        };
-        Ok::<String, String>(format!(
-            "data:{mime};base64,{}",
+/// The on-disk name for a fetched URL: a stable FNV-1a digest, so the same logo is one file across
+/// runs. `DefaultHasher` is deliberately not used — Rust does not promise its output stays stable.
+fn logo_key(url: &str) -> String {
+    let mut h: u64 = 0xcbf2_9ce4_8422_2325;
+    for b in url.as_bytes() {
+        h ^= *b as u64;
+        h = h.wrapping_mul(0x100_0000_01b3);
+    }
+    format!("{h:016x}")
+}
+
+/// The cached data URL, when the file exists and is younger than `ttl`. `Duration::MAX` accepts a
+/// stale one, which is the offline fallback.
+fn read_logo(file: &Path, ttl: Duration) -> Option<String> {
+    let age = std::fs::metadata(file).ok()?.modified().ok()?.elapsed().ok()?;
+    if age >= ttl {
+        return None;
+    }
+    let data = std::fs::read_to_string(file).ok()?;
+    (!data.is_empty()).then_some(data)
+}
+
+/// Best-effort: a cache we cannot write is a slower app, not a broken one.
+fn write_logo(dir: &Path, file: &Path, data: &str) {
+    if std::fs::create_dir_all(dir).is_err() {
+        return;
+    }
+    let _ = std::fs::write(file, data);
+    prune_logos(dir);
+}
+
+/// Keep the logo directory bounded, by count and by total size. Without it the directory grows for
+/// the life of the install as the user browses new stations.
+fn prune_logos(dir: &Path) {
+    let Ok(entries) = std::fs::read_dir(dir) else { return };
+    let mut files: Vec<(std::time::SystemTime, std::path::PathBuf, u64)> = entries
+        .flatten()
+        .filter(|e| e.path().extension().is_some_and(|x| x == "logo"))
+        .filter_map(|e| {
+            let meta = e.metadata().ok()?;
+            Some((meta.modified().ok()?, e.path(), meta.len()))
+        })
+        .collect();
+    let mut count = files.len();
+    let mut bytes: u64 = files.iter().map(|(_, _, n)| n).sum();
+    if count <= FAVICON_DISK_MAX && bytes <= FAVICON_DISK_BYTES {
+        return;
+    }
+    files.sort_by_key(|(m, _, _)| *m);
+    for (_, path, n) in files {
+        if count <= FAVICON_DISK_MAX && bytes <= FAVICON_DISK_BYTES {
+            break;
+        }
+        if std::fs::remove_file(&path).is_ok() {
+            count -= 1;
+            bytes = bytes.saturating_sub(n);
+        }
+    }
+}
+
+/// One GET, decoded and resized. SVG is left as vector (it scales perfectly); everything else is
+/// rasterized to the requested box and re-encoded losslessly.
+async fn fetch_logo(url: &str, target: u32) -> Result<String, String> {
+    let response = crate::http::client()
+        .get(url)
+        .header(reqwest::header::USER_AGENT, STREAM_UA)
+        .header(reqwest::header::ACCEPT, "image/*")
+        .timeout(Duration::from_secs(8))
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+    if !response.status().is_success() {
+        return Err(format!("logo answered {}", response.status()));
+    }
+    if let Some(length) = response.content_length() {
+        if length as usize > FAVICON_MAX {
+            return Err("logo is too large".to_owned());
+        }
+    }
+    let content_type = response
+        .headers()
+        .get(reqwest::header::CONTENT_TYPE)
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    // `image/svg+xml` starts with image/, but a host may also send `text/xml`.
+    if !content_type.is_empty()
+        && !content_type.starts_with("image/")
+        && !content_type.contains("svg")
+    {
+        return Err(format!("logo is {content_type}"));
+    }
+
+    let mut bytes = Vec::new();
+    let mut stream = response.bytes_stream();
+    while let Some(chunk) = stream.next().await {
+        let chunk = chunk.map_err(|e| e.to_string())?;
+        if bytes.len() + chunk.len() > FAVICON_MAX {
+            return Err("logo is too large".to_owned());
+        }
+        bytes.extend_from_slice(&chunk);
+    }
+    if bytes.is_empty() {
+        return Err("empty logo".to_owned());
+    }
+
+    // SVG is the one thing not to touch: it is already resolution-independent, and rasterizing it
+    // would only make it worse. Keep the original bytes and type.
+    if content_type.contains("svg") || looks_like_svg(&bytes) {
+        return Ok(format!(
+            "data:image/svg+xml;base64,{}",
             base64::engine::general_purpose::STANDARD.encode(&bytes)
-        ))
+        ));
     }
-    .await;
 
-    if let Ok(mut c) = cache().lock() {
-        if c.len() >= 256 {
-            c.clear();
-        }
-        c.insert(url.to_owned(), (Instant::now(), fetched.as_ref().ok().cloned()));
+    // Decoding and rescaling is CPU work; keep it off the async runtime's threads. Fall back to the
+    // raw bytes typed by magic bytes when the image cannot be processed, which is what this returned
+    // before it processed anything.
+    let to_process = bytes.clone();
+    let processed =
+        tokio::task::spawn_blocking(move || render_logo(&to_process, target)).await.ok().flatten();
+    Ok(processed.unwrap_or_else(|| raw_data_url(&bytes, &content_type)))
+}
+
+/// True when the first bytes look like markup rather than a raster header.
+fn looks_like_svg(bytes: &[u8]) -> bool {
+    bytes.iter().take(64).copied().any(|b| b == b'<')
+}
+
+/// The unprocessed image as a data URL, with the server's type when it named an image and a
+/// magic-byte guess otherwise, so an `<img>` still renders it.
+fn raw_data_url(bytes: &[u8], content_type: &str) -> String {
+    let mime = if content_type.starts_with("image/") {
+        content_type.split(';').next().unwrap_or("image/png").trim().to_owned()
+    } else if bytes.starts_with(&[0x89, b'P', b'N', b'G']) {
+        "image/png".to_owned()
+    } else if bytes.starts_with(&[0xff, 0xd8, 0xff]) {
+        "image/jpeg".to_owned()
+    } else if bytes.starts_with(b"GIF8") {
+        "image/gif".to_owned()
+    } else if bytes.len() > 12 && &bytes[0..4] == b"RIFF" && &bytes[8..12] == b"WEBP" {
+        "image/webp".to_owned()
+    } else if looks_like_svg(bytes) {
+        "image/svg+xml".to_owned()
+    } else {
+        "image/png".to_owned()
+    };
+    format!("data:{mime};base64,{}", base64::engine::general_purpose::STANDARD.encode(bytes))
+}
+
+/// Decode a raster logo, bring its longer side to `target`, and re-encode it losslessly as WebP.
+/// `None` when the bytes are not an image we can decode or the encoder fails, which leaves the
+/// caller to pass the original through.
+///
+/// Up to the target, tiny logos are grown with xBRZ (see the `xbrz-rs` dependency) rather than a
+/// plain filter: a 32px favicon blown up bilinearly is the blur that shows in the full player.
+/// xBRZ only scales by whole factors (2-6), so it walks that ladder until the next step would
+/// overshoot and a single mild Lanczos pass lands exactly on the box. Logos already big enough are
+/// simply downscaled.
+fn render_logo(bytes: &[u8], target: u32) -> Option<String> {
+    let img = image::load_from_memory(bytes).ok()?;
+    let (w, h) = (img.width(), img.height());
+    if w == 0 || h == 0 {
+        return None;
     }
-    fetched
+
+    let mut used_xbrz = false;
+    let rendered = if w.max(h) >= target {
+        to_longest(&img, w, h, target)?
+    } else {
+        let mut rgba = img.to_rgba8();
+        let (mut cw, mut ch) = (w, h);
+        while cw.max(ch) * 2 <= target {
+            let factor = (target / cw.max(ch)).clamp(2, 6) as usize;
+            let out = xbrz::scale_rgba(&rgba, cw as usize, ch as usize, factor);
+            cw *= factor as u32;
+            ch *= factor as u32;
+            rgba = image::RgbaImage::from_raw(cw, ch, out)?;
+            used_xbrz = true;
+        }
+        let grown = image::DynamicImage::ImageRgba8(rgba);
+        if cw.max(ch) < target {
+            to_longest(&grown, cw, ch, target)?
+        } else {
+            grown
+        }
+    };
+
+    // A plain Lanczos upscale softens edges; xBRZ output is already crisp, so only the former gets
+    // a mild unsharp pass. A low threshold keeps flat fills flat rather than ringing.
+    let finished = if used_xbrz { rendered } else { rendered.unsharpen(0.6, 1) };
+
+    let mut out = std::io::Cursor::new(Vec::new());
+    finished.write_to(&mut out, image::ImageFormat::WebP).ok()?;
+    let encoded = out.into_inner();
+    if encoded.is_empty() {
+        return None;
+    }
+    Some(format!(
+        "data:image/webp;base64,{}",
+        base64::engine::general_purpose::STANDARD.encode(&encoded)
+    ))
+}
+
+/// Scale an image so its longer side is `target`, preserving aspect and never yielding a zero side.
+fn to_longest(
+    img: &image::DynamicImage,
+    w: u32,
+    h: u32,
+    target: u32,
+) -> Option<image::DynamicImage> {
+    let longest = w.max(h);
+    if longest == 0 {
+        return None;
+    }
+    let s = target as f32 / longest as f32;
+    let nw = ((w as f32 * s).round() as u32).max(1);
+    let nh = ((h as f32 * s).round() as u32).max(1);
+    Some(img.resize_exact(nw, nh, image::imageops::FilterType::Lanczos3))
 }
 
 /// A stream's ICY title split into `(artist, title)`. Most stations send `Artist - Title`; some
@@ -767,5 +996,71 @@ mod tests {
         let headers = stream_headers();
         assert_eq!(headers.get("Icy-MetaData").map(String::as_str), Some("1"));
         assert!(headers.get("User-Agent").is_some_and(|ua| ua.contains("Mozilla")));
+    }
+
+    #[test]
+    fn logo_keys_are_stable_and_distinct() {
+        assert_eq!(logo_key("https://a/logo.png"), logo_key("https://a/logo.png"));
+        assert_ne!(logo_key("https://a/logo.png"), logo_key("https://b/logo.png"));
+    }
+
+    /// A PNG at `w`x`h`, for the shrink tests.
+    fn png(w: u32, h: u32) -> Vec<u8> {
+        let img = image::DynamicImage::ImageRgba8(image::RgbaImage::from_pixel(
+            w,
+            h,
+            image::Rgba([10, 20, 30, 255]),
+        ));
+        let mut out = std::io::Cursor::new(Vec::new());
+        img.write_to(&mut out, image::ImageFormat::Png).unwrap();
+        out.into_inner()
+    }
+
+    fn decode_webp(data: &str) -> image::DynamicImage {
+        let bytes = base64::engine::general_purpose::STANDARD
+            .decode(data.trim_start_matches("data:image/webp;base64,"))
+            .unwrap();
+        image::load_from_memory(&bytes).unwrap()
+    }
+
+    #[test]
+    fn logo_sizes_bucket_a_request_up_to_a_power_of_two() {
+        assert_eq!(logo_size(None), 256);
+        assert_eq!(logo_size(Some(120)), 128); // player bar
+        assert_eq!(logo_size(Some(160)), 256); // card
+        assert_eq!(logo_size(Some(700)), 1024); // full player
+        assert_eq!(logo_size(Some(5000)), FAVICON_MAX_SIZE); // clamped
+    }
+
+    #[test]
+    fn a_large_logo_is_shrunk_into_the_target_box() {
+        let data = render_logo(&png(1200, 900), 1024).expect("a plain PNG renders");
+        assert!(data.starts_with("data:image/webp;base64,"));
+        let back = decode_webp(&data);
+        assert_eq!(back.width(), 1024);
+        assert_eq!(back.height(), 768); // 900 * (1024/1200)
+    }
+
+    #[test]
+    fn a_tiny_logo_is_grown_to_the_full_player_box() {
+        // The worst case: 16px. xBRZ walks 6x (96) then 6x (576), and one mild Lanczos pass lands
+        // on 1024 — instead of a single blurry 64x stretch.
+        let data = render_logo(&png(16, 16), FAVICON_MAX_SIZE).unwrap();
+        let back = decode_webp(&data);
+        assert_eq!((back.width(), back.height()), (FAVICON_MAX_SIZE, FAVICON_MAX_SIZE));
+    }
+
+    #[test]
+    fn a_card_sized_request_stays_small() {
+        let data = render_logo(&png(300, 300), logo_size(Some(160))).unwrap();
+        let back = decode_webp(&data);
+        assert_eq!((back.width(), back.height()), (256, 256));
+    }
+
+    #[test]
+    fn svg_is_left_untouched_and_non_images_are_rejected_by_render() {
+        assert!(looks_like_svg(b"<svg xmlns=\"http://www.w3.org/2000/svg\"></svg>"));
+        assert!(!looks_like_svg(&[0x89, b'P', b'N', b'G']));
+        assert!(render_logo(b"not an image", 256).is_none());
     }
 }

@@ -2458,10 +2458,15 @@ pub async fn radio_probe_stream(url: String) -> Result<crate::radio::Probe, Stri
 }
 
 /// A station logo as a data URL. The webview refuses plain-`http` images from its secure origin and
-/// some hosts block hotlinking; both show up in the grid as a broken tile without this.
+/// some hosts block hotlinking; both show up in the grid as a broken tile without this. The logo is
+/// also shrunk and re-encoded here, so a multi-megabyte print master arrives as a few tens of KB.
 #[tauri::command]
-pub async fn radio_favicon(url: String) -> Result<String, String> {
-    crate::radio::favicon_data_url(&url).await
+pub async fn radio_favicon(
+    app: tauri::AppHandle,
+    url: String,
+    size: Option<u32>,
+) -> Result<String, String> {
+    crate::radio::favicon_data_url(&url, size, &crate::radio::favicon_cache_dir(&app)).await
 }
 
 // --- Listen Together (context/19) ----------------------------------------------------------
