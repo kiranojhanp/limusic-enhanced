@@ -2755,16 +2755,7 @@ impl AppState {
         let _ = self.app.emit("playback-state", "playing");
         // Push the same metadata to the OS media widget (context/16) and Discord.
         if let Some(m) = &self.media {
-            // MPRIS/SMTC want a URL; a local track's artwork is a path, so hand it a file:// one.
-            // Scheme, not leading slash: a Windows cover path is `C:\...`, and SMTC drops the whole
-            // metadata update (cover included) when the thumbnail URI won't parse.
-            let cover = item.thumbnail.as_ref().map(|t| {
-                if t.contains("://") {
-                    crate::media::cover_url(t)
-                } else {
-                    format!("file://{t}")
-                }
-            });
+            let cover = os_media_cover(item);
             m.set_metadata(&item.title, &item.artists, item.album.as_deref(), cover.as_deref());
         }
         if let Some(d) = &self.discord {
@@ -4889,6 +4880,32 @@ fn row_secs(item: &SongItem) -> f64 {
     parse_duration_ms(item.duration.as_deref()) as f64 / 1000.0
 }
 
+/// The artwork URL the OS media widget (Now Playing / MPRIS / SMTC) should load for `item`.
+///
+/// A local path becomes `file://` — scheme, not a leading slash, because a Windows cover path is
+/// `C:\...` and SMTC drops the whole update on a URI it cannot parse. A remote cover is passed on
+/// only when it is a well-formed `https` one, after the size rewrite. A **station** gets none on
+/// macOS: a directory logo is an arbitrary third-party URL (plain `http`, which ATS refuses, or
+/// malformed), and souvlaki's `NSImage` loader *aborts the process* — a non-unwinding panic, not an
+/// error — when it cannot read one. The app's own UI still draws the logo.
+fn os_media_cover(item: &SongItem) -> Option<String> {
+    let thumb = item.thumbnail.as_deref()?;
+    if !thumb.contains("://") {
+        return Some(format!("file://{thumb}"));
+    }
+    if thumb.starts_with("file://") {
+        return Some(thumb.to_owned());
+    }
+    #[cfg(target_os = "macos")]
+    if crate::radio::is_radio_song(&item.video_id) {
+        return None;
+    }
+    // A raw space (or any non-https scheme) is where NSImage returns nil on macOS; other platforms
+    // cope with a cover that fails to load, so this is only a guard there.
+    (thumb.starts_with("https://") && !thumb.chars().any(char::is_whitespace))
+        .then(|| crate::media::cover_url(thumb))
+}
+
 fn format_duration(ms: i64) -> String {
     let total = ms / 1000;
     match total / 3600 {
@@ -5155,12 +5172,50 @@ mod tests {
     use super::{
         adopt_twin, append_page, backfill_metadata, cache_horizon, drop_duplicates, enqueue_at,
         format_duration, freshen, get_url, guest_insert_index, history_threshold, is_mix,
-        loudness_gain, merge_radio, next_index, parse_duration_ms, persist_fingerprint,
-        prefer_version, prev_track_title, put_url, queue_fingerprint, radio_seed_for,
-        retain_upcoming, shuffle_new_queue, shuffle_upcoming, splice_radio_into, swap_version,
-        trim_played, twin_position, unshuffled, upcoming_queued, QueueState, RepeatMode, VideoUrls,
-        KEEP_PLAYED, LOCAL_PLAYLIST_PREFIX, MAX_BOOST_DB,
+        loudness_gain, merge_radio, next_index, os_media_cover, parse_duration_ms,
+        persist_fingerprint, prefer_version, prev_track_title, put_url, queue_fingerprint,
+        radio_seed_for, retain_upcoming, shuffle_new_queue, shuffle_upcoming, splice_radio_into,
+        swap_version, trim_played, twin_position, unshuffled, upcoming_queued, QueueState,
+        RepeatMode, VideoUrls, KEEP_PLAYED, LOCAL_PLAYLIST_PREFIX, MAX_BOOST_DB,
     };
+
+    fn cover_item(video_id: &str, thumb: Option<&str>) -> innertube::SongItem {
+        innertube::SongItem {
+            video_id: video_id.into(),
+            thumbnail: thumb.map(str::to_owned),
+            ..Default::default()
+        }
+    }
+
+    /// The OS media widget must never be handed artwork it cannot load: souvlaki's macOS `NSImage`
+    /// loader aborts the whole process on a station logo it cannot fetch (plain http, or malformed).
+    #[test]
+    fn the_os_widget_cover_is_kept_loadable() {
+        // A normal song's https cover passes.
+        assert_eq!(
+            os_media_cover(&cover_item("dQw4w9WgXcQ", Some("https://i.ytimg.com/vi/x/hq.jpg")))
+                .as_deref(),
+            Some("https://i.ytimg.com/vi/x/hq.jpg")
+        );
+        // A local path becomes a file:// URL, not a bare path.
+        assert_eq!(
+            os_media_cover(&cover_item("LOCAL:/m/a.mp3", Some("/m/covers/a.jpg"))).as_deref(),
+            Some("file:///m/covers/a.jpg")
+        );
+        // A raw space or a plain-http scheme is where NSImage returns nil: dropped.
+        assert_eq!(os_media_cover(&cover_item("dQw4w9WgXcQ", Some("http://a/logo.png"))), None);
+        assert_eq!(os_media_cover(&cover_item("dQw4w9WgXcQ", Some("https://a/My Logo.png"))), None);
+        // Nothing to show.
+        assert_eq!(os_media_cover(&cover_item("dQw4w9WgXcQ", None)), None);
+        // A station logo is an arbitrary third-party URL; macOS gets none, other platforms keep it.
+        #[cfg(target_os = "macos")]
+        assert_eq!(os_media_cover(&cover_item("RADIO:uuid", Some("https://a/logo.png"))), None);
+        #[cfg(not(target_os = "macos"))]
+        assert_eq!(
+            os_media_cover(&cover_item("RADIO:uuid", Some("https://a/logo.png"))).as_deref(),
+            Some("https://a/logo.png")
+        );
+    }
 
     /// The whole point of the video-URL map is answering a reopen without a round trip, so a live
     /// entry has to hit and a stale one has to miss. Getting the second one wrong hands the proxy a
